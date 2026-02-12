@@ -939,12 +939,6 @@
         const resetStatsBtn = document.getElementById('resetStatsBtn');
         const clearAllBtn = document.getElementById('clearAllBtn');
         
-        if (stats.lastDate !== new Date().toDateString()) {
-            stats.todayBlocks = 0;
-            stats.lastDate = new Date().toDateString();
-            saveStats();
-        }
-
         const TIMER_DURATION = 300;
         let pipVideo = null;
         let pipAnimationFrame = null;
@@ -968,6 +962,12 @@
             "We don't quit, we don't cower, we don't run. We endure and conquer. - Kobe Bryant"
         ];
         const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * 115;
+
+        if (stats.lastDate !== new Date().toDateString()) {
+            stats.todayBlocks = 0;
+            stats.lastDate = new Date().toDateString();
+            saveStats();
+        }
 
         largeTimerProgress.style.strokeDasharray = CIRCLE_CIRCUMFERENCE;
         largeTimerProgress.style.strokeDashoffset = 0;
