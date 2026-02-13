@@ -195,18 +195,20 @@
 
         .complete-task-btn {
             padding: 15px 40px;
-            background: #2ecc71;
-            color: white;
-            border: none;
+            background: transparent;
+            color: #fff;
+            border: 2px solid #fff;
             border-radius: 10px;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s;
             margin-top: 20px;
         }
 
         .complete-task-btn:hover {
+            background: #fff;
+            color: #1a1a1a;
             transform: scale(1.05);
         }
 
@@ -296,14 +298,14 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: #FFDD00;
-            color: #000;
-            padding: 12px 24px;
+            background: rgba(40, 40, 40, 0.95);
+            color: #888;
+            padding: 10px 20px;
             border-radius: 30px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 14px;
-            box-shadow: 0 4px 15px rgba(255, 221, 0, 0.4);
+            font-size: 13px;
+            border: 1px solid #444;
             transition: all 0.3s;
             z-index: 1000;
             display: flex;
@@ -313,8 +315,8 @@
 
         .support-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 221, 0, 0.6);
-            background: #FFE44D;
+            border-color: #ff4757;
+            color: #fff;
         }
 
         .settings-btn {
@@ -569,28 +571,56 @@
 
         .pip-btn {
             padding: 10px 20px;
-            background: #667eea;
-            color: white;
-            border: none;
+            background: transparent;
+            color: #888;
+            border: 1px solid #555;
             border-radius: 10px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s;
             margin-top: 15px;
         }
 
         .pip-btn:hover {
-            transform: scale(1.05);
+            border-color: #ff4757;
+            color: #fff;
+        }
+
+        .timer-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #555;
+            font-size: 28px;
+            cursor: pointer;
+            transition: color 0.3s;
+            padding: 5px;
+        }
+
+        .timer-close-btn:hover {
+            color: #ff4757;
         }
 
         .active-timer-content {
             background: #1a1a1a;
-            border: 3px solid #333;
+            border: 2px solid #333;
             padding: 50px;
             border-radius: 30px;
             text-align: center;
             box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            position: relative;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .commitment-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 15px;
+            font-style: italic;
         }
 
         .active-timer-content h2 {
@@ -618,19 +648,20 @@
         }
 
         .stop-btn {
-            padding: 15px 40px;
-            background: #ff4757;
-            color: white;
-            border: none;
+            padding: 12px 30px;
+            background: transparent;
+            color: #ff4757;
+            border: 2px solid #ff4757;
             border-radius: 10px;
-            font-size: 18px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s;
         }
 
         .stop-btn:hover {
-            transform: scale(1.05);
+            background: #ff4757;
+            color: #fff;
         }
 
         .completion-message {
@@ -642,19 +673,20 @@
 
         .continue-btn {
             padding: 15px 40px;
-            background: #fff;
-            color: #1a1a1a;
+            background: #ff4757;
+            color: #fff;
             border: none;
             border-radius: 10px;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: all 0.3s;
             margin-top: 20px;
         }
 
         .continue-btn:hover {
             transform: scale(1.05);
+            background: #e8414f;
         }
 
         .kobe-image {
@@ -698,7 +730,7 @@
         .stat-value {
             font-size: 28px;
             font-weight: bold;
-            color: #fff;
+            color: #ff4757;
         }
 
         .task-bubble .task-stats {
@@ -784,7 +816,7 @@
             </div>
             <div class="stat-item">
                 <div class="stat-label">Failed Blocks</div>
-                <div class="stat-value" id="failedBlocks" style="color: #ff4757;">0</div>
+                <div class="stat-value" id="failedBlocks">0</div>
             </div>
         </div>
         
@@ -854,6 +886,7 @@
 
     <div class="active-timer-overlay" id="timerOverlay">
         <div class="active-timer-content">
+            <button class="timer-close-btn" id="timerCloseBtn" title="Quit (counts as failure)">✕</button>
             <h2 id="activeTaskName"></h2>
             <div class="large-timer-container">
                 <svg width="250" height="250">
@@ -863,12 +896,13 @@
                 </svg>
                 <div class="large-timer-text" id="largeTimerText">5:00</div>
             </div>
-            <button class="pip-btn" id="pipBtn">Float on Top</button>
-            <button class="stop-btn" id="stopBtn">QUIT</button>
+            <button class="pip-btn" id="pipBtn">Float on Top</button><br>
+            <button class="stop-btn" id="stopBtn">I QUIT</button>
             <button class="complete-task-btn" id="completeTaskBtn">TASK COMPLETE</button>
             <div class="completion-message" id="completionMessage"></div>
             <button class="continue-btn" id="continueBtn" style="display: none;">ANOTHER BLOCK</button>
             <img src="kobe.png" alt="Kobe Bryant" class="kobe-image" id="kobeImage">
+            <div class="commitment-text">You committed to 5 minutes. Quitting counts as a failure.</div>
         </div>
     </div>
 
@@ -878,9 +912,7 @@
 
     <script>
         let tasks = JSON.parse(localStorage.getItem('focusTasks')) || [];
-        console.log('Loaded tasks:', tasks);
         let activeTimer = JSON.parse(localStorage.getItem('activeTimer'));
-        console.log('Active timer:', activeTimer);
         let timerInterval = null;
         let remainingSeconds = parseInt(localStorage.getItem('remainingSeconds')) || 300;
         
@@ -1249,6 +1281,12 @@
         });
 
         stopBtn.addEventListener('click', () => {
+            if (confirm("You're about to quit. Your competition isn't. Are you sure?")) {
+                stopTimer(true);
+            }
+        });
+
+        document.getElementById('timerCloseBtn').addEventListener('click', () => {
             if (confirm("You're about to quit. Your competition isn't. Are you sure?")) {
                 stopTimer(true);
             }
