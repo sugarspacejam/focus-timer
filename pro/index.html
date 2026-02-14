@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job's Not Finished</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff4757;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 8px rgba(255,71,87,0.5);
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .add-task-section {
+            background: rgba(20,20,20,0.95);
+            border: 2px solid #333;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .add-task-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        #taskInput {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #333;
+            background: #1a1a1a;
+            color: #fff;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #taskInput:focus {
+            border-color: #ff4757;
+        }
+
+        #addTaskBtn {
+            padding: 15px 30px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #addTaskBtn:hover {
+            transform: scale(1.05);
+        }
+
+        #addTaskBtn:active {
+            transform: scale(0.95);
+        }
+
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .task-bubble {
+            background: rgba(20,20,20,0.95);
+            border: 2px solid #333;
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            position: relative;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .task-bubble::before {
+            content: 'Click to start';
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: #666;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .task-bubble:hover::before {
+            opacity: 1;
+        }
+
+        .task-bubble:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255,71,87,0.3);
+            border-color: #ff4757;
+        }
+
+        .task-bubble.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .task-bubble.active {
+            background: #ff4757;
+            color: white;
+            transform: scale(1.05);
+            border-color: #ff4757;
+        }
+
+        .task-bubble.active .task-time {
+            color: #fff;
+        }
+
+        .task-bubble.active .task-stats {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .task-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+            color: #fff;
+        }
+
+        .task-stats {
+            font-size: 11px;
+            color: #888;
+            margin-top: 8px;
+        }
+
+        .task-time {
+            font-size: 16px;
+            color: #ff4757;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .complete-task-btn {
+            padding: 15px 40px;
+            background: transparent;
+            color: #fff;
+            border: 2px solid #fff;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .complete-task-btn:hover {
+            background: #fff;
+            color: #1a1a1a;
+            transform: scale(1.05);
+        }
+
+        .completed-section {
+            margin-top: 40px;
+            background: rgba(20,20,20,0.95);
+            border: 2px solid #333;
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .completed-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #888;
+            user-select: none;
+        }
+
+        .completed-header:hover {
+            color: #aaa;
+        }
+
+        .collapse-icon {
+            transition: transform 0.3s;
+            font-size: 16px;
+        }
+
+        .collapse-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .completed-message {
+            font-size: 13px;
+            color: #666;
+            text-align: center;
+            padding: 15px;
+            font-style: italic;
+            border-bottom: 1px solid #333;
+            margin-bottom: 15px;
+        }
+
+        .completed-tasks {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            transition: max-height 0.3s, opacity 0.3s;
+        }
+
+        .completed-tasks.collapsed {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+
+        .completed-task-item {
+            background: rgba(30,30,30,0.8);
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .completed-task-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #aaa;
+        }
+
+        .completed-task-time {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .support-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(40, 40, 40, 0.95);
+            color: #888;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
+            border: 1px solid #444;
+            transition: all 0.3s;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .support-btn:hover {
+            transform: translateY(-2px);
+            border-color: #ff4757;
+            color: #fff;
+        }
+
+        .settings-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(40, 40, 40, 0.95);
+            color: #fff;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #555;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .settings-btn:hover {
+            background: rgba(60, 60, 60, 0.95);
+            border-color: #ff4757;
+            transform: rotate(90deg);
+        }
+
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .settings-modal.show {
+            display: flex;
+        }
+
+        .settings-content {
+            background: #1a1a1a;
+            border: 2px solid #ff4757;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .settings-header h2 {
+            color: #ff4757;
+            font-size: 28px;
+        }
+
+        .close-settings {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 30px;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-settings:hover {
+            color: #ff4757;
+        }
+
+        .settings-section {
+            margin-bottom: 25px;
+        }
+
+        .settings-section h3 {
+            color: #fff;
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .settings-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .settings-action-btn {
+            background: rgba(40, 40, 40, 0.95);
+            color: #fff;
+            border: 2px solid #555;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .settings-action-btn:hover {
+            border-color: #ff4757;
+            background: rgba(60, 60, 60, 0.95);
+        }
+
+        .settings-action-btn.danger {
+            border-color: #ff4757;
+        }
+
+        .settings-action-btn.danger:hover {
+            background: #ff4757;
+            color: #000;
+        }
+
+        .search-bar {
+            background: rgba(20,20,20,0.95);
+            border: 2px solid #333;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .search-bar input {
+            width: 100%;
+            background: rgba(40, 40, 40, 0.95);
+            border: 2px solid #555;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: #ff4757;
+        }
+
+        .search-bar input::placeholder {
+            color: #888;
+        }
+
+        .task-bubble.editing .task-name {
+            display: none;
+        }
+
+        .task-bubble .edit-input {
+            display: none;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #ff4757;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .task-bubble.editing .edit-input {
+            display: block;
+        }
+
+        .task-bubble .edit-input:focus {
+            outline: none;
+            border-color: #fff;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .timer-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 20px auto;
+        }
+
+        .timer-circle {
+            transform: rotate(-90deg);
+        }
+
+        .timer-circle-bg {
+            fill: none;
+            stroke: rgba(255,255,255,0.3);
+            stroke-width: 8;
+        }
+
+        .timer-circle-progress {
+            fill: none;
+            stroke: white;
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.1s linear;
+        }
+
+        .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .active-timer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .active-timer-overlay.show {
+            display: flex;
+        }
+
+        .pip-container {
+            position: fixed;
+            top: -9999px;
+            left: -9999px;
+            width: 400px;
+            height: 400px;
+            background: #1a1a1a;
+            z-index: -1;
+        }
+
+        #pipCanvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .pip-btn {
+            padding: 10px 20px;
+            background: transparent;
+            color: #888;
+            border: 1px solid #555;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+
+        .pip-btn:hover {
+            border-color: #ff4757;
+            color: #fff;
+        }
+
+        .timer-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #555;
+            font-size: 28px;
+            cursor: pointer;
+            transition: color 0.3s;
+            padding: 5px;
+        }
+
+        .timer-close-btn:hover {
+            color: #ff4757;
+        }
+
+        .active-timer-content {
+            background: #1a1a1a;
+            border: 2px solid #333;
+            padding: 50px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            position: relative;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .commitment-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        .active-timer-content h2 {
+            font-size: 2em;
+            margin-bottom: 30px;
+            color: #fff;
+            font-weight: 900;
+        }
+
+        .large-timer-container {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 0 auto 30px;
+        }
+
+        .large-timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .stop-btn {
+            padding: 12px 30px;
+            background: transparent;
+            color: #ff4757;
+            border: 2px solid #ff4757;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .stop-btn:hover {
+            background: #ff4757;
+            color: #fff;
+        }
+
+        .completion-message {
+            font-size: 20px;
+            color: #fff;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .continue-btn {
+            padding: 15px 40px;
+            background: #ff4757;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .continue-btn:hover {
+            transform: scale(1.05);
+            background: #e8414f;
+        }
+
+        .kobe-image {
+            max-width: 100%;
+            width: 500px;
+            margin: 20px auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: none;
+        }
+
+        .kobe-image.show {
+            display: block;
+        }
+
+        .stats-bar {
+            background: rgba(20,20,20,0.95);
+            border: 2px solid #333;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff4757;
+        }
+
+        .task-bubble .task-stats {
+            font-size: 11px;
+            color: #888;
+            margin-top: 8px;
+        }
+
+        .task-bubble .task-time {
+            font-size: 13px;
+            color: #ff4757;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .task-bubble.active .task-stats {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .warning-message {
+            background: #ff4757;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .warning-message.show {
+            display: block;
+        }
+
+        .no-escape-warning {
+            font-size: 14px;
+            color: #ff4757;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .motivational-text {
+            background: rgba(255,71,87,0.1);
+            border: 2px solid #ff4757;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #ff4757;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.6;
+        }
+
+    </style>
+</head>
+<body>
+    <button class="settings-btn" id="settingsBtn">⚙️</button>
+    
+    <div class="container">
+        <h1>Job's Not Finished</h1>
+        <a href="https://www.buymeacoffee.com/waffleman" target="_blank" class="support-btn">
+            <span>☕</span>
+            <span>Buy Me a Coffee</span>
+        </a>
+        <div class="motivational-text" id="motivationalText">
+            STOP MAKING EXCUSES. MAN THE FUCK UP.
+        </div>
+        
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-label">Today's Blocks</div>
+                <div class="stat-value" id="todayBlocks">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Streak</div>
+                <div class="stat-value" id="streak">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Completion Rate</div>
+                <div class="stat-value" id="completionRate">0%</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Failed Blocks</div>
+                <div class="stat-value" id="failedBlocks">0</div>
+            </div>
+        </div>
+        
+        <div class="add-task-section">
+            <div class="add-task-form">
+                <input type="text" id="taskInput" placeholder="Enter a task name..." maxlength="50">
+                <button id="addTaskBtn">Add Task</button>
+            </div>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="🔍 Search tasks...">
+        </div>
+
+        <div class="tasks-grid" id="tasksGrid"></div>
+        
+        <div class="completed-section">
+            <div class="completed-header" id="completedHeader">
+                <span>Completed Tasks</span>
+                <span class="collapse-icon" id="collapseIcon">▼</span>
+            </div>
+            <div class="completed-message">
+                THE PAST DOESN'T DEFINE YOU. WHAT MATTERS IS NOW AND THE FUTURE.
+            </div>
+            <div class="completed-tasks" id="completedTasks"></div>
+        </div>
+    </div>
+
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2>Settings</h2>
+                <button class="close-settings" id="closeSettings">×</button>
+            </div>
+            
+            <div class="settings-section">
+                <h3>⏱️ Timer Duration (PRO)</h3>
+                <div class="settings-btn-group">
+                    <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                        <input type="range" id="timerDurationSlider" min="1" max="60" value="5" style="flex: 1; accent-color: #ff4757;">
+                        <span id="timerDurationLabel" style="color: #fff; font-weight: bold; min-width: 80px; text-align: center;">5 min</span>
+                    </div>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
+                        <button class="settings-action-btn" onclick="setTimerPreset(1)">1 min</button>
+                        <button class="settings-action-btn" onclick="setTimerPreset(5)">5 min</button>
+                        <button class="settings-action-btn" onclick="setTimerPreset(15)">15 min</button>
+                        <button class="settings-action-btn" onclick="setTimerPreset(25)">25 min</button>
+                        <button class="settings-action-btn" onclick="setTimerPreset(45)">45 min</button>
+                        <button class="settings-action-btn" onclick="setTimerPreset(60)">60 min</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>🎨 Theme (PRO)</h3>
+                <div class="settings-btn-group">
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="settings-action-btn" id="themeMamba" onclick="setTheme('mamba')">🐍 Mamba (Default)</button>
+                        <button class="settings-action-btn" id="themeIce" onclick="setTheme('ice')">🧊 Ice Cold</button>
+                        <button class="settings-action-btn" id="themeForest" onclick="setTheme('forest')">🌲 Deep Forest</button>
+                        <button class="settings-action-btn" id="themeSunrise" onclick="setTheme('sunrise')">🌅 Sunrise</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>🔊 Focus Sounds (PRO)</h3>
+                <div class="settings-btn-group">
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="settings-action-btn" id="soundNone" onclick="setFocusSound('none')">🔇 None</button>
+                        <button class="settings-action-btn" id="soundTick" onclick="setFocusSound('tick')">⏰ Ticking</button>
+                        <button class="settings-action-btn" id="soundRain" onclick="setFocusSound('rain')">🌧️ Rain</button>
+                        <button class="settings-action-btn" id="soundWhite" onclick="setFocusSound('white')">📻 White Noise</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section" style="border: 2px solid #ff4757; border-radius: 10px; padding: 15px; position: relative;">
+                <span style="position: absolute; top: -12px; left: 15px; background: #1a1a1a; padding: 0 8px; color: #ff4757; font-size: 12px; font-weight: bold; letter-spacing: 1px;">PREMIUM</span>
+                <h3>🔥 ACCOUNTABILITY</h3>
+                
+                <div style="margin-bottom: 15px;">
+                    <h4 style="color: #ccc; margin-bottom: 10px;">Contact Preferences</h4>
+                    <div style="margin-bottom: 10px;">
+                        <label style="color: #888; font-size: 13px; display: block; margin-bottom: 4px;">☎️ Phone Number</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="tel" id="phoneInput" placeholder="+1234567890" style="flex: 1; padding: 8px; background: #222; border: 1px solid #444; border-radius: 6px; color: #fff; font-size: 14px;">
+                            <button class="settings-action-btn" id="testPhone" style="white-space: nowrap;">Test Call</button>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <label style="color: #888; font-size: 13px; display: block; margin-bottom: 4px;">📱 Telegram</label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="telegramInput" placeholder="@username" style="flex: 1; padding: 8px; background: #222; border: 1px solid #444; border-radius: 6px; color: #fff; font-size: 14px;">
+                            <button class="settings-action-btn" id="testTelegram" style="white-space: nowrap;">Test Message</button>
+                        </div>
+                    </div>
+                    <div id="testResult" style="color: #888; font-size: 13px; margin-top: 8px;"></div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <h4 style="color: #ccc; margin-bottom: 10px;">Accountability Triggers</h4>
+                    <label style="display: flex; align-items: center; gap: 8px; color: #ccc; margin-bottom: 8px; cursor: pointer;">
+                        <input type="checkbox" id="callOnQuit" style="accent-color: #ff4757;">
+                        Call me if I quit timer early
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; color: #ccc; cursor: pointer;">
+                        <input type="checkbox" id="messageOnFail" style="accent-color: #ff4757;">
+                        Message me after failed blocks
+                    </label>
+                </div>
+
+                <div>
+                    <h4 style="color: #ccc; margin-bottom: 10px;">⏰ Wake-Up Alarm Call</h4>
+                    <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+                        <input type="time" id="alarmTime" value="06:00" style="padding: 8px; background: #222; border: 1px solid #444; border-radius: 6px; color: #fff; font-size: 14px;">
+                        <label style="display: flex; align-items: center; gap: 6px; color: #ccc; cursor: pointer;">
+                            <input type="checkbox" id="enableAlarm" style="accent-color: #ff4757;">
+                            Enable
+                        </label>
+                    </div>
+                    <button class="settings-action-btn" id="testAlarm">Test Alarm Call</button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Data Management</h3>
+                <div class="settings-btn-group">
+                    <button class="settings-action-btn" id="exportDataBtn">📥 Export All Data</button>
+                    <button class="settings-action-btn" id="importDataBtn">📤 Import Data</button>
+                    <input type="file" id="importFileInput" accept=".json" class="hidden">
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h3>Clear Data</h3>
+                <div class="settings-btn-group">
+                    <button class="settings-action-btn" id="clearCompletedBtn">🗑️ Clear Completed Tasks</button>
+                    <button class="settings-action-btn danger" id="resetStatsBtn">📊 Reset Stats Only</button>
+                    <button class="settings-action-btn danger" id="clearAllBtn">⚠️ Clear All Data</button>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h3>About</h3>
+                <p style="color: #888; font-size: 14px; line-height: 1.6;">
+                    <strong>Job's Not Finished</strong> - A 5-minute focus timer based on Elon Musk's time-blocking method.<br>
+                    <br>
+                    <strong>Tips:</strong><br>
+                    • Double-click a task to edit its name<br>
+                    • Use the search bar to find tasks quickly<br>
+                    • Export your data regularly as backup
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="active-timer-overlay" id="timerOverlay">
+        <div class="active-timer-content">
+            <button class="timer-close-btn" id="timerCloseBtn" title="Quit (counts as failure)">✕</button>
+            <h2 id="activeTaskName"></h2>
+            <div class="large-timer-container">
+                <svg width="250" height="250">
+                    <circle class="timer-circle-bg" cx="125" cy="125" r="115"></circle>
+                    <circle class="timer-circle-progress" id="largeTimerProgress" cx="125" cy="125" r="115" 
+                            style="transform: rotate(-90deg); transform-origin: center;"></circle>
+                </svg>
+                <div class="large-timer-text" id="largeTimerText">5:00</div>
+            </div>
+            <button class="pip-btn" id="pipBtn">Float on Top</button><br>
+            <button class="stop-btn" id="stopBtn">I QUIT</button>
+            <button class="complete-task-btn" id="completeTaskBtn">TASK COMPLETE</button>
+            <div class="completion-message" id="completionMessage"></div>
+            <button class="continue-btn" id="continueBtn" style="display: none;">ANOTHER BLOCK</button>
+            <img src="kobe.png" alt="Kobe Bryant" class="kobe-image" id="kobeImage">
+            <div class="commitment-text">You committed to 5 minutes. Quitting counts as a failure.</div>
+        </div>
+    </div>
+
+    <div class="pip-container" id="pipContainer">
+        <canvas id="pipCanvas" width="400" height="400"></canvas>
+    </div>
+
+    <script>
+        let tasks = JSON.parse(localStorage.getItem('focusTasks')) || [];
+        let activeTimer = JSON.parse(localStorage.getItem('activeTimer'));
+        let timerInterval = null;
+        let remainingSeconds = parseInt(localStorage.getItem('remainingSeconds')) || 300;
+        
+        let stats = JSON.parse(localStorage.getItem('focusStats')) || {
+            todayBlocks: 0,
+            totalBlocks: 0,
+            completedBlocks: 0,
+            failedBlocks: 0,
+            streak: 0,
+            lastDate: new Date().toDateString(),
+            taskStats: {},
+            taskTimeSpent: {},
+            completedTasks: 0,
+            completedTasksList: []
+        };
+        
+        // Migrate old stats to include taskTimeSpent and completedTasksList
+        if (!stats.taskTimeSpent) {
+            stats.taskTimeSpent = {};
+        }
+        if (!stats.completedTasksList) {
+            stats.completedTasksList = [];
+        }
+
+        const tasksGrid = document.getElementById('tasksGrid');
+        const taskInput = document.getElementById('taskInput');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const timerOverlay = document.getElementById('timerOverlay');
+        const activeTaskName = document.getElementById('activeTaskName');
+        const largeTimerText = document.getElementById('largeTimerText');
+        const largeTimerProgress = document.getElementById('largeTimerProgress');
+        const stopBtn = document.getElementById('stopBtn');
+        const completeTaskBtn = document.getElementById('completeTaskBtn');
+        const completionMessage = document.getElementById('completionMessage');
+        const continueBtn = document.getElementById('continueBtn');
+        const kobeImage = document.getElementById('kobeImage');
+        const todayBlocksEl = document.getElementById('todayBlocks');
+        const streakEl = document.getElementById('streak');
+        const completionRateEl = document.getElementById('completionRate');
+        const failedBlocksEl = document.getElementById('failedBlocks');
+        const motivationalTextEl = document.getElementById('motivationalText');
+        const pipBtn = document.getElementById('pipBtn');
+        const pipContainer = document.getElementById('pipContainer');
+        const pipCanvas = document.getElementById('pipCanvas');
+        const completedHeader = document.getElementById('completedHeader');
+        const collapseIcon = document.getElementById('collapseIcon');
+        const completedTasksEl = document.getElementById('completedTasks');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeSettings = document.getElementById('closeSettings');
+        const searchInput = document.getElementById('searchInput');
+        const exportDataBtn = document.getElementById('exportDataBtn');
+        const importDataBtn = document.getElementById('importDataBtn');
+        const importFileInput = document.getElementById('importFileInput');
+        const clearCompletedBtn = document.getElementById('clearCompletedBtn');
+        const resetStatsBtn = document.getElementById('resetStatsBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        
+        let TIMER_DURATION = parseInt(localStorage.getItem('proTimerDuration')) || 300;
+        let pipVideo = null;
+        let pipAnimationFrame = null;
+        let isPipActive = false;
+        
+        const MOTIVATIONAL_MESSAGES = [
+            "Great things come from hard work and perseverance. No excuses. - Kobe Bryant",
+            "I can't relate to lazy people. We don't speak the same language. - Kobe Bryant",
+            "Everything negative – pressure, challenges – is all an opportunity for me to rise. - Kobe Bryant",
+            "The moment you give up is the moment you let someone else win. - Kobe Bryant",
+            "Discipline equals freedom. - Jocko Willink",
+            "Don't count on motivation. Count on discipline. - Jocko Willink",
+            "There is no easy way. There is only hard work, discipline. - Jocko Willink",
+            "I don't stop when I'm tired. I stop when I'm done. - David Goggins",
+            "You are in danger of living a life so comfortable that you will die without ever realizing your true potential. - David Goggins",
+            "It's going to be hard work, discipline, and sacrifice that will set you apart. - David Goggins",
+            "When you think you are done, you're only 40% into what your body's capable of doing. - David Goggins",
+            "Everybody comes to a point when they want to quit. But it's what you do at that moment that determines who you are. - David Goggins",
+            "The only way to achieve greatness is to have patience, consistency, and discipline. - David Goggins",
+            "Rest at the end, not in the middle. - Kobe Bryant",
+            "We don't quit, we don't cower, we don't run. We endure and conquer. - Kobe Bryant"
+        ];
+        const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * 115;
+
+        if (stats.lastDate !== new Date().toDateString()) {
+            stats.todayBlocks = 0;
+            stats.lastDate = new Date().toDateString();
+            saveStats();
+        }
+
+        largeTimerProgress.style.strokeDasharray = CIRCLE_CIRCUMFERENCE;
+        largeTimerProgress.style.strokeDashoffset = 0;
+
+        function saveTasks() {
+            localStorage.setItem('focusTasks', JSON.stringify(tasks));
+        }
+        
+        function saveStats() {
+            localStorage.setItem('focusStats', JSON.stringify(stats));
+            updateStatsDisplay();
+        }
+        
+        function updateStatsDisplay() {
+            todayBlocksEl.textContent = stats.todayBlocks;
+            streakEl.textContent = stats.streak;
+            failedBlocksEl.textContent = stats.failedBlocks;
+            
+            const rate = stats.totalBlocks > 0 
+                ? Math.round((stats.completedBlocks / stats.totalBlocks) * 100)
+                : 0;
+            completionRateEl.textContent = rate + '%';
+            
+            rotateMotivationalMessage();
+        }
+        
+        function rotateMotivationalMessage() {
+            const randomIndex = Math.floor(Math.random() * MOTIVATIONAL_MESSAGES.length);
+            motivationalTextEl.textContent = MOTIVATIONAL_MESSAGES[randomIndex];
+        }
+
+        function renderTasks() {
+            tasksGrid.innerHTML = '';
+            
+            // Clean up invalid tasks
+            tasks = tasks.filter(task => task && task.name);
+            saveTasks();
+            
+            tasks.forEach((task, index) => {
+                
+                const bubble = document.createElement('div');
+                bubble.className = 'task-bubble';
+                if (activeTimer !== null && activeTimer !== index) {
+                    bubble.classList.add('disabled');
+                }
+                if (activeTimer === index) {
+                    bubble.classList.add('active');
+                }
+
+                const taskName = document.createElement('div');
+                taskName.className = 'task-name';
+                taskName.textContent = task.name;
+                
+                const taskStatsEl = document.createElement('div');
+                taskStatsEl.className = 'task-stats';
+                const taskStat = stats.taskStats[task.name] || { completed: 0, failed: 0 };
+                taskStatsEl.textContent = `✓ ${taskStat.completed} | ✗ ${taskStat.failed}`;
+                
+                const taskTimeEl = document.createElement('div');
+                taskTimeEl.className = 'task-time';
+                const completedBlocks = taskStat.completed || 0;
+                const totalMinutes = completedBlocks * 5;
+                taskTimeEl.textContent = totalMinutes > 0 ? `${totalMinutes} min spent` : '';
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = '×';
+                deleteBtn.title = 'Delete task';
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (activeTimer === null) {
+                        tasks.splice(index, 1);
+                        saveTasks();
+                        renderTasks();
+                    }
+                };
+
+                const editInput = document.createElement('input');
+                editInput.className = 'edit-input';
+                editInput.type = 'text';
+                editInput.value = task.name;
+                editInput.maxLength = 50;
+
+                bubble.appendChild(deleteBtn);
+                bubble.appendChild(taskName);
+                bubble.appendChild(editInput);
+                bubble.appendChild(taskStatsEl);
+                bubble.appendChild(taskTimeEl);
+
+                // Double-click to edit
+                taskName.ondblclick = (e) => {
+                    e.stopPropagation();
+                    if (activeTimer === null) {
+                        bubble.classList.add('editing');
+                        editInput.focus();
+                        editInput.select();
+                    }
+                };
+
+                // Save on Enter or blur
+                const saveEdit = () => {
+                    const newName = editInput.value.trim();
+                    if (newName && newName !== task.name) {
+                        task.name = newName;
+                        saveTasks();
+                        renderTasks();
+                    } else {
+                        bubble.classList.remove('editing');
+                    }
+                };
+
+                editInput.onblur = saveEdit;
+                editInput.onkeydown = (e) => {
+                    if (e.key === 'Enter') {
+                        saveEdit();
+                    } else if (e.key === 'Escape') {
+                        editInput.value = task.name;
+                        bubble.classList.remove('editing');
+                    }
+                    e.stopPropagation();
+                };
+
+                bubble.onclick = () => {
+                    if (activeTimer === null && !bubble.classList.contains('editing')) {
+                        startTimer(index);
+                    }
+                };
+
+                tasksGrid.appendChild(bubble);
+            });
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function startTimer(taskIndex) {
+            activeTimer = taskIndex;
+            remainingSeconds = TIMER_DURATION;
+            completionMessage.textContent = '';
+            kobeImage.classList.remove('show');
+            continueBtn.style.display = 'none';
+            stopBtn.style.display = 'inline-block';
+            
+            localStorage.setItem('activeTimer', JSON.stringify(taskIndex));
+            localStorage.setItem('remainingSeconds', remainingSeconds);
+            
+            activeTaskName.textContent = tasks[taskIndex].name;
+            timerOverlay.classList.add('show');
+            
+            renderTasks();
+            updateTimerDisplay();
+            startFocusSound();
+
+            timerInterval = setInterval(() => {
+                remainingSeconds--;
+                localStorage.setItem('remainingSeconds', remainingSeconds);
+                updateTimerDisplay();
+
+                if (remainingSeconds <= 0) {
+                    completeTimer();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timeText = formatTime(remainingSeconds);
+            if (largeTimerText) {
+                largeTimerText.textContent = timeText;
+            }
+
+            const progress = remainingSeconds / TIMER_DURATION;
+            const offset = CIRCLE_CIRCUMFERENCE * (1 - progress);
+            if (largeTimerProgress) {
+                largeTimerProgress.style.strokeDashoffset = offset;
+            }
+
+        }
+
+        async function completeTimer() {
+            clearInterval(timerInterval);
+            stopFocusSound();
+            
+            stats.todayBlocks++;
+            stats.totalBlocks++;
+            stats.completedBlocks++;
+            stats.streak++;
+            
+            const completedTaskIndex = activeTimer;
+            const taskName = tasks[activeTimer].name;
+            if (!stats.taskStats[taskName]) {
+                stats.taskStats[taskName] = { completed: 0, failed: 0 };
+            }
+            stats.taskStats[taskName].completed++;
+            
+            if (!stats.taskTimeSpent[taskName]) {
+                stats.taskTimeSpent[taskName] = 0;
+            }
+            stats.taskTimeSpent[taskName] += 5;
+            
+            saveStats();
+            
+            // Close PiP if active
+            if (isPipActive && document.pictureInPictureElement) {
+                await document.exitPictureInPicture();
+                if (pipAnimationFrame) {
+                    cancelAnimationFrame(pipAnimationFrame);
+                }
+                isPipActive = false;
+                pipBtn.textContent = 'Float on Top';
+            }
+            
+            // Focus window and show notification
+            window.focus();
+            if (Notification.permission === 'granted') {
+                new Notification('JOB\'S NOT FINISHED', {
+                    body: `${taskName} - 5 minutes done. Keep going or move on?`,
+                    requireInteraction: true,
+                    tag: 'timer-complete'
+                });
+            }
+            
+            completionMessage.textContent = 'What\'s there to be happy about? Job\'s finished? I don\'t think so.';
+            kobeImage.classList.add('show');
+            stopBtn.style.display = 'none';
+            continueBtn.style.display = 'inline-block';
+            
+            continueBtn.onclick = () => {
+                kobeImage.classList.remove('show');
+                completionMessage.textContent = '';
+                continueBtn.style.display = 'none';
+                stopBtn.style.display = 'inline-block';
+                startTimer(completedTaskIndex);
+            };
+        }
+
+        async function stopTimer(isFailure = false) {
+            clearInterval(timerInterval);
+            stopFocusSound();
+            
+            if (isFailure && activeTimer !== null) {
+                stats.totalBlocks++;
+                stats.failedBlocks++;
+                stats.streak = 0;
+                
+                const taskName = tasks[activeTimer].name;
+                if (!stats.taskStats[taskName]) {
+                    stats.taskStats[taskName] = { completed: 0, failed: 0 };
+                }
+                stats.taskStats[taskName].failed++;
+                const quitCount = stats.taskStats[taskName].failed;
+                
+                saveStats();
+                
+                const result = await triggerAccountabilityCall('timer_quit', taskName, quitCount);
+                if (result.success) {
+                    alert("YOU QUIT. YOUR COMPETITION DIDN'T.\n\nAccountability call initiated. Expect a call.");
+                } else {
+                    alert("YOU QUIT. YOUR COMPETITION DIDN'T.");
+                }
+            }
+            
+            activeTimer = null;
+            remainingSeconds = TIMER_DURATION;
+            localStorage.removeItem('activeTimer');
+            localStorage.removeItem('remainingSeconds');
+            timerOverlay.classList.remove('show');
+            completionMessage.textContent = '';
+            renderTasks();
+        }
+
+        addTaskBtn.addEventListener('click', () => {
+            const taskName = taskInput.value.trim();
+            if (taskName) {
+                tasks.push({ name: taskName });
+                saveTasks();
+                renderTasks();
+                taskInput.value = '';
+            }
+        });
+
+        taskInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addTaskBtn.click();
+            }
+        });
+
+        stopBtn.addEventListener('click', () => {
+            if (confirm("You're about to quit. Your competition isn't. Are you sure?")) {
+                stopTimer(true);
+            }
+        });
+
+        document.getElementById('timerCloseBtn').addEventListener('click', () => {
+            if (confirm("You're about to quit. Your competition isn't. Are you sure?")) {
+                stopTimer(true);
+            }
+        });
+
+        completeTaskBtn.addEventListener('click', () => {
+            if (activeTimer !== null) {
+                const completedTask = tasks[activeTimer];
+                const taskStat = stats.taskStats[completedTask.name] || { completed: 0, failed: 0 };
+                const totalMinutes = taskStat.completed * 5;
+                
+                stats.completedTasksList.push({
+                    name: completedTask.name,
+                    completedAt: new Date().toISOString(),
+                    totalMinutes: totalMinutes
+                });
+                stats.completedTasks++;
+                
+                tasks.splice(activeTimer, 1);
+                saveTasks();
+                saveStats();
+                renderCompletedTasks();
+                stopTimer(false);
+                alert('TASK COMPLETED. NEXT.');
+            }
+        });
+
+        function renderCompletedTasks() {
+            completedTasksEl.innerHTML = '';
+            if (stats.completedTasksList.length === 0) {
+                completedTasksEl.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No completed tasks yet.</div>';
+                return;
+            }
+            
+            stats.completedTasksList.slice().reverse().forEach(task => {
+                const item = document.createElement('div');
+                item.className = 'completed-task-item';
+                
+                const nameEl = document.createElement('div');
+                nameEl.className = 'completed-task-name';
+                nameEl.textContent = task.name;
+                
+                const timeEl = document.createElement('div');
+                timeEl.className = 'completed-task-time';
+                timeEl.textContent = `${task.totalMinutes} min total`;
+                
+                item.appendChild(nameEl);
+                item.appendChild(timeEl);
+                completedTasksEl.appendChild(item);
+            });
+        }
+        
+        completedHeader.addEventListener('click', () => {
+            completedTasksEl.classList.toggle('collapsed');
+            collapseIcon.classList.toggle('collapsed');
+        });
+        
+        completedTasksEl.classList.add('collapsed');
+        collapseIcon.classList.add('collapsed');
+
+        function drawPipFrame() {
+            const ctx = pipCanvas.getContext('2d');
+            ctx.fillStyle = '#1a1a1a';
+            ctx.fillRect(0, 0, 400, 400);
+            
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 20px Arial';
+            ctx.textAlign = 'center';
+            const taskName = tasks[activeTimer]?.name || 'Task';
+            ctx.fillText(taskName.length > 30 ? taskName.substring(0, 30) + '...' : taskName, 200, 50);
+            
+            const centerX = 200;
+            const centerY = 220;
+            const radius = 110;
+            
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 10;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            const progress = remainingSeconds / TIMER_DURATION;
+            const endAngle = -Math.PI / 2 + (2 * Math.PI * progress);
+            
+            ctx.strokeStyle = '#ff4757';
+            ctx.lineWidth = 10;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, -Math.PI / 2, endAngle);
+            ctx.stroke();
+            
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 56px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(formatTime(remainingSeconds), centerX, centerY);
+            
+            ctx.fillStyle = '#888';
+            ctx.font = '14px Arial';
+            ctx.fillText('JOB\'S NOT FINISHED', centerX, 370);
+        }
+
+        async function togglePip() {
+            if (isPipActive) {
+                if (document.pictureInPictureElement) {
+                    await document.exitPictureInPicture();
+                }
+                if (pipAnimationFrame) {
+                    cancelAnimationFrame(pipAnimationFrame);
+                }
+                isPipActive = false;
+                pipBtn.textContent = 'Float on Top';
+                return;
+            }
+            
+            try {
+                drawPipFrame();
+                
+                const stream = pipCanvas.captureStream(30);
+                
+                if (!pipVideo) {
+                    pipVideo = document.createElement('video');
+                    pipVideo.muted = true;
+                    pipVideo.autoplay = true;
+                    pipVideo.style.position = 'fixed';
+                    pipVideo.style.bottom = '0';
+                    pipVideo.style.right = '0';
+                    pipVideo.style.width = '1px';
+                    pipVideo.style.height = '1px';
+                    pipVideo.style.opacity = '0';
+                    document.body.appendChild(pipVideo);
+                }
+                
+                pipVideo.srcObject = stream;
+                await pipVideo.play();
+                
+                function animate() {
+                    drawPipFrame();
+                    pipAnimationFrame = requestAnimationFrame(animate);
+                }
+                animate();
+                
+                await pipVideo.requestPictureInPicture();
+                isPipActive = true;
+                pipBtn.textContent = 'Close Float';
+                
+                pipVideo.addEventListener('leavepictureinpicture', () => {
+                    if (pipAnimationFrame) {
+                        cancelAnimationFrame(pipAnimationFrame);
+                    }
+                    isPipActive = false;
+                    pipBtn.textContent = 'Float on Top';
+                }, { once: true });
+                
+            } catch (err) {
+                console.error('PiP failed:', err);
+                alert('Picture-in-Picture not supported. Try Chrome or Safari.');
+            }
+        }
+
+        pipBtn.addEventListener('click', togglePip);
+
+        // Settings modal
+        settingsBtn.addEventListener('click', () => {
+            settingsModal.classList.add('show');
+        });
+
+        closeSettings.addEventListener('click', () => {
+            settingsModal.classList.remove('show');
+        });
+
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.classList.remove('show');
+            }
+        });
+
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            const taskBubbles = document.querySelectorAll('.task-bubble');
+            
+            taskBubbles.forEach((bubble, index) => {
+                const task = tasks[index];
+                if (task && task.name.toLowerCase().includes(searchTerm)) {
+                    bubble.style.display = '';
+                } else {
+                    bubble.style.display = 'none';
+                }
+            });
+        });
+
+        // Export data
+        exportDataBtn.addEventListener('click', () => {
+            const exportData = {
+                tasks: tasks,
+                stats: stats,
+                exportDate: new Date().toISOString(),
+                version: '1.0'
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `focus-timer-backup-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Data exported successfully!');
+        });
+
+        // Import data
+        importDataBtn.addEventListener('click', () => {
+            importFileInput.click();
+        });
+
+        importFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const importData = JSON.parse(event.target.result);
+                    
+                    if (confirm('This will replace all current data. Are you sure?')) {
+                        if (importData.tasks) tasks = importData.tasks;
+                        if (importData.stats) stats = importData.stats;
+                        
+                        saveTasks();
+                        saveStats();
+                        renderTasks();
+                        renderCompletedTasks();
+                        
+                        alert('Data imported successfully!');
+                        settingsModal.classList.remove('show');
+                    }
+                } catch (err) {
+                    alert('Error importing data. Please check the file format.');
+                }
+            };
+            reader.readAsText(file);
+            importFileInput.value = '';
+        });
+
+        // Clear completed tasks
+        clearCompletedBtn.addEventListener('click', () => {
+            if (confirm('Clear all completed tasks? This cannot be undone.')) {
+                stats.completedTasksList = [];
+                saveStats();
+                renderCompletedTasks();
+                alert('Completed tasks cleared.');
+            }
+        });
+
+        // Reset stats only
+        resetStatsBtn.addEventListener('click', () => {
+            if (confirm('Reset all statistics? Tasks will be kept but all stats will be cleared. This cannot be undone.')) {
+                stats = {
+                    todayBlocks: 0,
+                    totalBlocks: 0,
+                    completedBlocks: 0,
+                    failedBlocks: 0,
+                    streak: 0,
+                    lastDate: new Date().toDateString(),
+                    taskStats: {},
+                    taskTimeSpent: {},
+                    completedTasks: 0,
+                    completedTasksList: []
+                };
+                saveStats();
+                renderTasks();
+                renderCompletedTasks();
+                alert('Statistics reset successfully.');
+            }
+        });
+
+        // Clear all data
+        clearAllBtn.addEventListener('click', () => {
+            if (confirm('⚠️ WARNING: This will delete ALL tasks, completed tasks, and statistics. This cannot be undone. Are you absolutely sure?')) {
+                if (confirm('Final confirmation: Delete everything?')) {
+                    localStorage.removeItem('focusTasks');
+                    localStorage.removeItem('focusStats');
+                    localStorage.removeItem('activeTimer');
+                    localStorage.removeItem('remainingSeconds');
+                    
+                    tasks = [];
+                    stats = {
+                        todayBlocks: 0,
+                        totalBlocks: 0,
+                        completedBlocks: 0,
+                        failedBlocks: 0,
+                        streak: 0,
+                        lastDate: new Date().toDateString(),
+                        taskStats: {},
+                        taskTimeSpent: {},
+                        completedTasks: 0,
+                        completedTasksList: []
+                    };
+                    activeTimer = null;
+                    remainingSeconds = 0;
+                    
+                    renderTasks();
+                    renderCompletedTasks();
+                    updateStatsDisplay();
+                    
+                    alert('All data cleared.');
+                    settingsModal.classList.remove('show');
+                }
+            }
+        });
+
+        // === PRO FEATURES ===
+
+        // Custom Timer Duration
+        const timerDurationSlider = document.getElementById('timerDurationSlider');
+        const timerDurationLabel = document.getElementById('timerDurationLabel');
+        
+        const savedMinutes = parseInt(localStorage.getItem('proTimerDuration')) / 60 || 5;
+        timerDurationSlider.value = savedMinutes;
+        timerDurationLabel.textContent = savedMinutes + ' min';
+
+        timerDurationSlider.addEventListener('input', (e) => {
+            const minutes = parseInt(e.target.value);
+            timerDurationLabel.textContent = minutes + ' min';
+            TIMER_DURATION = minutes * 60;
+            remainingSeconds = TIMER_DURATION;
+            localStorage.setItem('proTimerDuration', TIMER_DURATION);
+            largeTimerText.textContent = formatTime(remainingSeconds);
+        });
+
+        function setTimerPreset(minutes) {
+            if (!minutes) {
+                throw new Error('Timer preset minutes is required');
+            }
+            timerDurationSlider.value = minutes;
+            timerDurationLabel.textContent = minutes + ' min';
+            TIMER_DURATION = minutes * 60;
+            remainingSeconds = TIMER_DURATION;
+            localStorage.setItem('proTimerDuration', TIMER_DURATION);
+            largeTimerText.textContent = formatTime(remainingSeconds);
+        }
+        window.setTimerPreset = setTimerPreset;
+
+        // Theme System
+        const THEMES = {
+            mamba: { bg1: '#1a1a1a', bg2: '#000000', accent: '#ff4757', text: '#fff' },
+            ice: { bg1: '#0a1628', bg2: '#000a1a', accent: '#00d2ff', text: '#e0f0ff' },
+            forest: { bg1: '#0a1a0a', bg2: '#001200', accent: '#00ff6a', text: '#d0ffd0' },
+            sunrise: { bg1: '#1a0a00', bg2: '#0a0000', accent: '#ff8c00', text: '#ffe0c0' }
+        };
+
+        function setTheme(themeName) {
+            if (!THEMES[themeName]) {
+                throw new Error(`Unknown theme: ${themeName}`);
+            }
+            const theme = THEMES[themeName];
+            document.body.style.background = `linear-gradient(135deg, ${theme.bg1} 0%, ${theme.bg2} 100%)`;
+            document.documentElement.style.setProperty('--accent-color', theme.accent);
+            
+            const styleOverride = document.getElementById('themeOverride') || document.createElement('style');
+            styleOverride.id = 'themeOverride';
+            styleOverride.textContent = `
+                .task-bubble { border-color: ${theme.accent}40; }
+                .task-bubble:hover { border-color: ${theme.accent}; box-shadow: 0 0 20px ${theme.accent}40; }
+                .timer-circle-progress { stroke: ${theme.accent}; }
+                .stop-btn { background: ${theme.accent}; }
+                .stop-btn:hover { background: ${theme.accent}dd; }
+                .pip-btn { border-color: ${theme.accent}; color: ${theme.accent}; }
+                .pip-btn:hover { background: ${theme.accent}; }
+                .settings-action-btn:hover { border-color: ${theme.accent}; color: ${theme.accent}; }
+                .complete-task-btn { background: ${theme.accent}; }
+                h1, .stat-value { color: ${theme.accent}; }
+            `;
+            if (!document.getElementById('themeOverride')) {
+                document.head.appendChild(styleOverride);
+            }
+            localStorage.setItem('proTheme', themeName);
+        }
+        window.setTheme = setTheme;
+
+        const savedTheme = localStorage.getItem('proTheme');
+        if (savedTheme) {
+            setTheme(savedTheme);
+        }
+
+        // Focus Sounds (Web Audio API - generated tones, no external files needed)
+        let audioContext = null;
+        let soundInterval = null;
+        let currentSound = localStorage.getItem('proFocusSound') || 'none';
+
+        function setFocusSound(soundName) {
+            if (!soundName) {
+                throw new Error('Sound name is required');
+            }
+            currentSound = soundName;
+            localStorage.setItem('proFocusSound', soundName);
+            stopFocusSound();
+        }
+        window.setFocusSound = setFocusSound;
+
+        function startFocusSound() {
+            if (currentSound === 'none') return;
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            if (currentSound === 'tick') {
+                soundInterval = setInterval(() => {
+                    const osc = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioContext.destination);
+                    osc.frequency.value = 800;
+                    gain.gain.value = 0.05;
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
+                    osc.start();
+                    osc.stop(audioContext.currentTime + 0.1);
+                }, 1000);
+            } else if (currentSound === 'rain' || currentSound === 'white') {
+                const bufferSize = 2 * audioContext.sampleRate;
+                const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+                const output = noiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    output[i] = Math.random() * 2 - 1;
+                }
+                const whiteNoise = audioContext.createBufferSource();
+                whiteNoise.buffer = noiseBuffer;
+                whiteNoise.loop = true;
+
+                const filter = audioContext.createBiquadFilter();
+                const gain = audioContext.createGain();
+                
+                if (currentSound === 'rain') {
+                    filter.type = 'lowpass';
+                    filter.frequency.value = 400;
+                    gain.gain.value = 0.15;
+                } else {
+                    filter.type = 'lowpass';
+                    filter.frequency.value = 4000;
+                    gain.gain.value = 0.05;
+                }
+
+                whiteNoise.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioContext.destination);
+                whiteNoise.start();
+                window._focusSoundSource = whiteNoise;
+            }
+        }
+
+        function stopFocusSound() {
+            if (soundInterval) {
+                clearInterval(soundInterval);
+                soundInterval = null;
+            }
+            if (window._focusSoundSource) {
+                window._focusSoundSource.stop();
+                window._focusSoundSource = null;
+            }
+        }
+
+        // === ACCOUNTABILITY PREMIUM TIER ===
+        const API_BASE = 'https://focus-timer-accountability.netlify.app/api';
+
+        function loadAccountabilityPrefs() {
+            return JSON.parse(localStorage.getItem('accountabilityPrefs')) || {
+                phone: '',
+                telegram: '',
+                callOnQuit: false,
+                messageOnFail: false,
+                alarmTime: '06:00',
+                alarmEnabled: false
+            };
+        }
+
+        function saveAccountabilityPrefs(prefs) {
+            if (!prefs) {
+                throw new Error('Prefs object is required');
+            }
+            localStorage.setItem('accountabilityPrefs', JSON.stringify(prefs));
+        }
+
+        async function triggerAccountabilityCall(event, taskName, quitCount) {
+            const prefs = loadAccountabilityPrefs();
+            if (!prefs.callOnQuit && event === 'timer_quit') return { success: false };
+            if (!prefs.messageOnFail && event === 'failed_block') return { success: false };
+            if (!prefs.phone && !prefs.telegram) return { success: false };
+
+            try {
+                const response = await fetch(`${API_BASE}/accountability-call`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        event: event,
+                        taskName: taskName,
+                        quitCount: quitCount,
+                        phoneNumber: prefs.phone,
+                        telegram: prefs.telegram,
+                        preferences: {
+                            phone: !!prefs.phone,
+                            telegram: !!prefs.telegram
+                        }
+                    })
+                });
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Accountability call failed:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        // Accountability DOM refs
+        const testPhoneBtn = document.getElementById('testPhone');
+        const testTelegramBtn = document.getElementById('testTelegram');
+        const testAlarmBtn = document.getElementById('testAlarm');
+        const callOnQuitCheckbox = document.getElementById('callOnQuit');
+        const messageOnFailCheckbox = document.getElementById('messageOnFail');
+        const enableAlarmCheckbox = document.getElementById('enableAlarm');
+        const alarmTimeInput = document.getElementById('alarmTime');
+        const phoneInput = document.getElementById('phoneInput');
+        const telegramInput = document.getElementById('telegramInput');
+        const testResultEl = document.getElementById('testResult');
+
+        // Load saved prefs into UI
+        const acctPrefs = loadAccountabilityPrefs();
+        phoneInput.value = acctPrefs.phone;
+        telegramInput.value = acctPrefs.telegram;
+        callOnQuitCheckbox.checked = acctPrefs.callOnQuit;
+        messageOnFailCheckbox.checked = acctPrefs.messageOnFail;
+        alarmTimeInput.value = acctPrefs.alarmTime;
+        enableAlarmCheckbox.checked = acctPrefs.alarmEnabled;
+
+        // Auto-save on change
+        phoneInput.addEventListener('blur', () => {
+            const prefs = loadAccountabilityPrefs();
+            prefs.phone = phoneInput.value.trim();
+            saveAccountabilityPrefs(prefs);
+        });
+
+        telegramInput.addEventListener('blur', () => {
+            const prefs = loadAccountabilityPrefs();
+            prefs.telegram = telegramInput.value.trim();
+            saveAccountabilityPrefs(prefs);
+        });
+
+        callOnQuitCheckbox.addEventListener('change', () => {
+            const prefs = loadAccountabilityPrefs();
+            prefs.callOnQuit = callOnQuitCheckbox.checked;
+            saveAccountabilityPrefs(prefs);
+        });
+
+        messageOnFailCheckbox.addEventListener('change', () => {
+            const prefs = loadAccountabilityPrefs();
+            prefs.messageOnFail = messageOnFailCheckbox.checked;
+            saveAccountabilityPrefs(prefs);
+        });
+
+        enableAlarmCheckbox.addEventListener('change', () => {
+            const prefs = loadAccountabilityPrefs();
+            prefs.alarmEnabled = enableAlarmCheckbox.checked;
+            saveAccountabilityPrefs(prefs);
+        });
+
+        alarmTimeInput.addEventListener('change', () => {
+            const prefs = loadAccountabilityPrefs();
+            prefs.alarmTime = alarmTimeInput.value;
+            saveAccountabilityPrefs(prefs);
+        });
+
+        // Test buttons
+        testPhoneBtn.addEventListener('click', async () => {
+            const phone = phoneInput.value.trim();
+            if (!phone) {
+                testResultEl.textContent = 'Enter a phone number first';
+                testResultEl.style.color = '#ff4757';
+                return;
+            }
+            testPhoneBtn.disabled = true;
+            testPhoneBtn.textContent = 'Calling...';
+            try {
+                const res = await fetch(`${API_BASE}/test-contact`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'phone', contact: phone })
+                });
+                const data = await res.json();
+                testResultEl.textContent = data.success ? '✅ Call sent!' : `❌ ${data.error}`;
+                testResultEl.style.color = data.success ? '#00ff6a' : '#ff4757';
+            } catch (err) {
+                testResultEl.textContent = `❌ ${err.message}`;
+                testResultEl.style.color = '#ff4757';
+            }
+            testPhoneBtn.disabled = false;
+            testPhoneBtn.textContent = 'Test Call';
+        });
+
+        testTelegramBtn.addEventListener('click', async () => {
+            const tg = telegramInput.value.trim();
+            if (!tg) {
+                testResultEl.textContent = 'Enter a Telegram username first';
+                testResultEl.style.color = '#ff4757';
+                return;
+            }
+            testTelegramBtn.disabled = true;
+            testTelegramBtn.textContent = 'Sending...';
+            try {
+                const res = await fetch(`${API_BASE}/test-contact`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'telegram', contact: tg })
+                });
+                const data = await res.json();
+                testResultEl.textContent = data.success ? '✅ Message sent!' : `❌ ${data.error}`;
+                testResultEl.style.color = data.success ? '#00ff6a' : '#ff4757';
+            } catch (err) {
+                testResultEl.textContent = `❌ ${err.message}`;
+                testResultEl.style.color = '#ff4757';
+            }
+            testTelegramBtn.disabled = false;
+            testTelegramBtn.textContent = 'Test Message';
+        });
+
+        testAlarmBtn.addEventListener('click', async () => {
+            const phone = phoneInput.value.trim();
+            if (!phone) {
+                testResultEl.textContent = 'Enter a phone number first';
+                testResultEl.style.color = '#ff4757';
+                return;
+            }
+            testAlarmBtn.disabled = true;
+            testAlarmBtn.textContent = 'Calling...';
+            try {
+                const res = await fetch(`${API_BASE}/alarm-call`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phoneNumber: phone, snoozeCount: 0 })
+                });
+                const data = await res.json();
+                testResultEl.textContent = data.success ? '✅ Alarm call sent!' : `❌ ${data.error}`;
+                testResultEl.style.color = data.success ? '#00ff6a' : '#ff4757';
+            } catch (err) {
+                testResultEl.textContent = `❌ ${err.message}`;
+                testResultEl.style.color = '#ff4757';
+            }
+            testAlarmBtn.disabled = false;
+            testAlarmBtn.textContent = 'Test Alarm Call';
+        });
+
+        // Request notification permission
+        if (Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
+        
+        updateStatsDisplay();
+        renderTasks();
+        renderCompletedTasks();
+        
+        if (activeTimer !== null && tasks[activeTimer]) {
+            activeTaskName.textContent = tasks[activeTimer].name;
+            timerOverlay.classList.add('show');
+            stopBtn.style.display = 'inline-block';
+            continueBtn.style.display = 'none';
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                remainingSeconds--;
+                localStorage.setItem('remainingSeconds', remainingSeconds);
+                updateTimerDisplay();
+
+                if (remainingSeconds <= 0) {
+                    completeTimer();
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

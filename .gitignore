@@ -1,0 +1,36 @@
+node_modules/
+.env
+.env.example
+.netlify/
+coverage/
+*.log
+.DS_Store
+
+# Internal docs - DO NOT PUSH TO PUBLIC REPO
+CODEX-PROMPT.md
+AGENT-4-COMPLETE.md
+API-SPEC.md
+BACKEND-SUMMARY.md
+DEPLOYMENT.md
+INTEGRATION-SUMMARY.md
+PRODUCT-HUNT-LAUNCH.md
+README-ACCOUNTABILITY.md
+README-BACKEND.md
+
+# Backend code (private - deploy separately on Netlify)
+lib/
+netlify/
+netlify.toml
+poc-accountability-call/
+tests/
+jest.config.js
+package.json
+package-lock.json
+
+# Build artifacts
+*.zip
+
+# Accountability JS/CSS (stripped from MVP)
+js/accountability-settings.js
+js/alarm-clock.js
+css/accountability.css

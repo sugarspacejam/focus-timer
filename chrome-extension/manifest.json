@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Job's Not Finished - Focus Timer",
+  "description": "A 5-minute focus timer inspired by Kobe Bryant's Mamba Mentality. No excuses. No quitting. Job's not finished.",
+  "version": "1.0.0",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "Job's Not Finished"
+  },
+  "permissions": [
+    "storage",
+    "notifications",
+    "alarms"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
