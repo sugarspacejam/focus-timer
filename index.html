@@ -1422,7 +1422,7 @@
             } else {
                 stats.quits = 0;
             }
-            saveStats();
+            localStorage.setItem('focusStats', JSON.stringify(stats));
         }
 
         const tasksGrid = document.getElementById('tasksGrid');
