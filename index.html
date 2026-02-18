@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job's Not Finished</title>
+    <title>Job's Not Finished (Accountability Cam)</title>
+    <link rel="icon" type="image/png" href="kobe.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,35 +15,73 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --bg: #0a0c10;
+            --bg-alt: #12161d;
+            --surface: rgba(18, 22, 29, 0.92);
+            --surface-strong: rgba(24, 29, 38, 0.96);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-strong: rgba(255, 255, 255, 0.16);
+            --text: #f5f6f7;
+            --text-muted: #a0a6b0;
+            --accent: #22d3ee;
+            --accent-2: #f5b942;
+            --accent-soft: rgba(34, 211, 238, 0.18);
+            --accent-soft-2: rgba(245, 185, 66, 0.18);
+            --accent-border: rgba(34, 211, 238, 0.6);
+            --accent-border-2: rgba(245, 185, 66, 0.6);
+            --accent-gradient: linear-gradient(135deg, #22d3ee 0%, #f5b942 100%);
+            --accent-gradient-strong: linear-gradient(145deg, #22d3ee 0%, #f5b942 100%);
+            --shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+            --radius-lg: 22px;
+            --radius-md: 16px;
+            --radius-sm: 12px;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+            font-family: 'Space Grotesk', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at top, #1a1f2a 0%, #0a0c10 45%, #08090d 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 32px 20px 80px;
+            color: var(--text);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(34, 211, 238, 0.18), transparent 55%),
+                radial-gradient(circle at 80% 10%, rgba(245, 185, 66, 0.14), transparent 50%);
+            pointer-events: none;
+            z-index: -1;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
         }
 
         h1 {
             text-align: center;
-            color: #ff4757;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 8px rgba(255,71,87,0.5);
-            font-weight: 900;
-            letter-spacing: 2px;
+            color: var(--text);
+            margin-bottom: 8px;
+            font-size: clamp(2.2rem, 2.6vw, 3rem);
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
         }
 
         .add-task-section {
-            background: rgba(20,20,20,0.95);
-            border: 2px solid #333;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 24px;
+            border-radius: var(--radius-md);
+            margin-bottom: 8px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
         }
 
         .add-task-form {
@@ -49,34 +91,36 @@
 
         #taskInput {
             flex: 1;
-            padding: 15px;
-            border: 2px solid #333;
-            background: #1a1a1a;
-            color: #fff;
-            border-radius: 10px;
+            padding: 15px 16px;
+            border: 1px solid var(--border-strong);
+            background: rgba(8, 10, 14, 0.9);
+            color: var(--text);
+            border-radius: var(--radius-sm);
             font-size: 16px;
             outline: none;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         #taskInput:focus {
-            border-color: #ff4757;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25);
         }
 
         #addTaskBtn {
             padding: 15px 30px;
-            background: #ff4757;
-            color: white;
+            background: var(--accent-gradient);
+            color: #0a0c10;
             border: none;
-            border-radius: 10px;
+            border-radius: var(--radius-sm);
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 12px 24px rgba(34, 211, 238, 0.28);
         }
 
         #addTaskBtn:hover {
-            transform: scale(1.05);
+            transform: translateY(-2px);
         }
 
         #addTaskBtn:active {
@@ -91,16 +135,16 @@
         }
 
         .task-bubble {
-            background: rgba(20,20,20,0.95);
-            border: 2px solid #333;
-            border-radius: 20px;
-            padding: 30px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px 22px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
             position: relative;
-            min-height: 150px;
+            min-height: 160px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -110,11 +154,11 @@
         .task-bubble::before {
             content: 'Click to start';
             position: absolute;
-            bottom: 10px;
+            bottom: 12px;
             left: 50%;
             transform: translateX(-50%);
             font-size: 11px;
-            color: #666;
+            color: var(--text-muted);
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -124,9 +168,9 @@
         }
 
         .task-bubble:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(255,71,87,0.3);
-            border-color: #ff4757;
+            transform: translateY(-6px);
+            box-shadow: 0 16px 36px rgba(34, 211, 238, 0.2);
+            border-color: var(--accent-border);
         }
 
         .task-bubble.disabled {
@@ -136,10 +180,10 @@
         }
 
         .task-bubble.active {
-            background: #ff4757;
-            color: white;
-            transform: scale(1.05);
-            border-color: #ff4757;
+            background: var(--accent-gradient-strong);
+            color: #0a0c10;
+            transform: scale(1.03);
+            border-color: transparent;
         }
 
         .task-bubble.active .task-time {
@@ -150,77 +194,94 @@
             color: rgba(255,255,255,0.8);
         }
 
+        .task-bubble.new {
+            animation: bubblePop 0.35s ease-out;
+        }
+
+        @keyframes bubblePop {
+            0% {
+                transform: scale(0.96);
+                opacity: 0.6;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
         .task-name {
             font-size: 18px;
-            font-weight: bold;
+            font-weight: 600;
             margin-bottom: 10px;
             word-wrap: break-word;
-            color: #fff;
+            color: var(--text);
         }
 
         .task-stats {
             font-size: 11px;
-            color: #888;
+            color: var(--text-muted);
             margin-top: 8px;
         }
 
         .task-time {
-            font-size: 16px;
-            color: #ff4757;
+            font-size: 13px;
+            color: var(--accent);
             margin-top: 8px;
-            font-weight: bold;
+            font-weight: 600;
         }
 
         .delete-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #ff4757;
-            color: white;
-            border: none;
+            top: 12px;
+            right: 12px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            border: 1px solid rgba(34, 211, 238, 0.35);
             border-radius: 50%;
-            width: 25px;
-            height: 25px;
+            width: 26px;
+            height: 26px;
             cursor: pointer;
             font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s;
+            transition: transform 0.2s, background 0.2s;
         }
 
         .delete-btn:hover {
-            transform: scale(1.2);
+            transform: scale(1.15);
+            background: rgba(34, 211, 238, 0.32);
         }
 
         .complete-task-btn {
             padding: 15px 40px;
             background: transparent;
-            color: #fff;
-            border: 2px solid #fff;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: bold;
+            color: var(--text);
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             margin-top: 20px;
         }
 
         .complete-task-btn:hover {
-            background: #fff;
-            color: #1a1a1a;
-            transform: scale(1.05);
+            background: var(--text);
+            color: #0a0c10;
+            transform: translateY(-2px);
         }
 
         .completed-section {
-            margin-top: 40px;
-            background: rgba(20,20,20,0.95);
-            border: 2px solid #333;
-            border-radius: 15px;
-            padding: 20px;
+            margin-top: 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 22px;
             max-width: 1200px;
             margin-left: auto;
             margin-right: auto;
+            box-shadow: var(--shadow);
         }
 
         .completed-header {
@@ -228,15 +289,15 @@
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            padding: 10px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #888;
+            padding: 10px 6px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-muted);
             user-select: none;
         }
 
         .completed-header:hover {
-            color: #aaa;
+            color: var(--text);
         }
 
         .collapse-icon {
@@ -250,11 +311,11 @@
 
         .completed-message {
             font-size: 13px;
-            color: #666;
+            color: var(--text-muted);
             text-align: center;
             padding: 15px;
             font-style: italic;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid var(--border);
             margin-bottom: 15px;
         }
 
@@ -274,74 +335,76 @@
         }
 
         .completed-task-item {
-            background: rgba(30,30,30,0.8);
-            border: 1px solid #444;
-            border-radius: 10px;
+            background: var(--surface-strong);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
             padding: 15px;
             text-align: center;
-            color: #888;
+            color: var(--text-muted);
             font-size: 14px;
         }
 
         .completed-task-name {
             font-weight: bold;
             margin-bottom: 5px;
-            color: #aaa;
+            color: var(--text);
         }
 
         .completed-task-time {
             font-size: 12px;
-            color: #666;
+            color: var(--text-muted);
         }
 
         .support-btn {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: rgba(40, 40, 40, 0.95);
-            color: #888;
-            padding: 10px 20px;
+            background: var(--surface-strong);
+            color: var(--text-muted);
+            padding: 10px 18px;
             border-radius: 30px;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
             font-size: 13px;
-            border: 1px solid #444;
+            border: 1px solid var(--border);
             transition: all 0.3s;
             z-index: 1000;
             display: flex;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
         }
 
         .support-btn:hover {
             transform: translateY(-2px);
-            border-color: #ff4757;
-            color: #fff;
+            border-color: rgba(255, 77, 90, 0.5);
+            color: var(--text);
         }
 
         .settings-btn {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: rgba(40, 40, 40, 0.95);
-            color: #fff;
+            background: var(--surface-strong);
+            color: var(--text);
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            border: 2px solid #555;
-            font-size: 24px;
+            border: 1px solid var(--border-strong);
+            font-size: 22px;
             cursor: pointer;
             transition: all 0.3s;
             z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
         }
 
         .settings-btn:hover {
-            background: rgba(60, 60, 60, 0.95);
-            border-color: #ff4757;
-            transform: rotate(90deg);
+            background: rgba(34, 40, 52, 0.98);
+            border-color: rgba(255, 77, 90, 0.6);
+            transform: rotate(45deg);
         }
 
         .settings-modal {
@@ -351,7 +414,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(6, 8, 12, 0.88);
             z-index: 2000;
             align-items: center;
             justify-content: center;
@@ -362,14 +425,15 @@
         }
 
         .settings-content {
-            background: #1a1a1a;
-            border: 2px solid #ff4757;
-            border-radius: 15px;
+            background: var(--surface-strong);
+            border: 1px solid rgba(34, 211, 238, 0.32);
+            border-radius: var(--radius-lg);
             padding: 30px;
             max-width: 600px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
+            box-shadow: var(--shadow);
         }
 
         .settings-header {
@@ -380,8 +444,9 @@
         }
 
         .settings-header h2 {
-            color: #ff4757;
-            font-size: 28px;
+            color: var(--text);
+            font-size: 26px;
+            font-weight: 700;
         }
 
         .close-settings {
@@ -407,10 +472,10 @@
         }
 
         .settings-section h3 {
-            color: #fff;
-            font-size: 18px;
+            color: var(--text);
+            font-size: 16px;
             margin-bottom: 15px;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid var(--border);
             padding-bottom: 10px;
         }
 
@@ -420,58 +485,112 @@
             gap: 10px;
         }
 
-        .settings-action-btn {
-            background: rgba(40, 40, 40, 0.95);
-            color: #fff;
-            border: 2px solid #555;
-            padding: 12px 20px;
-            border-radius: 8px;
+        .settings-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: rgba(12, 16, 22, 0.9);
+            border: 1px solid var(--border-strong);
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+        }
+
+        .settings-toggle-row span {
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .settings-toggle-row small {
+            display: block;
+            margin-top: 4px;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .settings-textarea {
+            width: 100%;
+            min-height: 92px;
+            resize: vertical;
+            background: rgba(8, 10, 14, 0.9);
+            border: 1px solid var(--border-strong);
+            color: var(--text);
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
             font-size: 14px;
-            font-weight: bold;
+            line-height: 1.5;
+            outline: none;
+        }
+
+        .settings-textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25);
+        }
+
+        .settings-helper {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .settings-action-btn {
+            background: rgba(12, 16, 22, 0.9);
+            color: var(--text);
+            border: 1px solid var(--border-strong);
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .settings-action-btn:hover {
-            border-color: #ff4757;
-            background: rgba(60, 60, 60, 0.95);
+            border-color: var(--accent-border);
+            background: rgba(32, 38, 52, 0.95);
         }
 
         .settings-action-btn.danger {
-            border-color: #ff4757;
+            border-color: var(--accent-border-2);
+            color: var(--accent);
         }
 
         .settings-action-btn.danger:hover {
-            background: #ff4757;
-            color: #000;
+            background: var(--accent-2);
+            color: #0a0c10;
         }
 
         .search-bar {
-            background: rgba(20,20,20,0.95);
-            border: 2px solid #333;
+            background: var(--surface);
+            border: 1px solid var(--border);
             padding: 15px 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            border-radius: var(--radius-md);
+            margin-bottom: 4px;
+            box-shadow: var(--shadow);
         }
 
         .search-bar input {
             width: 100%;
-            background: rgba(40, 40, 40, 0.95);
-            border: 2px solid #555;
-            color: #fff;
+            background: rgba(8, 10, 14, 0.9);
+            border: 1px solid var(--border-strong);
+            color: var(--text);
             padding: 12px 20px;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             font-size: 16px;
         }
 
         .search-bar input:focus {
             outline: none;
-            border-color: #ff4757;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25);
         }
 
         .search-bar input::placeholder {
-            color: #888;
+            color: var(--text-muted);
         }
 
         .task-bubble.editing .task-name {
@@ -481,13 +600,13 @@
         .task-bubble .edit-input {
             display: none;
             width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #ff4757;
-            color: #fff;
+            background: rgba(8, 10, 14, 0.9);
+            border: 1px solid var(--accent-border);
+            color: var(--text);
             padding: 8px 12px;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 600;
         }
 
         .task-bubble.editing .edit-input {
@@ -503,6 +622,33 @@
             display: none;
         }
 
+        .empty-state {
+            background: var(--surface);
+            border: 1px dashed var(--border);
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            color: var(--text-dim);
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .empty-state.cta {
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .empty-state.cta:hover {
+            transform: translateY(-1px);
+            border-color: rgba(34, 211, 238, 0.55);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+        }
+
+        .empty-state strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
         .timer-container {
             position: relative;
             width: 120px;
@@ -516,13 +662,13 @@
 
         .timer-circle-bg {
             fill: none;
-            stroke: rgba(255,255,255,0.3);
+            stroke: rgba(255, 255, 255, 0.18);
             stroke-width: 8;
         }
 
         .timer-circle-progress {
             fill: none;
-            stroke: white;
+            stroke: #fff;
             stroke-width: 8;
             stroke-linecap: round;
             transition: stroke-dashoffset 0.1s linear;
@@ -543,11 +689,12 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(6, 8, 12, 0.85);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            backdrop-filter: blur(6px);
         }
 
         .active-timer-overlay.show {
@@ -604,16 +751,36 @@
             color: #ff4757;
         }
 
+        .timer-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .timer-action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
         .active-timer-content {
-            background: #1a1a1a;
-            border: 2px solid #333;
+            background: var(--surface-strong);
+            border: 1px solid var(--border);
             padding: 50px;
             border-radius: 30px;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
             position: relative;
             max-width: 500px;
             width: 90%;
+            max-height: 88vh;
+            overflow-y: auto;
+        }
+
+        .active-timer-content.completed-state {
+            padding: 38px 36px;
         }
 
         .commitment-text {
@@ -623,11 +790,213 @@
             font-style: italic;
         }
 
-        .active-timer-content h2 {
-            font-size: 2em;
-            margin-bottom: 30px;
-            color: #fff;
-            font-weight: 900;
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 7, 11, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            backdrop-filter: blur(6px);
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surface-strong);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 28px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .modal h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .modal p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-strong);
+            background: transparent;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn.primary {
+            background: var(--accent);
+            color: #0a0c10;
+            border-color: var(--accent);
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .accountability-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 4000;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(8px);
+            text-align: center;
+            padding: 24px;
+        }
+
+        .accountability-overlay.show {
+            display: flex;
+        }
+
+        .accountability-content {
+            max-width: 520px;
+            background: var(--surface-strong);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        .accountability-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .accountability-message {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        .accountability-hint {
+            margin-top: 16px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .presence-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(8, 10, 14, 0.75);
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .presence-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+        }
+
+        .presence-indicator.locked-in {
+            border-color: rgba(34, 211, 238, 0.35);
+        }
+
+        .presence-indicator.locked-in .presence-dot {
+            background: #22d3ee;
+            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.16);
+        }
+
+        .presence-indicator.away {
+            border-color: rgba(245, 185, 66, 0.4);
+        }
+
+        .presence-indicator.away .presence-dot {
+            background: #f5b942;
+            box-shadow: 0 0 0 4px rgba(245, 185, 66, 0.16);
+        }
+
+        .presence-indicator.clickable {
+            cursor: pointer;
+        }
+
+        .camera-helper {
+            margin-top: -6px;
+            font-size: 12px;
+            color: var(--text-dim);
+            text-align: center;
+            max-width: 320px;
+        }
+
+        .complete-task-btn.urgent {
+            background: var(--accent-gradient);
+            color: #0a0c10;
+            border-color: transparent;
+            box-shadow: 0 16px 34px rgba(34, 211, 238, 0.22);
+            transform: translateY(-1px);
+        }
+
+        .debug-vision {
+            position: fixed;
+            left: 16px;
+            bottom: 16px;
+            width: 220px;
+            background: rgba(8, 10, 14, 0.88);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+            padding: 10px;
+            z-index: 5000;
+            display: none;
+        }
+
+        .debug-vision.show {
+            display: block;
+        }
+
+        .debug-vision-title {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        #debugCanvas {
+            width: 100%;
+            height: 140px;
+            border-radius: 10px;
+            background: #0a0c10;
+            display: block;
         }
 
         .large-timer-container {
@@ -650,18 +1019,18 @@
         .stop-btn {
             padding: 12px 30px;
             background: transparent;
-            color: #ff4757;
-            border: 2px solid #ff4757;
-            border-radius: 10px;
+            color: var(--accent);
+            border: 1px solid var(--accent-border);
+            border-radius: var(--radius-sm);
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .stop-btn:hover {
-            background: #ff4757;
-            color: #fff;
+            background: var(--accent);
+            color: #0a0c10;
         }
 
         .completion-message {
@@ -673,20 +1042,20 @@
 
         .continue-btn {
             padding: 15px 40px;
-            background: #ff4757;
-            color: #fff;
+            background: var(--accent-gradient);
+            color: #0a0c10;
             border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: bold;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
             margin-top: 20px;
         }
 
         .continue-btn:hover {
-            transform: scale(1.05);
-            background: #e8414f;
+            transform: translateY(-2px);
+            filter: brightness(1.05);
         }
 
         .kobe-image {
@@ -696,6 +1065,8 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             display: none;
+            max-height: 240px;
+            object-fit: cover;
         }
 
         .kobe-image.show {
@@ -703,15 +1074,15 @@
         }
 
         .stats-bar {
-            background: rgba(20,20,20,0.95);
-            border: 2px solid #333;
+            background: var(--surface);
+            border: 1px solid var(--border);
             padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-around;
+            border-radius: var(--radius-md);
+            margin-bottom: 8px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            box-shadow: var(--shadow);
         }
 
         .stat-item {
@@ -721,16 +1092,17 @@
 
         .stat-label {
             font-size: 12px;
-            color: #888;
+            color: var(--text-muted);
             text-transform: uppercase;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             font-weight: 600;
+            letter-spacing: 0.06em;
         }
 
         .stat-value {
             font-size: 28px;
-            font-weight: bold;
-            color: #ff4757;
+            font-weight: 700;
+            color: var(--accent);
         }
 
         .task-bubble .task-stats {
@@ -751,12 +1123,12 @@
         }
 
         .warning-message {
-            background: #ff4757;
-            color: white;
+            background: var(--accent);
+            color: #0a0c10;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: var(--radius-sm);
             margin-top: 20px;
-            font-weight: bold;
+            font-weight: 700;
             display: none;
         }
 
@@ -766,24 +1138,51 @@
 
         .no-escape-warning {
             font-size: 14px;
-            color: #ff4757;
+            color: var(--accent);
             margin-top: 10px;
-            font-weight: bold;
+            font-weight: 700;
         }
 
         .motivational-text {
-            background: rgba(255,71,87,0.1);
-            border: 2px solid #ff4757;
+            background: var(--accent-soft);
+            border: 1px solid rgba(34, 211, 238, 0.4);
             padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 30px;
+            border-radius: var(--radius-md);
+            margin-bottom: 8px;
             text-align: center;
-            color: #ff4757;
-            font-size: 18px;
-            font-weight: bold;
+            color: var(--accent);
+            font-size: 16px;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
             line-height: 1.6;
+        }
+
+        @media (max-width: 720px) {
+            body {
+                padding: 24px 16px 80px;
+            }
+
+            .add-task-form {
+                flex-direction: column;
+            }
+
+            #addTaskBtn {
+                width: 100%;
+            }
+
+            .active-timer-content {
+                padding: 40px 24px;
+            }
+
+            .timer-action-row {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .timer-action-row button {
+                width: 100%;
+            }
         }
 
     </style>
@@ -798,7 +1197,7 @@
             <span>Buy Me a Coffee</span>
         </a>
         <div class="motivational-text" id="motivationalText">
-            STOP MAKING EXCUSES. MAN THE FUCK UP.
+            Discipline beats motivation. Start your first 5-minute block.
         </div>
         
         <div class="stats-bar">
@@ -815,25 +1214,30 @@
                 <div class="stat-value" id="completionRate">0%</div>
             </div>
             <div class="stat-item">
-                <div class="stat-label">Failed Blocks</div>
-                <div class="stat-value" id="failedBlocks">0</div>
+                <div class="stat-label">Quits</div>
+                <div class="stat-value" id="quitsCount">0</div>
             </div>
         </div>
         
-        <div class="add-task-section">
+        <div class="add-task-section" id="addTaskSection">
             <div class="add-task-form">
-                <input type="text" id="taskInput" placeholder="Enter a task name..." maxlength="50">
+                <input type="text" id="taskInput" placeholder="What are you working on?" maxlength="50">
                 <button id="addTaskBtn">Add Task</button>
             </div>
         </div>
 
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="🔍 Search tasks...">
+        <div class="search-bar hidden" id="searchBar">
+            <input type="text" id="searchInput" placeholder="Search tasks">
+        </div>
+
+        <div class="empty-state" id="emptyState">
+            <strong>Add your first task</strong><br>
+            Create a task to start a focused 5-minute block.
         </div>
 
         <div class="tasks-grid" id="tasksGrid"></div>
         
-        <div class="completed-section">
+        <div class="completed-section" id="completedSection">
             <div class="completed-header" id="completedHeader">
                 <span>Completed Tasks</span>
                 <span class="collapse-icon" id="collapseIcon">▼</span>
@@ -869,11 +1273,33 @@
                     <button class="settings-action-btn danger" id="clearAllBtn">⚠️ Clear All Data</button>
                 </div>
             </div>
+
+            <div class="settings-section">
+                <h3>Accountability Voice</h3>
+                <div class="settings-btn-group">
+                    <textarea class="settings-textarea" id="awayTtsPhraseInput" placeholder="Enter one voice line per row for away reminders"></textarea>
+                    <button class="settings-action-btn" id="saveAwayTtsPhraseBtn">💾 Save Voice Line</button>
+                    <button class="settings-action-btn" id="testAwayTtsPhraseBtn">🔊 Test Voice Line</button>
+                    <button class="settings-action-btn danger" id="resetAwayTtsPhraseBtn">↩︎ Reset to Default</button>
+                    <div class="settings-helper">Used when you leave the camera frame and the timer pauses. One line = one phrase (played in round-robin order).</div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Accountability Camera</h3>
+                <div class="settings-toggle-row">
+                    <div>
+                        <span>Camera Accountability</span>
+                        <small>Optional. When enabled, the timer pauses if you leave the frame.</small>
+                    </div>
+                    <button class="settings-action-btn" id="toggleCameraBtn">Turn On</button>
+                </div>
+            </div>
             
             <div class="settings-section">
                 <h3>About</h3>
                 <p style="color: #888; font-size: 14px; line-height: 1.6;">
-                    <strong>Job's Not Finished</strong> - A 5-minute focus timer based on Elon Musk's time-blocking method.<br>
+                    <strong>Job's Not Finished</strong> - A 5-minute focus timer built on Mamba Mentality discipline.<br>
                     <br>
                     <strong>Tips:</strong><br>
                     • Double-click a task to edit its name<br>
@@ -886,7 +1312,7 @@
 
     <div class="active-timer-overlay" id="timerOverlay">
         <div class="active-timer-content">
-            <button class="timer-close-btn" id="timerCloseBtn" title="Quit (counts as failure)">✕</button>
+            <button class="timer-close-btn" id="timerCloseBtn" title="Quit (counts as a quit)">✕</button>
             <h2 id="activeTaskName"></h2>
             <div class="large-timer-container">
                 <svg width="250" height="250">
@@ -896,13 +1322,31 @@
                 </svg>
                 <div class="large-timer-text" id="largeTimerText">5:00</div>
             </div>
-            <button class="pip-btn" id="pipBtn">Float on Top</button><br>
-            <button class="stop-btn" id="stopBtn">I QUIT</button>
-            <button class="complete-task-btn" id="completeTaskBtn">TASK COMPLETE</button>
+            <div class="timer-actions">
+                <button class="pip-btn" id="pipBtn">Float on Top</button>
+                <div class="presence-indicator clickable" id="presenceIndicator" role="button" tabindex="0" aria-label="Toggle camera accountability">
+                    <span class="presence-dot" id="presenceDot"></span>
+                    <span id="presenceText">Camera: initializing</span>
+                </div>
+                <div class="camera-helper" id="cameraHelper">Optional: pauses the timer if you leave the frame.</div>
+                <div class="timer-action-row">
+                    <button class="stop-btn" id="stopBtn">I QUIT</button>
+                    <button class="complete-task-btn" id="completeTaskBtn">TASK COMPLETE</button>
+                    <button class="complete-task-btn hidden" id="backToTasksBtn">BACK TO TASKS</button>
+                </div>
+            </div>
             <div class="completion-message" id="completionMessage"></div>
             <button class="continue-btn" id="continueBtn" style="display: none;">ANOTHER BLOCK</button>
             <img src="kobe.png" alt="Kobe Bryant" class="kobe-image" id="kobeImage">
-            <div class="commitment-text">You committed to 5 minutes. Quitting counts as a failure.</div>
+            <div class="commitment-text" id="commitmentText">You committed to 5 minutes. Quitting counts as a quit.</div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <h3 id="modalTitle"></h3>
+            <p id="modalMessage"></p>
+            <div class="modal-buttons" id="modalButtons"></div>
         </div>
     </div>
 
@@ -910,17 +1354,52 @@
         <canvas id="pipCanvas" width="400" height="400"></canvas>
     </div>
 
-    <script>
+    <video id="accountabilityVideo" class="hidden" playsinline muted></video>
+
+    <div class="debug-vision" id="debugVision">
+        <div class="debug-vision-title">Vision Debug (local only)</div>
+        <canvas id="debugCanvas" width="220" height="140"></canvas>
+    </div>
+
+    <div class="accountability-overlay" id="accountabilityOverlay">
+        <div class="accountability-content">
+            <div class="accountability-title" id="accountabilityTitle">GET BACK.</div>
+            <div class="accountability-message" id="accountabilityMessage">
+                You're out of frame. The timer is paused. Finish the job.
+            </div>
+            <div class="accountability-hint">
+                <strong>Fix:</strong> Allow camera permissions and stay in view.
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
         let tasks = JSON.parse(localStorage.getItem('focusTasks')) || [];
         let activeTimer = JSON.parse(localStorage.getItem('activeTimer'));
         let timerInterval = null;
         let remainingSeconds = parseInt(localStorage.getItem('remainingSeconds')) || 300;
+        let timerStartTime = JSON.parse(localStorage.getItem('timerStartTime'));
+        let timerCompleted = false;
+        let totalPausedMs = 0;
+        let pausedAt = null;
+        let isPausedForAway = false;
+        const cameraEnabledRaw = localStorage.getItem('accountabilityCameraEnabled');
+        let isAccountabilityEnabled = false;
+        if (cameraEnabledRaw !== null) {
+            const parsedCameraEnabled = JSON.parse(cameraEnabledRaw);
+            if (typeof parsedCameraEnabled !== 'boolean') {
+                throw new Error('accountabilityCameraEnabled must be a boolean');
+            }
+            isAccountabilityEnabled = parsedCameraEnabled;
+        }
+        let lastTtsAt = 0;
+        let ttsCooldownMs = 6000;
         
         let stats = JSON.parse(localStorage.getItem('focusStats')) || {
             todayBlocks: 0,
             totalBlocks: 0,
             completedBlocks: 0,
-            failedBlocks: 0,
+            quits: 0,
             streak: 0,
             lastDate: new Date().toDateString(),
             taskStats: {},
@@ -935,6 +1414,15 @@
         }
         if (!stats.completedTasksList) {
             stats.completedTasksList = [];
+        }
+
+        if (typeof stats.quits !== 'number') {
+            if (typeof stats.failedBlocks === 'number') {
+                stats.quits = stats.failedBlocks;
+            } else {
+                stats.quits = 0;
+            }
+            saveStats();
         }
 
         const tasksGrid = document.getElementById('tasksGrid');
@@ -952,7 +1440,7 @@
         const todayBlocksEl = document.getElementById('todayBlocks');
         const streakEl = document.getElementById('streak');
         const completionRateEl = document.getElementById('completionRate');
-        const failedBlocksEl = document.getElementById('failedBlocks');
+        const quitsCountEl = document.getElementById('quitsCount');
         const motivationalTextEl = document.getElementById('motivationalText');
         const pipBtn = document.getElementById('pipBtn');
         const pipContainer = document.getElementById('pipContainer');
@@ -960,21 +1448,656 @@
         const completedHeader = document.getElementById('completedHeader');
         const collapseIcon = document.getElementById('collapseIcon');
         const completedTasksEl = document.getElementById('completedTasks');
+        const completedSection = document.getElementById('completedSection');
         const settingsBtn = document.getElementById('settingsBtn');
         const settingsModal = document.getElementById('settingsModal');
         const closeSettings = document.getElementById('closeSettings');
         const searchInput = document.getElementById('searchInput');
+        const searchBar = document.getElementById('searchBar');
+        const emptyState = document.getElementById('emptyState');
         const exportDataBtn = document.getElementById('exportDataBtn');
         const importDataBtn = document.getElementById('importDataBtn');
         const importFileInput = document.getElementById('importFileInput');
         const clearCompletedBtn = document.getElementById('clearCompletedBtn');
         const resetStatsBtn = document.getElementById('resetStatsBtn');
         const clearAllBtn = document.getElementById('clearAllBtn');
+        const awayTtsPhraseInput = document.getElementById('awayTtsPhraseInput');
+        const saveAwayTtsPhraseBtn = document.getElementById('saveAwayTtsPhraseBtn');
+        const testAwayTtsPhraseBtn = document.getElementById('testAwayTtsPhraseBtn');
+        const resetAwayTtsPhraseBtn = document.getElementById('resetAwayTtsPhraseBtn');
+        const toggleCameraBtn = document.getElementById('toggleCameraBtn');
+        const backToTasksBtn = document.getElementById('backToTasksBtn');
+        const commitmentText = document.getElementById('commitmentText');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalButtons = document.getElementById('modalButtons');
+        const accountabilityVideo = document.getElementById('accountabilityVideo');
+        const accountabilityOverlay = document.getElementById('accountabilityOverlay');
+        const accountabilityTitle = document.getElementById('accountabilityTitle');
+        const accountabilityMessage = document.getElementById('accountabilityMessage');
+        const presenceIndicator = document.getElementById('presenceIndicator');
+        const presenceDot = document.getElementById('presenceDot');
+        const presenceText = document.getElementById('presenceText');
+        const debugVision = document.getElementById('debugVision');
+        const debugCanvas = document.getElementById('debugCanvas');
         
         const TIMER_DURATION = 300;
         let pipVideo = null;
         let pipAnimationFrame = null;
         let isPipActive = false;
+        let pipUrgent = false;
+        let pipUrgentStartedAt = null;
+        let pipAway = false;
+        let pipAwayStartedAt = null;
+
+        const ACCOUNTABILITY_AWAY_THRESHOLD_MS = 900;
+        const DEFAULT_AWAY_TTS_PHRASES = ['Come back here. Job\'s not finished.'];
+        const awayTtsPhraseRaw = localStorage.getItem('accountabilityAwayTtsPhrase');
+        let awayTtsPhrases = [...DEFAULT_AWAY_TTS_PHRASES];
+        let awayTtsPhraseIndex = 0;
+        if (awayTtsPhraseRaw !== null) {
+            const parsedAwayTtsPhrase = JSON.parse(awayTtsPhraseRaw);
+            if (typeof parsedAwayTtsPhrase === 'string') {
+                const migrated = parsedAwayTtsPhrase.trim();
+                if (migrated.length < 2) {
+                    throw new Error('accountabilityAwayTtsPhrase must be at least 2 characters');
+                }
+                awayTtsPhrases = [migrated];
+                localStorage.setItem('accountabilityAwayTtsPhrase', JSON.stringify(awayTtsPhrases));
+            } else if (Array.isArray(parsedAwayTtsPhrase)) {
+                if (parsedAwayTtsPhrase.length === 0) {
+                    throw new Error('accountabilityAwayTtsPhrase must include at least one phrase');
+                }
+                const validatedPhrases = parsedAwayTtsPhrase.map((phrase, index) => {
+                    if (typeof phrase !== 'string') {
+                        throw new Error(`accountabilityAwayTtsPhrase[${index}] must be a string`);
+                    }
+                    const trimmed = phrase.trim();
+                    if (trimmed.length < 2) {
+                        throw new Error(`accountabilityAwayTtsPhrase[${index}] must be at least 2 characters`);
+                    }
+                    return trimmed;
+                });
+                awayTtsPhrases = validatedPhrases;
+            } else {
+                throw new Error('accountabilityAwayTtsPhrase must be a string or array of strings');
+            }
+        }
+
+        if (!accountabilityVideo || !accountabilityOverlay || !accountabilityTitle || !accountabilityMessage) {
+            throw new Error('Accountability camera elements are required');
+        }
+
+        if (!presenceIndicator || !presenceDot || !presenceText) {
+            throw new Error('Presence indicator elements are required');
+        }
+
+        if (!awayTtsPhraseInput || !saveAwayTtsPhraseBtn || !testAwayTtsPhraseBtn || !resetAwayTtsPhraseBtn) {
+            throw new Error('Away TTS settings elements are required');
+        }
+
+        if (!toggleCameraBtn) {
+            throw new Error('Camera toggle button is required');
+        }
+
+        if (!debugVision || !debugCanvas) {
+            throw new Error('Debug vision elements are required');
+        }
+
+        const debugParam = new URLSearchParams(window.location.search).get('debug');
+        const isDebugEnabled = debugParam === '1';
+
+        function setPresenceIndicator(state) {
+            if (!presenceIndicator || !presenceText) {
+                throw new Error('Presence indicator elements are required');
+            }
+
+            presenceIndicator.classList.remove('locked-in');
+            presenceIndicator.classList.remove('away');
+
+            if (state === 'locked-in') {
+                presenceIndicator.classList.add('locked-in');
+                presenceText.textContent = 'Locked in';
+                return;
+            }
+
+            if (state === 'away') {
+                presenceIndicator.classList.add('away');
+                presenceText.textContent = 'Away — return';
+                return;
+            }
+
+            if (state === 'initializing') {
+                presenceText.textContent = 'Camera: initializing';
+                return;
+            }
+
+            if (state === 'error') {
+                presenceText.textContent = 'Camera: blocked';
+                return;
+            }
+
+            if (state === 'off') {
+                presenceText.textContent = 'Camera: off';
+                return;
+            }
+
+            throw new Error(`Unsupported presence indicator state: ${state}`);
+        }
+
+        function speakAccountability(text) {
+            if (!('speechSynthesis' in window)) {
+                return;
+            }
+
+            const now = Date.now();
+            if (now - lastTtsAt < ttsCooldownMs) {
+                return;
+            }
+
+            lastTtsAt = now;
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1.02;
+            utterance.pitch = 0.9;
+            utterance.volume = 1;
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function setDebugVisionVisible(visible) {
+            if (!debugVision) {
+                throw new Error('Debug vision element is required');
+            }
+            if (!isDebugEnabled) {
+                debugVision.classList.remove('show');
+                return;
+            }
+            if (visible) {
+                debugVision.classList.add('show');
+                return;
+            }
+            debugVision.classList.remove('show');
+        }
+
+        function updateCameraToggleUi() {
+            if (!toggleCameraBtn) {
+                throw new Error('Camera toggle button is required');
+            }
+            toggleCameraBtn.textContent = isAccountabilityEnabled ? 'Turn Off' : 'Turn On';
+        }
+
+        async function setCameraEnabled(enabled) {
+            if (typeof enabled !== 'boolean') {
+                throw new Error('enabled must be a boolean');
+            }
+
+            isAccountabilityEnabled = enabled;
+            localStorage.setItem('accountabilityCameraEnabled', JSON.stringify(enabled));
+            updateCameraToggleUi();
+
+            if (!enabled) {
+                isVisionLoopRunning = false;
+                stopAccountabilityCamera();
+                hideAwayOverlay();
+                setDebugVisionVisible(false);
+                setPresenceIndicator('off');
+                return;
+            }
+
+            setPresenceIndicator('initializing');
+            setDebugVisionVisible(true);
+            await startVisionIfNeeded();
+        }
+
+        awayTtsPhraseInput.value = awayTtsPhrases.join('\n');
+
+        updateCameraToggleUi();
+        if (isAccountabilityEnabled) {
+            setDebugVisionVisible(true);
+            setPresenceIndicator('initializing');
+        } else {
+            setDebugVisionVisible(false);
+            setPresenceIndicator('off');
+        }
+
+        toggleCameraBtn.addEventListener('click', () => {
+            setCameraEnabled(!isAccountabilityEnabled).catch((error) => {
+                showNotice('Camera toggle failed', error.message);
+            });
+        });
+
+        presenceIndicator.classList.add('clickable');
+        presenceIndicator.addEventListener('click', () => {
+            setCameraEnabled(!isAccountabilityEnabled).catch((error) => {
+                showNotice('Camera toggle failed', error.message);
+            });
+        });
+
+        presenceIndicator.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' && e.key !== ' ') {
+                return;
+            }
+            e.preventDefault();
+            setCameraEnabled(!isAccountabilityEnabled).catch((error) => {
+                showNotice('Camera toggle failed', error.message);
+            });
+        });
+
+        function setAwayTtsPhrase(nextPhraseText) {
+            if (typeof nextPhraseText !== 'string') {
+                throw new Error('Away TTS phrases must be a string');
+            }
+            const phrases = nextPhraseText
+                .split('\n')
+                .map((phrase) => phrase.trim())
+                .filter((phrase) => phrase.length > 0);
+
+            if (phrases.length === 0) {
+                throw new Error('Provide at least one away TTS phrase');
+            }
+
+            phrases.forEach((phrase, index) => {
+                if (phrase.length < 2) {
+                    throw new Error(`Phrase ${index + 1} must be at least 2 characters`);
+                }
+            });
+
+            awayTtsPhrases = phrases;
+            awayTtsPhraseIndex = 0;
+            localStorage.setItem('accountabilityAwayTtsPhrase', JSON.stringify(awayTtsPhrases));
+            awayTtsPhraseInput.value = awayTtsPhrases.join('\n');
+        }
+
+        function getNextAwayTtsPhrase() {
+            if (!Array.isArray(awayTtsPhrases) || awayTtsPhrases.length === 0) {
+                throw new Error('Away TTS phrases are required');
+            }
+            const phrase = awayTtsPhrases[awayTtsPhraseIndex];
+            awayTtsPhraseIndex = (awayTtsPhraseIndex + 1) % awayTtsPhrases.length;
+            return phrase;
+        }
+
+        saveAwayTtsPhraseBtn.addEventListener('click', () => {
+            try {
+                setAwayTtsPhrase(awayTtsPhraseInput.value);
+                showNotice('Saved', 'Your voice line is saved.');
+            } catch (error) {
+                showNotice('Invalid voice line', error.message);
+            }
+        });
+
+        testAwayTtsPhraseBtn.addEventListener('click', () => {
+            try {
+                setAwayTtsPhrase(awayTtsPhraseInput.value);
+                speakAccountability(getNextAwayTtsPhrase());
+            } catch (error) {
+                showNotice('Invalid voice line', error.message);
+            }
+        });
+
+        resetAwayTtsPhraseBtn.addEventListener('click', () => {
+            setAwayTtsPhrase(DEFAULT_AWAY_TTS_PHRASES.join('\n'));
+            showNotice('Reset', 'Voice line reset to default.');
+        });
+
+        function showAwayOverlay() {
+            accountabilityTitle.textContent = 'GET BACK.';
+            accountabilityMessage.textContent = "You're out of frame. The timer is paused. Finish the job.";
+            accountabilityOverlay.classList.add('show');
+            setPresenceIndicator('away');
+        }
+
+        function hideAwayOverlay() {
+            accountabilityOverlay.classList.remove('show');
+        }
+
+        function pauseForAway() {
+            if (isPausedForAway) {
+                return;
+            }
+            if (activeTimer === null) {
+                return;
+            }
+            if (!timerStartTime) {
+                throw new Error('Timer start time is required to pause');
+            }
+
+            isPausedForAway = true;
+            pausedAt = Date.now();
+            if (!pipAwayStartedAt) {
+                pipAwayStartedAt = Date.now();
+            }
+            pipAway = true;
+            showAwayOverlay();
+            speakAccountability(getNextAwayTtsPhrase());
+        }
+
+        function resumeFromAway() {
+            if (!isPausedForAway) {
+                return;
+            }
+            if (!pausedAt) {
+                throw new Error('pausedAt is required to resume');
+            }
+
+            totalPausedMs += Date.now() - pausedAt;
+            pausedAt = null;
+            isPausedForAway = false;
+            pipAway = false;
+            pipAwayStartedAt = null;
+            hideAwayOverlay();
+            setPresenceIndicator('locked-in');
+        }
+
+        function resetAwayState() {
+            totalPausedMs = 0;
+            pausedAt = null;
+            isPausedForAway = false;
+            pipAway = false;
+            pipAwayStartedAt = null;
+            hideAwayOverlay();
+        }
+
+        function getEffectiveNowMs() {
+            const now = Date.now();
+            if (isPausedForAway && pausedAt) {
+                return pausedAt;
+            }
+            return now;
+        }
+
+        async function startAccountabilityCamera() {
+            if (!isAccountabilityEnabled) {
+                return;
+            }
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                throw new Error('Camera access (getUserMedia) is required for accountability mode');
+            }
+
+            const existingStream = accountabilityVideo.srcObject;
+            if (existingStream) {
+                const tracks = existingStream.getTracks();
+                const hasLiveTrack = tracks.some((track) => track.readyState === 'live');
+                if (hasLiveTrack) {
+                    await accountabilityVideo.play();
+                    setPresenceIndicator('away');
+                    return;
+                }
+            }
+
+            if (!window.isSecureContext) {
+                setPresenceIndicator('error');
+                throw new Error('Camera requires a secure context. Run this page from http://localhost (or https), not file://');
+            }
+
+            setPresenceIndicator('initializing');
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+                accountabilityVideo.srcObject = stream;
+                await accountabilityVideo.play();
+                setPresenceIndicator('away');
+            } catch (error) {
+                setPresenceIndicator('error');
+                throw new Error(`Failed to start camera: ${error.message}`);
+            }
+        }
+
+        function stopAccountabilityCamera() {
+            const stream = accountabilityVideo.srcObject;
+            if (!stream) {
+                return;
+            }
+
+            const tracks = stream.getTracks();
+            tracks.forEach((track) => track.stop());
+            accountabilityVideo.srcObject = null;
+            setPresenceIndicator('initializing');
+        }
+
+        let visionFileset = null;
+
+        async function ensureVisionFileset() {
+            if (visionFileset) {
+                return visionFileset;
+            }
+
+            const { FilesetResolver } = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9');
+            visionFileset = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9/wasm');
+            return visionFileset;
+        }
+
+        async function initPoseDetector() {
+            const { PoseLandmarker } = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9');
+            const vision = await ensureVisionFileset();
+
+            const landmarker = await PoseLandmarker.createFromOptions(vision, {
+                baseOptions: {
+                    modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task'
+                },
+                runningMode: 'VIDEO',
+                numPoses: 1
+            });
+
+            return landmarker;
+        }
+
+        async function initHandDetector() {
+            const { HandLandmarker } = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9');
+            const vision = await ensureVisionFileset();
+
+            const landmarker = await HandLandmarker.createFromOptions(vision, {
+                baseOptions: {
+                    modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task'
+                },
+                runningMode: 'VIDEO',
+                numHands: 2
+            });
+
+            return landmarker;
+        }
+
+        let poseLandmarker = null;
+        let handLandmarker = null;
+        let lastSeenPersonAt = Date.now();
+        let isVisionLoopRunning = false;
+        let lastVisionTimestampMs = null;
+
+        async function ensurePoseLandmarker() {
+            if (poseLandmarker) {
+                return poseLandmarker;
+            }
+            poseLandmarker = await initPoseDetector();
+            return poseLandmarker;
+        }
+
+        async function ensureHandLandmarker() {
+            if (handLandmarker) {
+                return handLandmarker;
+            }
+            handLandmarker = await initHandDetector();
+            return handLandmarker;
+        }
+
+        function hasAnyHand(result) {
+            if (!result) {
+                return false;
+            }
+            if (!result.landmarks) {
+                return false;
+            }
+            return result.landmarks.length > 0;
+        }
+
+        function hasAnyPose(result) {
+            if (!result) {
+                return false;
+            }
+            if (!result.landmarks) {
+                return false;
+            }
+            return result.landmarks.length > 0;
+        }
+
+        function isPoseConfident(result) {
+            if (!result) {
+                return false;
+            }
+            if (!result.landmarks || result.landmarks.length === 0) {
+                return false;
+            }
+
+            const pose = result.landmarks[0];
+            if (!pose || pose.length === 0) {
+                return false;
+            }
+
+            let confidentPoints = 0;
+            for (const landmark of pose) {
+                if (!landmark) {
+                    continue;
+                }
+
+                const visibility = typeof landmark.visibility === 'number' ? landmark.visibility : 0;
+                const presence = typeof landmark.presence === 'number' ? landmark.presence : 0;
+                if (visibility >= 0.55 && presence >= 0.55) {
+                    confidentPoints++;
+                }
+            }
+
+            return confidentPoints >= 6;
+        }
+
+        function drawDebugFrame(poseResult, handResult) {
+            if (!isDebugEnabled) {
+                return;
+            }
+            const ctx = debugCanvas.getContext('2d');
+            if (!ctx) {
+                throw new Error('debugCanvas context is required');
+            }
+
+            const w = debugCanvas.width;
+            const h = debugCanvas.height;
+            ctx.clearRect(0, 0, w, h);
+            ctx.drawImage(accountabilityVideo, 0, 0, w, h);
+
+            function drawPoints(landmarks, color) {
+                ctx.fillStyle = color;
+                for (const pt of landmarks) {
+                    if (!pt) {
+                        continue;
+                    }
+                    const x = pt.x * w;
+                    const y = pt.y * h;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 2.2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            if (poseResult && poseResult.landmarks && poseResult.landmarks.length > 0) {
+                drawPoints(poseResult.landmarks[0], 'rgba(34, 211, 238, 0.95)');
+            }
+
+            if (handResult && handResult.landmarks && handResult.landmarks.length > 0) {
+                for (const hand of handResult.landmarks) {
+                    drawPoints(hand, 'rgba(245, 185, 66, 0.95)');
+                }
+            }
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+            ctx.fillRect(0, h - 22, w, 22);
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 11px Arial';
+            const poseTxt = poseResult && poseResult.landmarks ? `pose:${poseResult.landmarks.length}` : 'pose:0';
+            const handTxt = handResult && handResult.landmarks ? `hands:${handResult.landmarks.length}` : 'hands:0';
+            ctx.fillText(`${poseTxt}  ${handTxt}`, 8, h - 7);
+        }
+
+        function getNextVisionTimestampMs() {
+            const nowMs = Math.floor(performance.now());
+            if (lastVisionTimestampMs === null) {
+                lastVisionTimestampMs = nowMs;
+                return lastVisionTimestampMs;
+            }
+
+            lastVisionTimestampMs = Math.max(lastVisionTimestampMs + 1, nowMs);
+            return lastVisionTimestampMs;
+        }
+
+        async function startVisionIfNeeded() {
+            if (isVisionLoopRunning) {
+                return;
+            }
+            if (!isAccountabilityEnabled) {
+                return;
+            }
+            if (activeTimer === null) {
+                return;
+            }
+
+            await startAccountabilityCamera();
+            lastSeenPersonAt = Date.now();
+            lastVisionTimestampMs = null;
+            isVisionLoopRunning = true;
+            requestAnimationFrame(tickAccountability);
+        }
+
+        async function tickAccountability() {
+            if (!isVisionLoopRunning) {
+                return;
+            }
+            if (!isAccountabilityEnabled) {
+                return;
+            }
+            if (activeTimer === null) {
+                isVisionLoopRunning = false;
+                return;
+            }
+            if (!accountabilityVideo.videoWidth || !accountabilityVideo.videoHeight) {
+                requestAnimationFrame(tickAccountability);
+                return;
+            }
+
+            let poseResult = null;
+            let handResult = null;
+
+            try {
+                const poseDetector = await ensurePoseLandmarker();
+                const handsDetector = await ensureHandLandmarker();
+
+                const poseTimestampMs = getNextVisionTimestampMs();
+                const handTimestampMs = getNextVisionTimestampMs();
+                poseResult = poseDetector.detectForVideo(accountabilityVideo, poseTimestampMs);
+                handResult = handsDetector.detectForVideo(accountabilityVideo, handTimestampMs);
+                drawDebugFrame(poseResult, handResult);
+            } catch (error) {
+                setPresenceIndicator('error');
+                showNotice('Vision error', error.message);
+                isVisionLoopRunning = false;
+                return;
+            }
+
+            const hasPose = hasAnyPose(poseResult);
+            const hasHand = hasAnyHand(handResult);
+            const isPresent = hasPose || hasHand;
+
+            if (isPresent) {
+                lastSeenPersonAt = Date.now();
+                setPresenceIndicator('locked-in');
+                resumeFromAway();
+            } else {
+                setPresenceIndicator('away');
+                const awayMs = Date.now() - lastSeenPersonAt;
+                if (awayMs >= ACCOUNTABILITY_AWAY_THRESHOLD_MS) {
+                    pauseForAway();
+                }
+            }
+
+            requestAnimationFrame(tickAccountability);
+        }
         
         const MOTIVATIONAL_MESSAGES = [
             "Great things come from hard work and perseverance. No excuses. - Kobe Bryant",
@@ -1004,6 +2127,132 @@
         largeTimerProgress.style.strokeDasharray = CIRCLE_CIRCUMFERENCE;
         largeTimerProgress.style.strokeDashoffset = 0;
 
+        function showModal(title, message, buttons) {
+            if (!modalOverlay) {
+                throw new Error('Modal overlay element is required');
+            }
+            if (!modalTitle || !modalMessage || !modalButtons) {
+                throw new Error('Modal content elements are required');
+            }
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            modalButtons.innerHTML = '';
+            buttons.forEach((buttonConfig) => {
+                const button = document.createElement('button');
+                button.className = 'modal-btn';
+                if (buttonConfig.primary) {
+                    button.classList.add('primary');
+                }
+                button.textContent = buttonConfig.label;
+                button.addEventListener('click', () => {
+                    modalOverlay.classList.remove('show');
+                    buttonConfig.onClick();
+                });
+                modalButtons.appendChild(button);
+            });
+            modalOverlay.classList.add('show');
+        }
+
+        function showNotice(title, message, buttonLabel) {
+            const label = buttonLabel || 'OK';
+            showModal(title, message, [
+                {
+                    label: label,
+                    primary: true,
+                    onClick: () => {}
+                }
+            ]);
+        }
+
+        function showConfirm(title, message, confirmLabel, cancelLabel) {
+            return new Promise((resolve) => {
+                showModal(title, message, [
+                    {
+                        label: cancelLabel,
+                        primary: false,
+                        onClick: () => resolve(false)
+                    },
+                    {
+                        label: confirmLabel,
+                        primary: true,
+                        onClick: () => resolve(true)
+                    }
+                ]);
+            });
+        }
+
+        function setTimerActionState(state) {
+            if (!completeTaskBtn || !backToTasksBtn || !continueBtn || !stopBtn || !commitmentText) {
+                throw new Error('Timer action elements are required');
+            }
+            if (!timerOverlay) {
+                throw new Error('Timer overlay element is required');
+            }
+            const timerContent = timerOverlay.querySelector('.active-timer-content');
+            if (!timerContent) {
+                throw new Error('Active timer content element is required');
+            }
+            if (state === 'running') {
+                timerContent.classList.remove('completed-state');
+                completeTaskBtn.classList.add('hidden');
+                backToTasksBtn.classList.add('hidden');
+                continueBtn.style.display = 'none';
+                stopBtn.style.display = 'inline-block';
+                commitmentText.classList.remove('hidden');
+            }
+            if (state === 'completed') {
+                timerContent.classList.add('completed-state');
+                completeTaskBtn.classList.remove('hidden');
+                backToTasksBtn.classList.remove('hidden');
+                continueBtn.style.display = 'inline-block';
+                stopBtn.style.display = 'none';
+                commitmentText.classList.add('hidden');
+            }
+        }
+
+        function updateEmptyState() {
+            if (!emptyState || !searchBar || !taskInput || !addTaskBtn) {
+                throw new Error('Empty state elements are required');
+            }
+            const addTaskSection = document.getElementById('addTaskSection');
+            if (!addTaskSection) {
+                throw new Error('Add task section is required');
+            }
+
+            if (tasks.length === 0) {
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('cta');
+                searchBar.classList.add('hidden');
+                addTaskSection.classList.add('hidden');
+                taskInput.placeholder = 'What are you working on?';
+                addTaskBtn.textContent = 'Add first task';
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            emptyState.classList.remove('cta');
+            addTaskSection.classList.remove('hidden');
+            if (tasks.length < 3) {
+                searchBar.classList.add('hidden');
+            } else {
+                searchBar.classList.remove('hidden');
+            }
+            taskInput.placeholder = 'New task…';
+            addTaskBtn.textContent = 'Add Task';
+        }
+
+        emptyState.addEventListener('click', () => {
+            if (tasks.length !== 0) {
+                return;
+            }
+            const addTaskSection = document.getElementById('addTaskSection');
+            if (!addTaskSection) {
+                throw new Error('Add task section is required');
+            }
+            addTaskSection.classList.remove('hidden');
+            taskInput.focus();
+        });
+
         function saveTasks() {
             localStorage.setItem('focusTasks', JSON.stringify(tasks));
         }
@@ -1016,7 +2265,10 @@
         function updateStatsDisplay() {
             todayBlocksEl.textContent = stats.todayBlocks;
             streakEl.textContent = stats.streak;
-            failedBlocksEl.textContent = stats.failedBlocks;
+            if (!quitsCountEl) {
+                throw new Error('Quits stat element is required');
+            }
+            quitsCountEl.textContent = stats.quits;
             
             const rate = stats.totalBlocks > 0 
                 ? Math.round((stats.completedBlocks / stats.totalBlocks) * 100)
@@ -1033,13 +2285,14 @@
 
         function renderTasks() {
             tasksGrid.innerHTML = '';
-            
+
             // Clean up invalid tasks
             tasks = tasks.filter(task => task && task.name);
             saveTasks();
-            
+            updateEmptyState();
+
             tasks.forEach((task, index) => {
-                
+
                 const bubble = document.createElement('div');
                 bubble.className = 'task-bubble';
                 if (activeTimer !== null && activeTimer !== index) {
@@ -1047,6 +2300,10 @@
                 }
                 if (activeTimer === index) {
                     bubble.classList.add('active');
+                }
+                if (task.isNew) {
+                    bubble.classList.add('new');
+                    task.isNew = false;
                 }
 
                 const taskName = document.createElement('div');
@@ -1124,7 +2381,7 @@
 
                 bubble.onclick = () => {
                     if (activeTimer === null && !bubble.classList.contains('editing')) {
-                        startTimer(index);
+                        confirmStartTimer(index);
                     }
                 };
 
@@ -1138,32 +2395,70 @@
             return `${mins}:${secs.toString().padStart(2, '0')}`;
         }
 
+        async function confirmStartTimer(taskIndex) {
+            const confirmed = await showConfirm(
+                'Start 5-minute block?',
+                'Once you begin, the timer runs for 5 minutes. Ready to lock in?',
+                'Start Timer',
+                'Not yet'
+            );
+            if (confirmed) {
+                startTimer(taskIndex);
+            }
+        }
+
         function startTimer(taskIndex) {
             activeTimer = taskIndex;
             remainingSeconds = TIMER_DURATION;
+            timerStartTime = Date.now();
+            timerCompleted = false;
+            resetAwayState();
+            pipUrgent = false;
+            pipUrgentStartedAt = null;
+            pipAway = false;
+            pipAwayStartedAt = null;
+            completeTaskBtn.classList.remove('urgent');
             completionMessage.textContent = '';
             kobeImage.classList.remove('show');
-            continueBtn.style.display = 'none';
-            stopBtn.style.display = 'inline-block';
-            
+            setTimerActionState('running');
+
             localStorage.setItem('activeTimer', JSON.stringify(taskIndex));
             localStorage.setItem('remainingSeconds', remainingSeconds);
-            
+            localStorage.setItem('timerStartTime', JSON.stringify(timerStartTime));
+
             activeTaskName.textContent = tasks[taskIndex].name;
             timerOverlay.classList.add('show');
-            
+
             renderTasks();
             updateTimerDisplay();
 
+            if (isAccountabilityEnabled) {
+                startVisionIfNeeded()
+                    .catch((err) => {
+                        resetAwayState();
+                        setPresenceIndicator('error');
+                        showNotice('Camera required', err.message);
+                    });
+            }
+
             timerInterval = setInterval(() => {
-                remainingSeconds--;
-                localStorage.setItem('remainingSeconds', remainingSeconds);
+                syncRemainingSeconds();
                 updateTimerDisplay();
 
                 if (remainingSeconds <= 0) {
                     completeTimer();
                 }
             }, 1000);
+        }
+
+        function syncRemainingSeconds() {
+            if (!timerStartTime) {
+                throw new Error('Timer start time is required to sync');
+            }
+            const effectiveNowMs = getEffectiveNowMs();
+            const elapsedSeconds = Math.floor((effectiveNowMs - timerStartTime - totalPausedMs) / 1000);
+            remainingSeconds = Math.max(TIMER_DURATION - elapsedSeconds, 0);
+            localStorage.setItem('remainingSeconds', remainingSeconds);
         }
 
         function updateTimerDisplay() {
@@ -1182,7 +2477,13 @@
 
         async function completeTimer() {
             clearInterval(timerInterval);
-            
+
+            timerCompleted = true;
+
+            stopAccountabilityCamera();
+            isVisionLoopRunning = false;
+            resetAwayState();
+
             stats.todayBlocks++;
             stats.totalBlocks++;
             stats.completedBlocks++;
@@ -1202,14 +2503,12 @@
             
             saveStats();
             
-            // Close PiP if active
-            if (isPipActive && document.pictureInPictureElement) {
-                await document.exitPictureInPicture();
-                if (pipAnimationFrame) {
-                    cancelAnimationFrame(pipAnimationFrame);
+            if (isPipActive) {
+                if (!pipUrgentStartedAt) {
+                    pipUrgentStartedAt = Date.now();
                 }
-                isPipActive = false;
-                pipBtn.textContent = 'Float on Top';
+                pipUrgent = true;
+                drawPipFrame();
             }
             
             // Focus window and show notification
@@ -1224,8 +2523,8 @@
             
             completionMessage.textContent = 'What\'s there to be happy about? Job\'s finished? I don\'t think so.';
             kobeImage.classList.add('show');
-            stopBtn.style.display = 'none';
-            continueBtn.style.display = 'inline-block';
+            setTimerActionState('completed');
+            completeTaskBtn.classList.add('urgent');
             
             continueBtn.onclick = () => {
                 kobeImage.classList.remove('show');
@@ -1238,40 +2537,84 @@
 
         function stopTimer(isFailure = false) {
             clearInterval(timerInterval);
-            
+            stopAccountabilityCamera();
+            resetAwayState();
+            isVisionLoopRunning = false;
+
+            pipUrgent = false;
+            pipUrgentStartedAt = null;
+            pipAway = false;
+            pipAwayStartedAt = null;
+
             if (isFailure && activeTimer !== null) {
                 stats.totalBlocks++;
-                stats.failedBlocks++;
+                stats.quits++;
                 stats.streak = 0;
-                
+
                 const taskName = tasks[activeTimer].name;
                 if (!stats.taskStats[taskName]) {
                     stats.taskStats[taskName] = { completed: 0, failed: 0 };
                 }
                 stats.taskStats[taskName].failed++;
-                
+
                 saveStats();
-                
-                alert("YOU QUIT. YOUR COMPETITION DIDN'T.");
+
+                showNotice('You quit', "Your competition didn't.");
             }
-            
+
             activeTimer = null;
+            timerStartTime = null;
+            timerCompleted = false;
             remainingSeconds = TIMER_DURATION;
             localStorage.removeItem('activeTimer');
             localStorage.removeItem('remainingSeconds');
+            localStorage.removeItem('timerStartTime');
             timerOverlay.classList.remove('show');
             completionMessage.textContent = '';
+            kobeImage.classList.remove('show');
+            setTimerActionState('running');
+            renderTasks();
+        }
+
+        function returnToTasks() {
+            clearInterval(timerInterval);
+            stopAccountabilityCamera();
+            resetAwayState();
+            isVisionLoopRunning = false;
+
+            pipUrgent = false;
+            pipUrgentStartedAt = null;
+            pipAway = false;
+            pipAwayStartedAt = null;
+            activeTimer = null;
+            timerStartTime = null;
+            timerCompleted = false;
+            remainingSeconds = TIMER_DURATION;
+            localStorage.removeItem('activeTimer');
+            localStorage.removeItem('remainingSeconds');
+            localStorage.removeItem('timerStartTime');
+            timerOverlay.classList.remove('show');
+            completionMessage.textContent = '';
+            kobeImage.classList.remove('show');
+            setTimerActionState('running');
             renderTasks();
         }
 
         addTaskBtn.addEventListener('click', () => {
             const taskName = taskInput.value.trim();
-            if (taskName) {
-                tasks.push({ name: taskName });
-                saveTasks();
-                renderTasks();
-                taskInput.value = '';
+            if (taskName.length < 2) {
+                showNotice('Task name too short', 'Add at least 2 characters.');
+                return;
             }
+            const duplicate = tasks.some((task) => task.name.toLowerCase() === taskName.toLowerCase());
+            if (duplicate) {
+                showNotice('Duplicate task', 'This task already exists.');
+                return;
+            }
+            tasks.push({ name: taskName, isNew: true });
+            saveTasks();
+            renderTasks();
+            taskInput.value = '';
         });
 
         taskInput.addEventListener('keypress', (e) => {
@@ -1280,59 +2623,79 @@
             }
         });
 
-        stopBtn.addEventListener('click', () => {
-            if (confirm("You're about to quit. Your competition isn't. Are you sure?")) {
+        stopBtn.addEventListener('click', async () => {
+            const confirmed = await showConfirm(
+                'Quit this block?',
+                'Quitting ends this block and counts as a quit. Are you sure?',
+                'Yes, quit',
+                'Keep going'
+            );
+            if (confirmed) {
                 stopTimer(true);
             }
         });
 
-        document.getElementById('timerCloseBtn').addEventListener('click', () => {
-            if (confirm("You're about to quit. Your competition isn't. Are you sure?")) {
+        document.getElementById('timerCloseBtn').addEventListener('click', async () => {
+            const confirmed = await showConfirm(
+                'Quit this block?',
+                'Quitting ends this block and counts as a quit. Are you sure?',
+                'Yes, quit',
+                'Keep going'
+            );
+            if (confirmed) {
                 stopTimer(true);
             }
         });
 
         completeTaskBtn.addEventListener('click', () => {
+            if (!timerCompleted) {
+                showNotice('Finish the block first', 'Complete the 5 minutes before marking the task done.');
+                return;
+            }
             if (activeTimer !== null) {
                 const completedTask = tasks[activeTimer];
                 const taskStat = stats.taskStats[completedTask.name] || { completed: 0, failed: 0 };
                 const totalMinutes = taskStat.completed * 5;
-                
+
                 stats.completedTasksList.push({
                     name: completedTask.name,
                     completedAt: new Date().toISOString(),
                     totalMinutes: totalMinutes
                 });
                 stats.completedTasks++;
-                
-                tasks.splice(activeTimer, 1);
+
                 saveTasks();
                 saveStats();
                 renderCompletedTasks();
-                stopTimer(false);
-                alert('TASK COMPLETED. NEXT.');
+                showNotice('Task logged', 'Logged as completed. You can keep working on it later.');
+                returnToTasks();
             }
+        });
+
+        backToTasksBtn.addEventListener('click', () => {
+            returnToTasks();
         });
 
         function renderCompletedTasks() {
             completedTasksEl.innerHTML = '';
             if (stats.completedTasksList.length === 0) {
-                completedTasksEl.innerHTML = '<div style="text-align: center; color: #666; padding: 20px;">No completed tasks yet.</div>';
+                completedSection.classList.add('hidden');
                 return;
             }
-            
+            completedSection.classList.remove('hidden');
+
             stats.completedTasksList.slice().reverse().forEach(task => {
                 const item = document.createElement('div');
                 item.className = 'completed-task-item';
-                
+
                 const nameEl = document.createElement('div');
                 nameEl.className = 'completed-task-name';
                 nameEl.textContent = task.name;
-                
+
                 const timeEl = document.createElement('div');
                 timeEl.className = 'completed-task-time';
                 timeEl.textContent = `${task.totalMinutes} min total`;
-                
+
                 item.appendChild(nameEl);
                 item.appendChild(timeEl);
                 completedTasksEl.appendChild(item);
@@ -1349,13 +2712,29 @@
 
         function drawPipFrame() {
             const ctx = pipCanvas.getContext('2d');
-            ctx.fillStyle = '#1a1a1a';
+            if (activeTimer === null) {
+                throw new Error('activeTimer is required to draw PiP');
+            }
+            const activeTask = tasks[activeTimer];
+            if (!activeTask || !activeTask.name) {
+                throw new Error('Active task is required to draw PiP');
+            }
+
+            const nowMs = Date.now();
+            const isUrgentFrame = pipUrgent && pipUrgentStartedAt !== null;
+            const urgentPhase = isUrgentFrame ? Math.floor((nowMs - pipUrgentStartedAt) / 260) % 2 : 0;
+            const urgentBg = urgentPhase === 0 ? '#0a0c10' : '#061018';
+
+            const isAwayFrame = pipAway && pipAwayStartedAt !== null;
+            const awayPhase = isAwayFrame ? Math.floor((nowMs - pipAwayStartedAt) / 320) % 2 : 0;
+
+            ctx.fillStyle = urgentBg;
             ctx.fillRect(0, 0, 400, 400);
             
             ctx.fillStyle = '#fff';
             ctx.font = 'bold 20px Arial';
             ctx.textAlign = 'center';
-            const taskName = tasks[activeTimer]?.name || 'Task';
+            const taskName = activeTask.name;
             ctx.fillText(taskName.length > 30 ? taskName.substring(0, 30) + '...' : taskName, 200, 50);
             
             const centerX = 200;
@@ -1371,7 +2750,7 @@
             const progress = remainingSeconds / TIMER_DURATION;
             const endAngle = -Math.PI / 2 + (2 * Math.PI * progress);
             
-            ctx.strokeStyle = '#ff4757';
+            ctx.strokeStyle = '#22d3ee';
             ctx.lineWidth = 10;
             ctx.lineCap = 'round';
             ctx.beginPath();
@@ -1384,9 +2763,29 @@
             ctx.textBaseline = 'middle';
             ctx.fillText(formatTime(remainingSeconds), centerX, centerY);
             
-            ctx.fillStyle = '#888';
-            ctx.font = '14px Arial';
-            ctx.fillText('JOB\'S NOT FINISHED', centerX, 370);
+            if (isUrgentFrame) {
+                ctx.fillStyle = urgentPhase === 0 ? '#22d3ee' : '#f5b942';
+                ctx.font = 'bold 18px Arial';
+                ctx.fillText("TIME'S UP", centerX, 350);
+
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 14px Arial';
+                ctx.fillText('START ANOTHER BLOCK NOW', centerX, 374);
+            } else {
+                ctx.fillStyle = '#888';
+                ctx.font = '14px Arial';
+                ctx.fillText('JOB\'S NOT FINISHED', centerX, 370);
+            }
+
+            if (isAwayFrame) {
+                ctx.fillStyle = awayPhase === 0 ? '#f5b942' : '#22d3ee';
+                ctx.font = 'bold 18px Arial';
+                ctx.fillText('GET BACK HERE', centerX, 110);
+
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 13px Arial';
+                ctx.fillText('TIMER PAUSED', centerX, 134);
+            }
         }
 
         async function togglePip() {
@@ -1398,6 +2797,10 @@
                     cancelAnimationFrame(pipAnimationFrame);
                 }
                 isPipActive = false;
+                pipUrgent = false;
+                pipUrgentStartedAt = null;
+                pipAway = false;
+                pipAwayStartedAt = null;
                 pipBtn.textContent = 'Float on Top';
                 return;
             }
@@ -1438,12 +2841,15 @@
                         cancelAnimationFrame(pipAnimationFrame);
                     }
                     isPipActive = false;
+                    pipUrgent = false;
+                    pipUrgentStartedAt = null;
+                    pipAway = false;
+                    pipAwayStartedAt = null;
                     pipBtn.textContent = 'Float on Top';
                 }, { once: true });
                 
             } catch (err) {
-                console.error('PiP failed:', err);
-                alert('Picture-in-Picture not supported. Try Chrome or Safari.');
+                showNotice('PiP failed', err.message);
             }
         }
 
@@ -1497,7 +2903,7 @@
             link.click();
             URL.revokeObjectURL(url);
             
-            alert('Data exported successfully!');
+            showNotice('Export complete', 'Your data backup is ready.');
         });
 
         // Import data
@@ -1505,16 +2911,24 @@
             importFileInput.click();
         });
 
-        importFileInput.addEventListener('change', (e) => {
+        importFileInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
-            if (!file) return;
+            if (!file) {
+                return;
+            }
             
             const reader = new FileReader();
-            reader.onload = (event) => {
+            reader.onload = async (event) => {
                 try {
                     const importData = JSON.parse(event.target.result);
                     
-                    if (confirm('This will replace all current data. Are you sure?')) {
+                    const confirmed = await showConfirm(
+                        'Replace all data?',
+                        'This will replace all current tasks and stats with the import file.',
+                        'Replace data',
+                        'Cancel'
+                    );
+                    if (confirmed) {
                         if (importData.tasks) tasks = importData.tasks;
                         if (importData.stats) stats = importData.stats;
                         
@@ -1523,11 +2937,11 @@
                         renderTasks();
                         renderCompletedTasks();
                         
-                        alert('Data imported successfully!');
+                        showNotice('Import complete', 'Your data has been restored.');
                         settingsModal.classList.remove('show');
                     }
                 } catch (err) {
-                    alert('Error importing data. Please check the file format.');
+                    showNotice('Import failed', 'Please check the file format and try again.');
                 }
             };
             reader.readAsText(file);
@@ -1535,23 +2949,35 @@
         });
 
         // Clear completed tasks
-        clearCompletedBtn.addEventListener('click', () => {
-            if (confirm('Clear all completed tasks? This cannot be undone.')) {
+        clearCompletedBtn.addEventListener('click', async () => {
+            const confirmed = await showConfirm(
+                'Clear completed tasks?',
+                'This will remove all completed task history.',
+                'Clear tasks',
+                'Cancel'
+            );
+            if (confirmed) {
                 stats.completedTasksList = [];
                 saveStats();
                 renderCompletedTasks();
-                alert('Completed tasks cleared.');
+                showNotice('Cleared', 'Completed tasks were cleared.');
             }
         });
 
         // Reset stats only
-        resetStatsBtn.addEventListener('click', () => {
-            if (confirm('Reset all statistics? Tasks will be kept but all stats will be cleared. This cannot be undone.')) {
+        resetStatsBtn.addEventListener('click', async () => {
+            const confirmed = await showConfirm(
+                'Reset statistics?',
+                'Tasks will remain, but all stats will be reset.',
+                'Reset stats',
+                'Cancel'
+            );
+            if (confirmed) {
                 stats = {
                     todayBlocks: 0,
                     totalBlocks: 0,
                     completedBlocks: 0,
-                    failedBlocks: 0,
+                    quits: 0,
                     streak: 0,
                     lastDate: new Date().toDateString(),
                     taskStats: {},
@@ -1562,25 +2988,38 @@
                 saveStats();
                 renderTasks();
                 renderCompletedTasks();
-                alert('Statistics reset successfully.');
+                showNotice('Stats reset', 'Your statistics have been reset.');
             }
         });
 
         // Clear all data
-        clearAllBtn.addEventListener('click', () => {
-            if (confirm('⚠️ WARNING: This will delete ALL tasks, completed tasks, and statistics. This cannot be undone. Are you absolutely sure?')) {
-                if (confirm('Final confirmation: Delete everything?')) {
+        clearAllBtn.addEventListener('click', async () => {
+            const confirmed = await showConfirm(
+                'Delete everything?',
+                'This removes all tasks, stats, and history. This cannot be undone.',
+                'Delete all',
+                'Cancel'
+            );
+            if (confirmed) {
+                const finalConfirm = await showConfirm(
+                    'Final confirmation',
+                    'This is permanent. Do you want to delete everything?',
+                    'Yes, delete',
+                    'Cancel'
+                );
+                if (finalConfirm) {
                     localStorage.removeItem('focusTasks');
                     localStorage.removeItem('focusStats');
                     localStorage.removeItem('activeTimer');
                     localStorage.removeItem('remainingSeconds');
-                    
+                    localStorage.removeItem('timerStartTime');
+
                     tasks = [];
                     stats = {
                         todayBlocks: 0,
                         totalBlocks: 0,
                         completedBlocks: 0,
-                        failedBlocks: 0,
+                        quits: 0,
                         streak: 0,
                         lastDate: new Date().toDateString(),
                         taskStats: {},
@@ -1590,12 +3029,13 @@
                     };
                     activeTimer = null;
                     remainingSeconds = 0;
-                    
+                    timerStartTime = null;
+
                     renderTasks();
                     renderCompletedTasks();
                     updateStatsDisplay();
-                    
-                    alert('All data cleared.');
+
+                    showNotice('All data cleared', 'Your workspace is reset.');
                     settingsModal.classList.remove('show');
                 }
             }
@@ -1613,13 +3053,23 @@
         if (activeTimer !== null && tasks[activeTimer]) {
             activeTaskName.textContent = tasks[activeTimer].name;
             timerOverlay.classList.add('show');
-            stopBtn.style.display = 'inline-block';
-            continueBtn.style.display = 'none';
+            if (!timerStartTime) {
+                timerStartTime = Date.now();
+                localStorage.setItem('timerStartTime', JSON.stringify(timerStartTime));
+            }
+            setTimerActionState('running');
+            syncRemainingSeconds();
             updateTimerDisplay();
-            
+
+            if (isAccountabilityEnabled) {
+                startVisionIfNeeded().catch((err) => {
+                    resetAwayState();
+                    setPresenceIndicator('error');
+                    showNotice('Camera required', err.message);
+                });
+            }
             timerInterval = setInterval(() => {
-                remainingSeconds--;
-                localStorage.setItem('remainingSeconds', remainingSeconds);
+                syncRemainingSeconds();
                 updateTimerDisplay();
 
                 if (remainingSeconds <= 0) {
