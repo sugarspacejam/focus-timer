@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job's Not Finished</title>
+    <title>Job's Not Finished (Accountability Cam)</title>
     <link rel="icon" type="image/png" href="kobe.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -485,6 +485,58 @@
             gap: 10px;
         }
 
+        .settings-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: rgba(12, 16, 22, 0.9);
+            border: 1px solid var(--border-strong);
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+        }
+
+        .settings-toggle-row span {
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .settings-toggle-row small {
+            display: block;
+            margin-top: 4px;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .settings-textarea {
+            width: 100%;
+            min-height: 92px;
+            resize: vertical;
+            background: rgba(8, 10, 14, 0.9);
+            border: 1px solid var(--border-strong);
+            color: var(--text);
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            line-height: 1.5;
+            outline: none;
+        }
+
+        .settings-textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25);
+        }
+
+        .settings-helper {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
         .settings-action-btn {
             background: rgba(12, 16, 22, 0.9);
             color: var(--text);
@@ -572,12 +624,24 @@
 
         .empty-state {
             background: var(--surface);
-            border: 1px dashed var(--border-strong);
-            border-radius: var(--radius-md);
-            padding: 24px;
+            border: 1px dashed var(--border);
+            padding: 25px;
+            border-radius: 20px;
             text-align: center;
-            color: var(--text-muted);
-            font-size: 15px;
+            color: var(--text-dim);
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .empty-state.cta {
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .empty-state.cta:hover {
+            transform: translateY(-1px);
+            border-color: rgba(34, 211, 238, 0.55);
+            box-shadow: 0 16px 40px rgba(0,0,0,0.35);
         }
 
         .empty-state strong {
@@ -711,6 +775,12 @@
             position: relative;
             max-width: 500px;
             width: 90%;
+            max-height: 88vh;
+            overflow-y: auto;
+        }
+
+        .active-timer-content.completed-state {
+            padding: 38px 36px;
         }
 
         .commitment-text {
@@ -788,11 +858,145 @@
             transform: translateY(-1px);
         }
 
-        .active-timer-content h2 {
-            font-size: 1.9em;
-            margin-bottom: 30px;
-            color: var(--text);
+        .accountability-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 4000;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(8px);
+            text-align: center;
+            padding: 24px;
+        }
+
+        .accountability-overlay.show {
+            display: flex;
+        }
+
+        .accountability-content {
+            max-width: 520px;
+            background: var(--surface-strong);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        .accountability-title {
+            font-size: 22px;
             font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .accountability-message {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-muted);
+        }
+
+        .accountability-hint {
+            margin-top: 16px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .presence-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(8, 10, 14, 0.75);
+            color: var(--text);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .presence-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+        }
+
+        .presence-indicator.locked-in {
+            border-color: rgba(34, 211, 238, 0.35);
+        }
+
+        .presence-indicator.locked-in .presence-dot {
+            background: #22d3ee;
+            box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.16);
+        }
+
+        .presence-indicator.away {
+            border-color: rgba(245, 185, 66, 0.4);
+        }
+
+        .presence-indicator.away .presence-dot {
+            background: #f5b942;
+            box-shadow: 0 0 0 4px rgba(245, 185, 66, 0.16);
+        }
+
+        .presence-indicator.clickable {
+            cursor: pointer;
+        }
+
+        .camera-helper {
+            margin-top: -6px;
+            font-size: 12px;
+            color: var(--text-dim);
+            text-align: center;
+            max-width: 320px;
+        }
+
+        .complete-task-btn.urgent {
+            background: var(--accent-gradient);
+            color: #0a0c10;
+            border-color: transparent;
+            box-shadow: 0 16px 34px rgba(34, 211, 238, 0.22);
+            transform: translateY(-1px);
+        }
+
+        .debug-vision {
+            position: fixed;
+            left: 16px;
+            bottom: 16px;
+            width: 220px;
+            background: rgba(8, 10, 14, 0.88);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+            padding: 10px;
+            z-index: 5000;
+            display: none;
+        }
+
+        .debug-vision.show {
+            display: block;
+        }
+
+        .debug-vision-title {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        #debugCanvas {
+            width: 100%;
+            height: 140px;
+            border-radius: 10px;
+            background: #0a0c10;
+            display: block;
         }
 
         .large-timer-container {
@@ -861,6 +1065,8 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             display: none;
+            max-height: 240px;
+            object-fit: cover;
         }
 
         .kobe-image.show {
@@ -1008,12 +1214,12 @@
                 <div class="stat-value" id="completionRate">0%</div>
             </div>
             <div class="stat-item">
-                <div class="stat-label">Failed Blocks</div>
-                <div class="stat-value" id="failedBlocks">0</div>
+                <div class="stat-label">Quits</div>
+                <div class="stat-value" id="quitsCount">0</div>
             </div>
         </div>
         
-        <div class="add-task-section">
+        <div class="add-task-section" id="addTaskSection">
             <div class="add-task-form">
                 <input type="text" id="taskInput" placeholder="What are you working on?" maxlength="50">
                 <button id="addTaskBtn">Add Task</button>
@@ -1067,6 +1273,28 @@
                     <button class="settings-action-btn danger" id="clearAllBtn">⚠️ Clear All Data</button>
                 </div>
             </div>
+
+            <div class="settings-section">
+                <h3>Accountability Voice</h3>
+                <div class="settings-btn-group">
+                    <textarea class="settings-textarea" id="awayTtsPhraseInput" placeholder="Enter one voice line per row for away reminders"></textarea>
+                    <button class="settings-action-btn" id="saveAwayTtsPhraseBtn">💾 Save Voice Line</button>
+                    <button class="settings-action-btn" id="testAwayTtsPhraseBtn">🔊 Test Voice Line</button>
+                    <button class="settings-action-btn danger" id="resetAwayTtsPhraseBtn">↩︎ Reset to Default</button>
+                    <div class="settings-helper">Used when you leave the camera frame and the timer pauses. One line = one phrase (played in round-robin order).</div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Accountability Camera</h3>
+                <div class="settings-toggle-row">
+                    <div>
+                        <span>Camera Accountability</span>
+                        <small>Optional. When enabled, the timer pauses if you leave the frame.</small>
+                    </div>
+                    <button class="settings-action-btn" id="toggleCameraBtn">Turn On</button>
+                </div>
+            </div>
             
             <div class="settings-section">
                 <h3>About</h3>
@@ -1084,7 +1312,7 @@
 
     <div class="active-timer-overlay" id="timerOverlay">
         <div class="active-timer-content">
-            <button class="timer-close-btn" id="timerCloseBtn" title="Quit (counts as failure)">✕</button>
+            <button class="timer-close-btn" id="timerCloseBtn" title="Quit (counts as a quit)">✕</button>
             <h2 id="activeTaskName"></h2>
             <div class="large-timer-container">
                 <svg width="250" height="250">
@@ -1096,6 +1324,11 @@
             </div>
             <div class="timer-actions">
                 <button class="pip-btn" id="pipBtn">Float on Top</button>
+                <div class="presence-indicator clickable" id="presenceIndicator" role="button" tabindex="0" aria-label="Toggle camera accountability">
+                    <span class="presence-dot" id="presenceDot"></span>
+                    <span id="presenceText">Camera: initializing</span>
+                </div>
+                <div class="camera-helper" id="cameraHelper">Optional: pauses the timer if you leave the frame.</div>
                 <div class="timer-action-row">
                     <button class="stop-btn" id="stopBtn">I QUIT</button>
                     <button class="complete-task-btn" id="completeTaskBtn">TASK COMPLETE</button>
@@ -1105,7 +1338,7 @@
             <div class="completion-message" id="completionMessage"></div>
             <button class="continue-btn" id="continueBtn" style="display: none;">ANOTHER BLOCK</button>
             <img src="kobe.png" alt="Kobe Bryant" class="kobe-image" id="kobeImage">
-            <div class="commitment-text" id="commitmentText">You committed to 5 minutes. Quitting counts as a failure.</div>
+            <div class="commitment-text" id="commitmentText">You committed to 5 minutes. Quitting counts as a quit.</div>
         </div>
     </div>
 
@@ -1121,19 +1354,52 @@
         <canvas id="pipCanvas" width="400" height="400"></canvas>
     </div>
 
-    <script>
+    <video id="accountabilityVideo" class="hidden" playsinline muted></video>
+
+    <div class="debug-vision" id="debugVision">
+        <div class="debug-vision-title">Vision Debug (local only)</div>
+        <canvas id="debugCanvas" width="220" height="140"></canvas>
+    </div>
+
+    <div class="accountability-overlay" id="accountabilityOverlay">
+        <div class="accountability-content">
+            <div class="accountability-title" id="accountabilityTitle">GET BACK.</div>
+            <div class="accountability-message" id="accountabilityMessage">
+                You're out of frame. The timer is paused. Finish the job.
+            </div>
+            <div class="accountability-hint">
+                <strong>Fix:</strong> Allow camera permissions and stay in view.
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
         let tasks = JSON.parse(localStorage.getItem('focusTasks')) || [];
         let activeTimer = JSON.parse(localStorage.getItem('activeTimer'));
         let timerInterval = null;
         let remainingSeconds = parseInt(localStorage.getItem('remainingSeconds')) || 300;
         let timerStartTime = JSON.parse(localStorage.getItem('timerStartTime'));
         let timerCompleted = false;
+        let totalPausedMs = 0;
+        let pausedAt = null;
+        let isPausedForAway = false;
+        const cameraEnabledRaw = localStorage.getItem('accountabilityCameraEnabled');
+        let isAccountabilityEnabled = false;
+        if (cameraEnabledRaw !== null) {
+            const parsedCameraEnabled = JSON.parse(cameraEnabledRaw);
+            if (typeof parsedCameraEnabled !== 'boolean') {
+                throw new Error('accountabilityCameraEnabled must be a boolean');
+            }
+            isAccountabilityEnabled = parsedCameraEnabled;
+        }
+        let lastTtsAt = 0;
+        let ttsCooldownMs = 6000;
         
         let stats = JSON.parse(localStorage.getItem('focusStats')) || {
             todayBlocks: 0,
             totalBlocks: 0,
             completedBlocks: 0,
-            failedBlocks: 0,
+            quits: 0,
             streak: 0,
             lastDate: new Date().toDateString(),
             taskStats: {},
@@ -1148,6 +1414,15 @@
         }
         if (!stats.completedTasksList) {
             stats.completedTasksList = [];
+        }
+
+        if (typeof stats.quits !== 'number') {
+            if (typeof stats.failedBlocks === 'number') {
+                stats.quits = stats.failedBlocks;
+            } else {
+                stats.quits = 0;
+            }
+            saveStats();
         }
 
         const tasksGrid = document.getElementById('tasksGrid');
@@ -1165,7 +1440,7 @@
         const todayBlocksEl = document.getElementById('todayBlocks');
         const streakEl = document.getElementById('streak');
         const completionRateEl = document.getElementById('completionRate');
-        const failedBlocksEl = document.getElementById('failedBlocks');
+        const quitsCountEl = document.getElementById('quitsCount');
         const motivationalTextEl = document.getElementById('motivationalText');
         const pipBtn = document.getElementById('pipBtn');
         const pipContainer = document.getElementById('pipContainer');
@@ -1186,12 +1461,26 @@
         const clearCompletedBtn = document.getElementById('clearCompletedBtn');
         const resetStatsBtn = document.getElementById('resetStatsBtn');
         const clearAllBtn = document.getElementById('clearAllBtn');
+        const awayTtsPhraseInput = document.getElementById('awayTtsPhraseInput');
+        const saveAwayTtsPhraseBtn = document.getElementById('saveAwayTtsPhraseBtn');
+        const testAwayTtsPhraseBtn = document.getElementById('testAwayTtsPhraseBtn');
+        const resetAwayTtsPhraseBtn = document.getElementById('resetAwayTtsPhraseBtn');
+        const toggleCameraBtn = document.getElementById('toggleCameraBtn');
         const backToTasksBtn = document.getElementById('backToTasksBtn');
         const commitmentText = document.getElementById('commitmentText');
         const modalOverlay = document.getElementById('modalOverlay');
         const modalTitle = document.getElementById('modalTitle');
         const modalMessage = document.getElementById('modalMessage');
         const modalButtons = document.getElementById('modalButtons');
+        const accountabilityVideo = document.getElementById('accountabilityVideo');
+        const accountabilityOverlay = document.getElementById('accountabilityOverlay');
+        const accountabilityTitle = document.getElementById('accountabilityTitle');
+        const accountabilityMessage = document.getElementById('accountabilityMessage');
+        const presenceIndicator = document.getElementById('presenceIndicator');
+        const presenceDot = document.getElementById('presenceDot');
+        const presenceText = document.getElementById('presenceText');
+        const debugVision = document.getElementById('debugVision');
+        const debugCanvas = document.getElementById('debugCanvas');
         
         const TIMER_DURATION = 300;
         let pipVideo = null;
@@ -1199,6 +1488,616 @@
         let isPipActive = false;
         let pipUrgent = false;
         let pipUrgentStartedAt = null;
+        let pipAway = false;
+        let pipAwayStartedAt = null;
+
+        const ACCOUNTABILITY_AWAY_THRESHOLD_MS = 900;
+        const DEFAULT_AWAY_TTS_PHRASES = ['Come back here. Job\'s not finished.'];
+        const awayTtsPhraseRaw = localStorage.getItem('accountabilityAwayTtsPhrase');
+        let awayTtsPhrases = [...DEFAULT_AWAY_TTS_PHRASES];
+        let awayTtsPhraseIndex = 0;
+        if (awayTtsPhraseRaw !== null) {
+            const parsedAwayTtsPhrase = JSON.parse(awayTtsPhraseRaw);
+            if (typeof parsedAwayTtsPhrase === 'string') {
+                const migrated = parsedAwayTtsPhrase.trim();
+                if (migrated.length < 2) {
+                    throw new Error('accountabilityAwayTtsPhrase must be at least 2 characters');
+                }
+                awayTtsPhrases = [migrated];
+                localStorage.setItem('accountabilityAwayTtsPhrase', JSON.stringify(awayTtsPhrases));
+            } else if (Array.isArray(parsedAwayTtsPhrase)) {
+                if (parsedAwayTtsPhrase.length === 0) {
+                    throw new Error('accountabilityAwayTtsPhrase must include at least one phrase');
+                }
+                const validatedPhrases = parsedAwayTtsPhrase.map((phrase, index) => {
+                    if (typeof phrase !== 'string') {
+                        throw new Error(`accountabilityAwayTtsPhrase[${index}] must be a string`);
+                    }
+                    const trimmed = phrase.trim();
+                    if (trimmed.length < 2) {
+                        throw new Error(`accountabilityAwayTtsPhrase[${index}] must be at least 2 characters`);
+                    }
+                    return trimmed;
+                });
+                awayTtsPhrases = validatedPhrases;
+            } else {
+                throw new Error('accountabilityAwayTtsPhrase must be a string or array of strings');
+            }
+        }
+
+        if (!accountabilityVideo || !accountabilityOverlay || !accountabilityTitle || !accountabilityMessage) {
+            throw new Error('Accountability camera elements are required');
+        }
+
+        if (!presenceIndicator || !presenceDot || !presenceText) {
+            throw new Error('Presence indicator elements are required');
+        }
+
+        if (!awayTtsPhraseInput || !saveAwayTtsPhraseBtn || !testAwayTtsPhraseBtn || !resetAwayTtsPhraseBtn) {
+            throw new Error('Away TTS settings elements are required');
+        }
+
+        if (!toggleCameraBtn) {
+            throw new Error('Camera toggle button is required');
+        }
+
+        if (!debugVision || !debugCanvas) {
+            throw new Error('Debug vision elements are required');
+        }
+
+        const debugParam = new URLSearchParams(window.location.search).get('debug');
+        const isDebugEnabled = debugParam === '1';
+
+        function setPresenceIndicator(state) {
+            if (!presenceIndicator || !presenceText) {
+                throw new Error('Presence indicator elements are required');
+            }
+
+            presenceIndicator.classList.remove('locked-in');
+            presenceIndicator.classList.remove('away');
+
+            if (state === 'locked-in') {
+                presenceIndicator.classList.add('locked-in');
+                presenceText.textContent = 'Locked in';
+                return;
+            }
+
+            if (state === 'away') {
+                presenceIndicator.classList.add('away');
+                presenceText.textContent = 'Away — return';
+                return;
+            }
+
+            if (state === 'initializing') {
+                presenceText.textContent = 'Camera: initializing';
+                return;
+            }
+
+            if (state === 'error') {
+                presenceText.textContent = 'Camera: blocked';
+                return;
+            }
+
+            if (state === 'off') {
+                presenceText.textContent = 'Camera: off';
+                return;
+            }
+
+            throw new Error(`Unsupported presence indicator state: ${state}`);
+        }
+
+        function speakAccountability(text) {
+            if (!('speechSynthesis' in window)) {
+                return;
+            }
+
+            const now = Date.now();
+            if (now - lastTtsAt < ttsCooldownMs) {
+                return;
+            }
+
+            lastTtsAt = now;
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1.02;
+            utterance.pitch = 0.9;
+            utterance.volume = 1;
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function setDebugVisionVisible(visible) {
+            if (!debugVision) {
+                throw new Error('Debug vision element is required');
+            }
+            if (!isDebugEnabled) {
+                debugVision.classList.remove('show');
+                return;
+            }
+            if (visible) {
+                debugVision.classList.add('show');
+                return;
+            }
+            debugVision.classList.remove('show');
+        }
+
+        function updateCameraToggleUi() {
+            if (!toggleCameraBtn) {
+                throw new Error('Camera toggle button is required');
+            }
+            toggleCameraBtn.textContent = isAccountabilityEnabled ? 'Turn Off' : 'Turn On';
+        }
+
+        async function setCameraEnabled(enabled) {
+            if (typeof enabled !== 'boolean') {
+                throw new Error('enabled must be a boolean');
+            }
+
+            isAccountabilityEnabled = enabled;
+            localStorage.setItem('accountabilityCameraEnabled', JSON.stringify(enabled));
+            updateCameraToggleUi();
+
+            if (!enabled) {
+                isVisionLoopRunning = false;
+                stopAccountabilityCamera();
+                hideAwayOverlay();
+                setDebugVisionVisible(false);
+                setPresenceIndicator('off');
+                return;
+            }
+
+            setPresenceIndicator('initializing');
+            setDebugVisionVisible(true);
+            await startVisionIfNeeded();
+        }
+
+        awayTtsPhraseInput.value = awayTtsPhrases.join('\n');
+
+        updateCameraToggleUi();
+        if (isAccountabilityEnabled) {
+            setDebugVisionVisible(true);
+            setPresenceIndicator('initializing');
+        } else {
+            setDebugVisionVisible(false);
+            setPresenceIndicator('off');
+        }
+
+        toggleCameraBtn.addEventListener('click', () => {
+            setCameraEnabled(!isAccountabilityEnabled).catch((error) => {
+                showNotice('Camera toggle failed', error.message);
+            });
+        });
+
+        presenceIndicator.classList.add('clickable');
+        presenceIndicator.addEventListener('click', () => {
+            setCameraEnabled(!isAccountabilityEnabled).catch((error) => {
+                showNotice('Camera toggle failed', error.message);
+            });
+        });
+
+        presenceIndicator.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' && e.key !== ' ') {
+                return;
+            }
+            e.preventDefault();
+            setCameraEnabled(!isAccountabilityEnabled).catch((error) => {
+                showNotice('Camera toggle failed', error.message);
+            });
+        });
+
+        function setAwayTtsPhrase(nextPhraseText) {
+            if (typeof nextPhraseText !== 'string') {
+                throw new Error('Away TTS phrases must be a string');
+            }
+            const phrases = nextPhraseText
+                .split('\n')
+                .map((phrase) => phrase.trim())
+                .filter((phrase) => phrase.length > 0);
+
+            if (phrases.length === 0) {
+                throw new Error('Provide at least one away TTS phrase');
+            }
+
+            phrases.forEach((phrase, index) => {
+                if (phrase.length < 2) {
+                    throw new Error(`Phrase ${index + 1} must be at least 2 characters`);
+                }
+            });
+
+            awayTtsPhrases = phrases;
+            awayTtsPhraseIndex = 0;
+            localStorage.setItem('accountabilityAwayTtsPhrase', JSON.stringify(awayTtsPhrases));
+            awayTtsPhraseInput.value = awayTtsPhrases.join('\n');
+        }
+
+        function getNextAwayTtsPhrase() {
+            if (!Array.isArray(awayTtsPhrases) || awayTtsPhrases.length === 0) {
+                throw new Error('Away TTS phrases are required');
+            }
+            const phrase = awayTtsPhrases[awayTtsPhraseIndex];
+            awayTtsPhraseIndex = (awayTtsPhraseIndex + 1) % awayTtsPhrases.length;
+            return phrase;
+        }
+
+        saveAwayTtsPhraseBtn.addEventListener('click', () => {
+            try {
+                setAwayTtsPhrase(awayTtsPhraseInput.value);
+                showNotice('Saved', 'Your voice line is saved.');
+            } catch (error) {
+                showNotice('Invalid voice line', error.message);
+            }
+        });
+
+        testAwayTtsPhraseBtn.addEventListener('click', () => {
+            try {
+                setAwayTtsPhrase(awayTtsPhraseInput.value);
+                speakAccountability(getNextAwayTtsPhrase());
+            } catch (error) {
+                showNotice('Invalid voice line', error.message);
+            }
+        });
+
+        resetAwayTtsPhraseBtn.addEventListener('click', () => {
+            setAwayTtsPhrase(DEFAULT_AWAY_TTS_PHRASES.join('\n'));
+            showNotice('Reset', 'Voice line reset to default.');
+        });
+
+        function showAwayOverlay() {
+            accountabilityTitle.textContent = 'GET BACK.';
+            accountabilityMessage.textContent = "You're out of frame. The timer is paused. Finish the job.";
+            accountabilityOverlay.classList.add('show');
+            setPresenceIndicator('away');
+        }
+
+        function hideAwayOverlay() {
+            accountabilityOverlay.classList.remove('show');
+        }
+
+        function pauseForAway() {
+            if (isPausedForAway) {
+                return;
+            }
+            if (activeTimer === null) {
+                return;
+            }
+            if (!timerStartTime) {
+                throw new Error('Timer start time is required to pause');
+            }
+
+            isPausedForAway = true;
+            pausedAt = Date.now();
+            if (!pipAwayStartedAt) {
+                pipAwayStartedAt = Date.now();
+            }
+            pipAway = true;
+            showAwayOverlay();
+            speakAccountability(getNextAwayTtsPhrase());
+        }
+
+        function resumeFromAway() {
+            if (!isPausedForAway) {
+                return;
+            }
+            if (!pausedAt) {
+                throw new Error('pausedAt is required to resume');
+            }
+
+            totalPausedMs += Date.now() - pausedAt;
+            pausedAt = null;
+            isPausedForAway = false;
+            pipAway = false;
+            pipAwayStartedAt = null;
+            hideAwayOverlay();
+            setPresenceIndicator('locked-in');
+        }
+
+        function resetAwayState() {
+            totalPausedMs = 0;
+            pausedAt = null;
+            isPausedForAway = false;
+            pipAway = false;
+            pipAwayStartedAt = null;
+            hideAwayOverlay();
+        }
+
+        function getEffectiveNowMs() {
+            const now = Date.now();
+            if (isPausedForAway && pausedAt) {
+                return pausedAt;
+            }
+            return now;
+        }
+
+        async function startAccountabilityCamera() {
+            if (!isAccountabilityEnabled) {
+                return;
+            }
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                throw new Error('Camera access (getUserMedia) is required for accountability mode');
+            }
+
+            const existingStream = accountabilityVideo.srcObject;
+            if (existingStream) {
+                const tracks = existingStream.getTracks();
+                const hasLiveTrack = tracks.some((track) => track.readyState === 'live');
+                if (hasLiveTrack) {
+                    await accountabilityVideo.play();
+                    setPresenceIndicator('away');
+                    return;
+                }
+            }
+
+            if (!window.isSecureContext) {
+                setPresenceIndicator('error');
+                throw new Error('Camera requires a secure context. Run this page from http://localhost (or https), not file://');
+            }
+
+            setPresenceIndicator('initializing');
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+                accountabilityVideo.srcObject = stream;
+                await accountabilityVideo.play();
+                setPresenceIndicator('away');
+            } catch (error) {
+                setPresenceIndicator('error');
+                throw new Error(`Failed to start camera: ${error.message}`);
+            }
+        }
+
+        function stopAccountabilityCamera() {
+            const stream = accountabilityVideo.srcObject;
+            if (!stream) {
+                return;
+            }
+
+            const tracks = stream.getTracks();
+            tracks.forEach((track) => track.stop());
+            accountabilityVideo.srcObject = null;
+            setPresenceIndicator('initializing');
+        }
+
+        let visionFileset = null;
+
+        async function ensureVisionFileset() {
+            if (visionFileset) {
+                return visionFileset;
+            }
+
+            const { FilesetResolver } = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9');
+            visionFileset = await FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9/wasm');
+            return visionFileset;
+        }
+
+        async function initPoseDetector() {
+            const { PoseLandmarker } = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9');
+            const vision = await ensureVisionFileset();
+
+            const landmarker = await PoseLandmarker.createFromOptions(vision, {
+                baseOptions: {
+                    modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task'
+                },
+                runningMode: 'VIDEO',
+                numPoses: 1
+            });
+
+            return landmarker;
+        }
+
+        async function initHandDetector() {
+            const { HandLandmarker } = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.9');
+            const vision = await ensureVisionFileset();
+
+            const landmarker = await HandLandmarker.createFromOptions(vision, {
+                baseOptions: {
+                    modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task'
+                },
+                runningMode: 'VIDEO',
+                numHands: 2
+            });
+
+            return landmarker;
+        }
+
+        let poseLandmarker = null;
+        let handLandmarker = null;
+        let lastSeenPersonAt = Date.now();
+        let isVisionLoopRunning = false;
+        let lastVisionTimestampMs = null;
+
+        async function ensurePoseLandmarker() {
+            if (poseLandmarker) {
+                return poseLandmarker;
+            }
+            poseLandmarker = await initPoseDetector();
+            return poseLandmarker;
+        }
+
+        async function ensureHandLandmarker() {
+            if (handLandmarker) {
+                return handLandmarker;
+            }
+            handLandmarker = await initHandDetector();
+            return handLandmarker;
+        }
+
+        function hasAnyHand(result) {
+            if (!result) {
+                return false;
+            }
+            if (!result.landmarks) {
+                return false;
+            }
+            return result.landmarks.length > 0;
+        }
+
+        function hasAnyPose(result) {
+            if (!result) {
+                return false;
+            }
+            if (!result.landmarks) {
+                return false;
+            }
+            return result.landmarks.length > 0;
+        }
+
+        function isPoseConfident(result) {
+            if (!result) {
+                return false;
+            }
+            if (!result.landmarks || result.landmarks.length === 0) {
+                return false;
+            }
+
+            const pose = result.landmarks[0];
+            if (!pose || pose.length === 0) {
+                return false;
+            }
+
+            let confidentPoints = 0;
+            for (const landmark of pose) {
+                if (!landmark) {
+                    continue;
+                }
+
+                const visibility = typeof landmark.visibility === 'number' ? landmark.visibility : 0;
+                const presence = typeof landmark.presence === 'number' ? landmark.presence : 0;
+                if (visibility >= 0.55 && presence >= 0.55) {
+                    confidentPoints++;
+                }
+            }
+
+            return confidentPoints >= 6;
+        }
+
+        function drawDebugFrame(poseResult, handResult) {
+            if (!isDebugEnabled) {
+                return;
+            }
+            const ctx = debugCanvas.getContext('2d');
+            if (!ctx) {
+                throw new Error('debugCanvas context is required');
+            }
+
+            const w = debugCanvas.width;
+            const h = debugCanvas.height;
+            ctx.clearRect(0, 0, w, h);
+            ctx.drawImage(accountabilityVideo, 0, 0, w, h);
+
+            function drawPoints(landmarks, color) {
+                ctx.fillStyle = color;
+                for (const pt of landmarks) {
+                    if (!pt) {
+                        continue;
+                    }
+                    const x = pt.x * w;
+                    const y = pt.y * h;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 2.2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            if (poseResult && poseResult.landmarks && poseResult.landmarks.length > 0) {
+                drawPoints(poseResult.landmarks[0], 'rgba(34, 211, 238, 0.95)');
+            }
+
+            if (handResult && handResult.landmarks && handResult.landmarks.length > 0) {
+                for (const hand of handResult.landmarks) {
+                    drawPoints(hand, 'rgba(245, 185, 66, 0.95)');
+                }
+            }
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+            ctx.fillRect(0, h - 22, w, 22);
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 11px Arial';
+            const poseTxt = poseResult && poseResult.landmarks ? `pose:${poseResult.landmarks.length}` : 'pose:0';
+            const handTxt = handResult && handResult.landmarks ? `hands:${handResult.landmarks.length}` : 'hands:0';
+            ctx.fillText(`${poseTxt}  ${handTxt}`, 8, h - 7);
+        }
+
+        function getNextVisionTimestampMs() {
+            const nowMs = Math.floor(performance.now());
+            if (lastVisionTimestampMs === null) {
+                lastVisionTimestampMs = nowMs;
+                return lastVisionTimestampMs;
+            }
+
+            lastVisionTimestampMs = Math.max(lastVisionTimestampMs + 1, nowMs);
+            return lastVisionTimestampMs;
+        }
+
+        async function startVisionIfNeeded() {
+            if (isVisionLoopRunning) {
+                return;
+            }
+            if (!isAccountabilityEnabled) {
+                return;
+            }
+            if (activeTimer === null) {
+                return;
+            }
+
+            await startAccountabilityCamera();
+            lastSeenPersonAt = Date.now();
+            lastVisionTimestampMs = null;
+            isVisionLoopRunning = true;
+            requestAnimationFrame(tickAccountability);
+        }
+
+        async function tickAccountability() {
+            if (!isVisionLoopRunning) {
+                return;
+            }
+            if (!isAccountabilityEnabled) {
+                return;
+            }
+            if (activeTimer === null) {
+                isVisionLoopRunning = false;
+                return;
+            }
+            if (!accountabilityVideo.videoWidth || !accountabilityVideo.videoHeight) {
+                requestAnimationFrame(tickAccountability);
+                return;
+            }
+
+            let poseResult = null;
+            let handResult = null;
+
+            try {
+                const poseDetector = await ensurePoseLandmarker();
+                const handsDetector = await ensureHandLandmarker();
+
+                const poseTimestampMs = getNextVisionTimestampMs();
+                const handTimestampMs = getNextVisionTimestampMs();
+                poseResult = poseDetector.detectForVideo(accountabilityVideo, poseTimestampMs);
+                handResult = handsDetector.detectForVideo(accountabilityVideo, handTimestampMs);
+                drawDebugFrame(poseResult, handResult);
+            } catch (error) {
+                setPresenceIndicator('error');
+                showNotice('Vision error', error.message);
+                isVisionLoopRunning = false;
+                return;
+            }
+
+            const hasPose = hasAnyPose(poseResult);
+            const hasHand = hasAnyHand(handResult);
+            const isPresent = hasPose || hasHand;
+
+            if (isPresent) {
+                lastSeenPersonAt = Date.now();
+                setPresenceIndicator('locked-in');
+                resumeFromAway();
+            } else {
+                setPresenceIndicator('away');
+                const awayMs = Date.now() - lastSeenPersonAt;
+                if (awayMs >= ACCOUNTABILITY_AWAY_THRESHOLD_MS) {
+                    pauseForAway();
+                }
+            }
+
+            requestAnimationFrame(tickAccountability);
+        }
         
         const MOTIVATIONAL_MESSAGES = [
             "Great things come from hard work and perseverance. No excuses. - Kobe Bryant",
@@ -1286,7 +2185,15 @@
             if (!completeTaskBtn || !backToTasksBtn || !continueBtn || !stopBtn || !commitmentText) {
                 throw new Error('Timer action elements are required');
             }
+            if (!timerOverlay) {
+                throw new Error('Timer overlay element is required');
+            }
+            const timerContent = timerOverlay.querySelector('.active-timer-content');
+            if (!timerContent) {
+                throw new Error('Active timer content element is required');
+            }
             if (state === 'running') {
+                timerContent.classList.remove('completed-state');
                 completeTaskBtn.classList.add('hidden');
                 backToTasksBtn.classList.add('hidden');
                 continueBtn.style.display = 'none';
@@ -1294,6 +2201,7 @@
                 commitmentText.classList.remove('hidden');
             }
             if (state === 'completed') {
+                timerContent.classList.add('completed-state');
                 completeTaskBtn.classList.remove('hidden');
                 backToTasksBtn.classList.remove('hidden');
                 continueBtn.style.display = 'inline-block';
@@ -1303,25 +2211,47 @@
         }
 
         function updateEmptyState() {
-            if (!emptyState || !searchBar) {
+            if (!emptyState || !searchBar || !taskInput || !addTaskBtn) {
                 throw new Error('Empty state elements are required');
             }
+            const addTaskSection = document.getElementById('addTaskSection');
+            if (!addTaskSection) {
+                throw new Error('Add task section is required');
+            }
+
             if (tasks.length === 0) {
                 emptyState.classList.remove('hidden');
+                emptyState.classList.add('cta');
                 searchBar.classList.add('hidden');
+                addTaskSection.classList.add('hidden');
                 taskInput.placeholder = 'What are you working on?';
                 addTaskBtn.textContent = 'Add first task';
-            } else {
-                emptyState.classList.add('hidden');
-                if (tasks.length < 3) {
-                    searchBar.classList.add('hidden');
-                } else {
-                    searchBar.classList.remove('hidden');
-                }
-                taskInput.placeholder = 'New task…';
-                addTaskBtn.textContent = 'Add Task';
+                return;
             }
+
+            emptyState.classList.add('hidden');
+            emptyState.classList.remove('cta');
+            addTaskSection.classList.remove('hidden');
+            if (tasks.length < 3) {
+                searchBar.classList.add('hidden');
+            } else {
+                searchBar.classList.remove('hidden');
+            }
+            taskInput.placeholder = 'New task…';
+            addTaskBtn.textContent = 'Add Task';
         }
+
+        emptyState.addEventListener('click', () => {
+            if (tasks.length !== 0) {
+                return;
+            }
+            const addTaskSection = document.getElementById('addTaskSection');
+            if (!addTaskSection) {
+                throw new Error('Add task section is required');
+            }
+            addTaskSection.classList.remove('hidden');
+            taskInput.focus();
+        });
 
         function saveTasks() {
             localStorage.setItem('focusTasks', JSON.stringify(tasks));
@@ -1335,7 +2265,10 @@
         function updateStatsDisplay() {
             todayBlocksEl.textContent = stats.todayBlocks;
             streakEl.textContent = stats.streak;
-            failedBlocksEl.textContent = stats.failedBlocks;
+            if (!quitsCountEl) {
+                throw new Error('Quits stat element is required');
+            }
+            quitsCountEl.textContent = stats.quits;
             
             const rate = stats.totalBlocks > 0 
                 ? Math.round((stats.completedBlocks / stats.totalBlocks) * 100)
@@ -1479,8 +2412,12 @@
             remainingSeconds = TIMER_DURATION;
             timerStartTime = Date.now();
             timerCompleted = false;
+            resetAwayState();
             pipUrgent = false;
             pipUrgentStartedAt = null;
+            pipAway = false;
+            pipAwayStartedAt = null;
+            completeTaskBtn.classList.remove('urgent');
             completionMessage.textContent = '';
             kobeImage.classList.remove('show');
             setTimerActionState('running');
@@ -1494,6 +2431,15 @@
 
             renderTasks();
             updateTimerDisplay();
+
+            if (isAccountabilityEnabled) {
+                startVisionIfNeeded()
+                    .catch((err) => {
+                        resetAwayState();
+                        setPresenceIndicator('error');
+                        showNotice('Camera required', err.message);
+                    });
+            }
 
             timerInterval = setInterval(() => {
                 syncRemainingSeconds();
@@ -1509,7 +2455,8 @@
             if (!timerStartTime) {
                 throw new Error('Timer start time is required to sync');
             }
-            const elapsedSeconds = Math.floor((Date.now() - timerStartTime) / 1000);
+            const effectiveNowMs = getEffectiveNowMs();
+            const elapsedSeconds = Math.floor((effectiveNowMs - timerStartTime - totalPausedMs) / 1000);
             remainingSeconds = Math.max(TIMER_DURATION - elapsedSeconds, 0);
             localStorage.setItem('remainingSeconds', remainingSeconds);
         }
@@ -1532,6 +2479,10 @@
             clearInterval(timerInterval);
 
             timerCompleted = true;
+
+            stopAccountabilityCamera();
+            isVisionLoopRunning = false;
+            resetAwayState();
 
             stats.todayBlocks++;
             stats.totalBlocks++;
@@ -1573,6 +2524,7 @@
             completionMessage.textContent = 'What\'s there to be happy about? Job\'s finished? I don\'t think so.';
             kobeImage.classList.add('show');
             setTimerActionState('completed');
+            completeTaskBtn.classList.add('urgent');
             
             continueBtn.onclick = () => {
                 kobeImage.classList.remove('show');
@@ -1585,13 +2537,18 @@
 
         function stopTimer(isFailure = false) {
             clearInterval(timerInterval);
+            stopAccountabilityCamera();
+            resetAwayState();
+            isVisionLoopRunning = false;
 
             pipUrgent = false;
             pipUrgentStartedAt = null;
+            pipAway = false;
+            pipAwayStartedAt = null;
 
             if (isFailure && activeTimer !== null) {
                 stats.totalBlocks++;
-                stats.failedBlocks++;
+                stats.quits++;
                 stats.streak = 0;
 
                 const taskName = tasks[activeTimer].name;
@@ -1621,9 +2578,14 @@
 
         function returnToTasks() {
             clearInterval(timerInterval);
+            stopAccountabilityCamera();
+            resetAwayState();
+            isVisionLoopRunning = false;
 
             pipUrgent = false;
             pipUrgentStartedAt = null;
+            pipAway = false;
+            pipAwayStartedAt = null;
             activeTimer = null;
             timerStartTime = null;
             timerCompleted = false;
@@ -1664,7 +2626,7 @@
         stopBtn.addEventListener('click', async () => {
             const confirmed = await showConfirm(
                 'Quit this block?',
-                'Quitting counts as a failed block. Are you sure?',
+                'Quitting ends this block and counts as a quit. Are you sure?',
                 'Yes, quit',
                 'Keep going'
             );
@@ -1676,7 +2638,7 @@
         document.getElementById('timerCloseBtn').addEventListener('click', async () => {
             const confirmed = await showConfirm(
                 'Quit this block?',
-                'Quitting counts as a failed block. Are you sure?',
+                'Quitting ends this block and counts as a quit. Are you sure?',
                 'Yes, quit',
                 'Keep going'
             );
@@ -1763,6 +2725,9 @@
             const urgentPhase = isUrgentFrame ? Math.floor((nowMs - pipUrgentStartedAt) / 260) % 2 : 0;
             const urgentBg = urgentPhase === 0 ? '#0a0c10' : '#061018';
 
+            const isAwayFrame = pipAway && pipAwayStartedAt !== null;
+            const awayPhase = isAwayFrame ? Math.floor((nowMs - pipAwayStartedAt) / 320) % 2 : 0;
+
             ctx.fillStyle = urgentBg;
             ctx.fillRect(0, 0, 400, 400);
             
@@ -1811,6 +2776,16 @@
                 ctx.font = '14px Arial';
                 ctx.fillText('JOB\'S NOT FINISHED', centerX, 370);
             }
+
+            if (isAwayFrame) {
+                ctx.fillStyle = awayPhase === 0 ? '#f5b942' : '#22d3ee';
+                ctx.font = 'bold 18px Arial';
+                ctx.fillText('GET BACK HERE', centerX, 110);
+
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 13px Arial';
+                ctx.fillText('TIMER PAUSED', centerX, 134);
+            }
         }
 
         async function togglePip() {
@@ -1824,6 +2799,8 @@
                 isPipActive = false;
                 pipUrgent = false;
                 pipUrgentStartedAt = null;
+                pipAway = false;
+                pipAwayStartedAt = null;
                 pipBtn.textContent = 'Float on Top';
                 return;
             }
@@ -1864,12 +2841,15 @@
                         cancelAnimationFrame(pipAnimationFrame);
                     }
                     isPipActive = false;
+                    pipUrgent = false;
+                    pipUrgentStartedAt = null;
+                    pipAway = false;
+                    pipAwayStartedAt = null;
                     pipBtn.textContent = 'Float on Top';
                 }, { once: true });
                 
             } catch (err) {
-                console.error('PiP failed:', err);
-                alert('Picture-in-Picture not supported. Try Chrome or Safari.');
+                showNotice('PiP failed', err.message);
             }
         }
 
@@ -1997,7 +2977,7 @@
                     todayBlocks: 0,
                     totalBlocks: 0,
                     completedBlocks: 0,
-                    failedBlocks: 0,
+                    quits: 0,
                     streak: 0,
                     lastDate: new Date().toDateString(),
                     taskStats: {},
@@ -2039,7 +3019,7 @@
                         todayBlocks: 0,
                         totalBlocks: 0,
                         completedBlocks: 0,
-                        failedBlocks: 0,
+                        quits: 0,
                         streak: 0,
                         lastDate: new Date().toDateString(),
                         taskStats: {},
@@ -2081,6 +3061,13 @@
             syncRemainingSeconds();
             updateTimerDisplay();
 
+            if (isAccountabilityEnabled) {
+                startVisionIfNeeded().catch((err) => {
+                    resetAwayState();
+                    setPresenceIndicator('error');
+                    showNotice('Camera required', err.message);
+                });
+            }
             timerInterval = setInterval(() => {
                 syncRemainingSeconds();
                 updateTimerDisplay();

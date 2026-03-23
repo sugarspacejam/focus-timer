@@ -1,0 +1,1 @@
+This folder is populated at build time with index.html and assets from the repo root.
