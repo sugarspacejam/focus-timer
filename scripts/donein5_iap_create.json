@@ -1,0 +1,19 @@
+{
+  "data": {
+    "type": "inAppPurchases",
+    "attributes": {
+      "name": "Done in 5 Pro Lifetime",
+      "productId": "com.5minutesblockstimer.pro.lifetime",
+      "inAppPurchaseType": "NON_CONSUMABLE",
+      "reviewNote": "One-time unlock for Done in 5. Unlocks unlimited 5-minute contracts and strict accountability voice mode."
+    },
+    "relationships": {
+      "app": {
+        "data": {
+          "type": "apps",
+          "id": "6761027000"
+        }
+      }
+    }
+  }
+}

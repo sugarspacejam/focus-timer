@@ -1,0 +1,13 @@
+{
+  "data": {
+    "type": "appStoreVersionLocalizations",
+    "id": "f2f05a19-0fd7-4cc7-b911-8f41cebc8b18",
+    "attributes": {
+      "promotionalText": "A strict 5-minute contract to stop drifting and finish the task.",
+      "description": "Done in 5 is a strict 5-minute contract. Start a block, stay in frame, and finish the task.\n\nFree gives you 3 contracts per day. Unlock forever for unlimited contracts and strict accountability voice.\n\nFeatures:\n- 5-minute contracts\n- Strict voice modes\n- Lifetime unlock (one-time purchase)",
+      "keywords": "focus,accountability,timer,productivity,deep work,contracts",
+      "supportUrl": "https://example.com/support",
+      "marketingUrl": "https://example.com"
+    }
+  }
+}

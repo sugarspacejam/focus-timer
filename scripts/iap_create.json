@@ -1,0 +1,19 @@
+{
+  "data": {
+    "type": "inAppPurchases",
+    "attributes": {
+      "name": "Done in 5 Lifetime",
+      "productId": "com.5minutesblockstimer.pro.lifetime",
+      "inAppPurchaseType": "NON_CONSUMABLE",
+      "state": "PREPARE_FOR_SUBMISSION"
+    },
+    "relationships": {
+      "app": {
+        "data": {
+          "type": "apps",
+          "id": "6761027000"
+        }
+      }
+    }
+  }
+}

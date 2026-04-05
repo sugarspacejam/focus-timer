@@ -1,0 +1,23 @@
+{
+  "data": {
+    "type": "appStoreReviewDetails",
+    "attributes": {
+      "contactInfo": {
+        "firstName": "Chen",
+        "lastName": "Toledano",
+        "email": "chent@example.com",
+        "phone": "+1234567890"
+      },
+      "reviewAccountInformation": "chent@example.com",
+      "notes": "Done in 5 is a strict 5-minute contract timer for focused work."
+    },
+    "relationships": {
+      "appStoreVersion": {
+        "data": {
+          "type": "appStoreVersions",
+          "id": "1ec06a1e-086e-45dc-8c82-e69a71d4ba18"
+        }
+      }
+    }
+  }
+}

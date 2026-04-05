@@ -13,17 +13,45 @@
 		A10000000000000000000007 /* LocalWebServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000008 /* LocalWebServer.swift */; };
 		A10000000000000000000009 /* WebAssets in Resources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000A /* WebAssets */; };
 		A1000000000000000000000B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000C /* Assets.xcassets */; };
+		B10000000000000000000001 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000002 /* Constants.swift */; };
+		B10000000000000000000003 /* VoiceMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000004 /* VoiceMode.swift */; };
+		B10000000000000000000005 /* FocusTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000006 /* FocusTask.swift */; };
+		B10000000000000000000007 /* FocusStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000008 /* FocusStats.swift */; };
+		B10000000000000000000009 /* TimerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000A /* TimerState.swift */; };
+		B1000000000000000000000B /* PersistedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000C /* PersistedState.swift */; };
+		B1000000000000000000000D /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000000E /* AppError.swift */; };
+		B1000000000000000000000F /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000010 /* NotificationService.swift */; };
+		B10000000000000000000011 /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000012 /* PersistenceService.swift */; };
+		B10000000000000000000013 /* CameraManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000014 /* CameraManaging.swift */; };
+		B10000000000000000000015 /* CameraManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000016 /* CameraManager.swift */; };
+		B10000000000000000000017 /* PurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000018 /* PurchaseManager.swift */; };
+		B10000000000000000000019 /* FocusStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000001A /* FocusStore.swift */; };
+		B1000000000000000000001B /* UIComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000000000000000000001C /* UIComponents.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A10000000000000000000002 /* JobsNotFinishedApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsNotFinishedApp.swift; sourceTree = "<group>"; };
-		A10000000000000000000004 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A10000000000000000000004 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/ContentView.swift; sourceTree = "<group>"; };
 		A10000000000000000000006 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		A10000000000000000000008 /* LocalWebServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalWebServer.swift; sourceTree = "<group>"; };
 		A1000000000000000000000A /* WebAssets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = WebAssets; sourceTree = "<group>"; };
 		A1000000000000000000000C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1000000000000000000000E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1000000000000000000000F /* JobsNotFinished.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JobsNotFinished.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B10000000000000000000002 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/Constants.swift; sourceTree = "<group>"; };
+		B10000000000000000000004 /* VoiceMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/VoiceMode.swift; sourceTree = "<group>"; };
+		B10000000000000000000006 /* FocusTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/FocusTask.swift; sourceTree = "<group>"; };
+		B10000000000000000000008 /* FocusStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/FocusStats.swift; sourceTree = "<group>"; };
+		B1000000000000000000000A /* TimerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/TimerState.swift; sourceTree = "<group>"; };
+		B1000000000000000000000C /* PersistedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/PersistedState.swift; sourceTree = "<group>"; };
+		B1000000000000000000000E /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/AppError.swift; sourceTree = "<group>"; };
+		B10000000000000000000010 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/NotificationService.swift; sourceTree = "<group>"; };
+		B10000000000000000000012 /* PersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/PersistenceService.swift; sourceTree = "<group>"; };
+		B10000000000000000000014 /* CameraManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services/CameraManaging.swift; sourceTree = "<group>"; };
+		B10000000000000000000016 /* CameraManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModels/CameraManager.swift; sourceTree = "<group>"; };
+		B10000000000000000000018 /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModels/PurchaseManager.swift; sourceTree = "<group>"; };
+		B1000000000000000000001A /* FocusStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModels/FocusStore.swift; sourceTree = "<group>"; };
+		B1000000000000000000001C /* UIComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/UIComponents.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +80,20 @@
 				A10000000000000000000004 /* ContentView.swift */,
 				A10000000000000000000006 /* WebView.swift */,
 				A10000000000000000000008 /* LocalWebServer.swift */,
+				B10000000000000000000002 /* Constants.swift */,
+				B10000000000000000000004 /* VoiceMode.swift */,
+				B10000000000000000000006 /* FocusTask.swift */,
+				B10000000000000000000008 /* FocusStats.swift */,
+				B1000000000000000000000A /* TimerState.swift */,
+				B1000000000000000000000C /* PersistedState.swift */,
+				B1000000000000000000000E /* AppError.swift */,
+				B10000000000000000000010 /* NotificationService.swift */,
+				B10000000000000000000012 /* PersistenceService.swift */,
+				B10000000000000000000014 /* CameraManaging.swift */,
+				B10000000000000000000016 /* CameraManager.swift */,
+				B10000000000000000000018 /* PurchaseManager.swift */,
+				B1000000000000000000001A /* FocusStore.swift */,
+				B1000000000000000000001C /* UIComponents.swift */,
 				A1000000000000000000000A /* WebAssets */,
 				A1000000000000000000000C /* Assets.xcassets */,
 				A1000000000000000000000E /* Info.plist */,
@@ -164,6 +206,20 @@
 				A10000000000000000000003 /* ContentView.swift in Sources */,
 				A10000000000000000000005 /* WebView.swift in Sources */,
 				A10000000000000000000007 /* LocalWebServer.swift in Sources */,
+				B10000000000000000000001 /* Constants.swift in Sources */,
+				B10000000000000000000003 /* VoiceMode.swift in Sources */,
+				B10000000000000000000005 /* FocusTask.swift in Sources */,
+				B10000000000000000000007 /* FocusStats.swift in Sources */,
+				B10000000000000000000009 /* TimerState.swift in Sources */,
+				B1000000000000000000000B /* PersistedState.swift in Sources */,
+				B1000000000000000000000D /* AppError.swift in Sources */,
+				B1000000000000000000000F /* NotificationService.swift in Sources */,
+				B10000000000000000000011 /* PersistenceService.swift in Sources */,
+				B10000000000000000000013 /* CameraManaging.swift in Sources */,
+				B10000000000000000000015 /* CameraManager.swift in Sources */,
+				B10000000000000000000017 /* PurchaseManager.swift in Sources */,
+				B10000000000000000000019 /* FocusStore.swift in Sources */,
+				B1000000000000000000001B /* UIComponents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
