@@ -1,0 +1,17 @@
+{
+  "data": {
+    "type": "inAppPurchaseAppStoreReviewScreenshots",
+    "attributes": {
+      "fileName": "photo_2026-03-22_02.07.10_750x1334.jpeg",
+      "fileSize": 95296
+    },
+    "relationships": {
+      "inAppPurchaseV2": {
+        "data": {
+          "type": "inAppPurchases",
+          "id": "6761195041"
+        }
+      }
+    }
+  }
+}

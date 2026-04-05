@@ -1,0 +1,17 @@
+{
+  "data": {
+    "type": "appScreenshots",
+    "attributes": {
+      "fileName": "photo_2026-03-22_02.07.01_1290x2796.jpg",
+      "fileSize": 249690
+    },
+    "relationships": {
+      "appScreenshotSet": {
+        "data": {
+          "type": "appScreenshotSets",
+          "id": "ecf01d49-37c9-4698-9a28-5ac4d3657041"
+        }
+      }
+    }
+  }
+}

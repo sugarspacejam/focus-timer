@@ -1,0 +1,18 @@
+{
+  "data": {
+    "type": "inAppPurchaseLocalizations",
+    "attributes": {
+      "locale": "en-US",
+      "name": "Done in 5 Pro Lifetime",
+      "description": "Unlock unlimited contracts and strict voice mode."
+    },
+    "relationships": {
+      "inAppPurchaseV2": {
+        "data": {
+          "type": "inAppPurchases",
+          "id": "6761195041"
+        }
+      }
+    }
+  }
+}

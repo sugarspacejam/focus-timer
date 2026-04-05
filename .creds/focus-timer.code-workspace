@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../iosapptemplate"
+		},
+		{
+			"path": "../../aiwakeupcaller"
+		}
+	],
+	"settings": {}
+}
