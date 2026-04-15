@@ -198,7 +198,8 @@ def patch_localization!(localization_id, metadata)
         description: metadata["description"],
         keywords: metadata["keywords"],
         supportUrl: metadata["supportUrl"],
-        marketingUrl: metadata["marketingUrl"]
+        marketingUrl: metadata["marketingUrl"],
+        privacyPolicyUrl: metadata["privacyPolicyUrl"]
       }
     }
   }

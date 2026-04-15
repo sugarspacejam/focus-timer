@@ -1,0 +1,14 @@
+{
+  "data": {
+    "type": "inAppPurchasePricePoints",
+    "id": "eyJzIjoiNjc2MTE5NTA0MSIsInQiOiJBRkciLCJwIjoiMTAwNDkifQ"
+  },
+  "relationships": {
+    "inAppPurchaseV2": {
+      "data": {
+        "type": "inAppPurchases",
+        "id": "6761195041"
+      }
+    }
+  }
+}

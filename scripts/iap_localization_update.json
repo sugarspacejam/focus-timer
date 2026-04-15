@@ -1,0 +1,10 @@
+{
+  "data": {
+    "type": "inAppPurchaseLocalizations",
+    "id": "40891c45-a65d-4fca-b772-cc6b3e33add9",
+    "attributes": {
+      "name": "Done in 5 Lifetime",
+      "description": "Unlock unlimited contracts and voice mode."
+    }
+  }
+}

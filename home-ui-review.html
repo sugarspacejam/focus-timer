@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Done in 5 - Home UI Review</title>
+  <style>
+    :root {
+      --bg: #06080d;
+      --bg-2: #0d1420;
+      --panel: rgba(255,255,255,0.06);
+      --panel-2: rgba(255,255,255,0.08);
+      --text: #f3f7fb;
+      --muted: rgba(243,247,251,0.68);
+      --cyan: #41e6ff;
+      --orange: #ff9f43;
+      --green: #28d17c;
+      --red: #ff5b6e;
+      --line: rgba(255,255,255,0.09);
+      --shadow: 0 24px 60px rgba(0,0,0,0.45);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --max: 1380px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(65,230,255,0.08), transparent 28%),
+        radial-gradient(circle at top right, rgba(255,159,67,0.09), transparent 24%),
+        linear-gradient(180deg, var(--bg), var(--bg-2));
+    }
+
+    .page {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 72px;
+    }
+
+    .hero, .panel, .story, .findings {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .hero {
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(65,230,255,0.08);
+      color: var(--cyan);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, h4, p { margin: 0; }
+    h1 { font-size: clamp(30px, 5vw, 54px); line-height: 1.02; margin-top: 18px; }
+    .hero p {
+      color: var(--muted);
+      max-width: 900px;
+      margin-top: 14px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .meta-card {
+      padding: 14px 16px;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+    }
+
+    .meta-card strong {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .panel > p {
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.55;
+    }
+
+    .phone {
+      margin-top: 18px;
+      border-radius: 36px;
+      padding: 18px;
+      background: linear-gradient(180deg, #0a1118, #06090d);
+      border: 1px solid rgba(255,255,255,0.1);
+      min-height: 780px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .notch {
+      width: 42%;
+      height: 28px;
+      background: #000;
+      border-radius: 0 0 18px 18px;
+      margin: -18px auto 16px;
+    }
+
+    .screen {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .nav-row, .list-row, .composer-row, .segmented, .task-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-row { justify-content: space-between; }
+    .title { font-size: 28px; font-weight: 800; }
+    .icon-btn, .chip, .mini-chip {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.07);
+      color: var(--text);
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      font-size: 18px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--line);
+    }
+
+    .stat strong { display: block; font-size: 22px; }
+    .stat span { font-size: 12px; color: var(--muted); }
+
+    .section {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 16px;
+    }
+
+    .section h4 { font-size: 18px; }
+    .section .sub { color: var(--muted); margin-top: 8px; font-size: 13px; line-height: 1.5; }
+
+    .input {
+      margin-top: 12px;
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+    }
+
+    .btn, .ghost-btn, .tiny-btn {
+      border: 0;
+      border-radius: 16px;
+      font-weight: 700;
+      cursor: default;
+    }
+
+    .btn {
+      background: var(--cyan);
+      color: #00131a;
+      padding: 14px 16px;
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .ghost-btn {
+      background: rgba(255,255,255,0.10);
+      color: var(--text);
+      padding: 14px 16px;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .tiny-btn {
+      background: rgba(255,255,255,0.10);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+      max-height: 250px;
+      overflow: hidden;
+    }
+
+    .task {
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--line);
+    }
+
+    .task-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .task .list-row { justify-content: space-between; align-items: flex-start; }
+
+    .chip {
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 12px;
+    }
+
+    .mini-chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+    }
+
+    .current-pain {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255,91,110,0.08);
+      border: 1px solid rgba(255,91,110,0.22);
+      color: #ffd8dd;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .concept-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .concept {
+      padding: 18px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .concept-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 14px;
+    }
+
+    .badge {
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--cyan);
+      background: rgba(65,230,255,0.09);
+      border: 1px solid rgba(65,230,255,0.18);
+      padding: 7px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .concept p, .story p, .findings li {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    .concept ul, .findings ul {
+      margin: 12px 0 0;
+      padding-left: 18px;
+    }
+
+    .layout-demo {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .lane, .workspace {
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05);
+      padding: 14px;
+      min-height: 280px;
+    }
+
+    .lane-card, .workspace-card, .quick-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    .workspace-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .inline-input {
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      width: 100%;
+    }
+
+    .story, .findings {
+      margin-top: 24px;
+      padding: 24px;
+    }
+
+    .story h2, .findings h2 { margin-bottom: 12px; }
+    .story h3 { margin-top: 20px; margin-bottom: 8px; }
+
+    .story-block {
+      padding: 16px 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      margin-top: 12px;
+    }
+
+    .quote {
+      border-left: 3px solid var(--cyan);
+      padding-left: 14px;
+      margin-top: 12px;
+      color: #dffaff;
+    }
+
+    .finding-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .finding-card {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--line);
+    }
+
+    .finding-card h4 { margin-bottom: 8px; }
+
+    @media (max-width: 1080px) {
+      .grid, .finding-grid, .layout-demo, .meta { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .page { width: min(100% - 20px, var(--max)); padding-top: 20px; }
+      .phone { min-height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <div class="eyebrow">Done in 5 / Home UX Review</div>
+      <h1>Current first-screen UI is clear, but it will break down once the user depends on it all day.</h1>
+      <p>
+        This page reconstructs the current iOS home screen from the SwiftUI source, then proposes better task creation and task-browsing flows for users with many active tasks. The goal is to protect the app’s fast, no-calendar, no-heavy-search identity while making it usable for someone who relies on it every day.
+      </p>
+      <div class="meta">
+        <div class="meta-card"><strong>4</strong><span>top-level stacked sections on the home screen</span></div>
+        <div class="meta-card"><strong>2</strong><span>task creation actions before reaching the task list</span></div>
+        <div class="meta-card"><strong>1</strong><span>single vertical scroll path for everything</span></div>
+        <div class="meta-card"><strong>0</strong><span>structural help for many-task navigation</span></div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="panel">
+        <h2>Current first page as implemented</h2>
+        <p>
+          The current home layout is a single vertical stack inside a scroll view: stats, task creation, task list, and settings. The visual language is strong: dark gradient, glass cards, cyan primary actions, and clean focus language.
+        </p>
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="nav-row">
+              <div>
+                <div style="font-size:12px; color: var(--muted);">App</div>
+                <div class="title">Done in 5</div>
+              </div>
+              <div class="icon-btn">🗑</div>
+            </div>
+
+            <div class="stats">
+              <div class="stat"><strong>3</strong><span>Today</span></div>
+              <div class="stat"><strong>7</strong><span>Streak</span></div>
+              <div class="stat"><strong>81%</strong><span>Rate</span></div>
+              <div class="stat"><strong>1</strong><span>Failures</span></div>
+            </div>
+
+            <div class="section">
+              <h4>Start a Task</h4>
+              <div class="sub">Start one 5-minute contract. If you leave early, it counts as a failure.</div>
+              <input class="input" value="What are you working on?" />
+              <button class="btn">Start 5-Minute Contract</button>
+              <button class="ghost-btn">Save Task Without Starting</button>
+              <div class="sub">Type one task and either commit now or save it for later.</div>
+              <div class="sub" style="color: var(--orange);">Free: 3 contracts per day. Unlock forever for unlimited contracts and strict voice mode.</div>
+            </div>
+
+            <div class="section">
+              <div class="task-toolbar" style="justify-content: space-between;">
+                <h4>Tasks</h4>
+                <div class="mini-chip">Reset Stats</div>
+              </div>
+              <input class="input" value="Search tasks..." />
+              <div class="task-list">
+                <div class="task">
+                  <div class="task-title">Reply to investors</div>
+                  <div class="list-row">
+                    <div class="sub" style="margin:0;">Active task row with 3 actions.</div>
+                    <div class="list-row">
+                      <div class="tiny-btn">Start</div>
+                      <div class="tiny-btn">Edit</div>
+                      <div class="tiny-btn">Delete</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="task">
+                  <div class="task-title">Refactor onboarding email</div>
+                  <div class="list-row">
+                    <div class="sub" style="margin:0;">Each row repeats the same controls.</div>
+                    <div class="list-row">
+                      <div class="tiny-btn">Start</div>
+                      <div class="tiny-btn">Edit</div>
+                      <div class="tiny-btn">Delete</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="task">
+                  <div class="task-title">Fix iOS build</div>
+                  <div class="list-row">
+                    <div class="sub" style="margin:0;">Works while the list stays short.</div>
+                    <div class="list-row">
+                      <div class="tiny-btn">Start</div>
+                      <div class="tiny-btn">Edit</div>
+                      <div class="tiny-btn">Delete</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="section">
+              <h4>Settings</h4>
+              <div class="sub">Voice mode, supportive messages, upgrade path.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="current-pain">
+          <strong>Current UX risk:</strong> the page asks the user to scroll through creation, task management, and settings in one long lane. That’s fine for a new user with 3 tasks. It becomes slow and mentally noisy for a user with 18–40 recurring tasks.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Recommended redesign direction</h2>
+        <p>
+          Keep the no-calendar, fast-contract identity. Do not turn this into a project manager. The fix is not more advanced filters. The fix is better structure: a compact task launcher, a dedicated task workspace, and clearer separation between “start now” and “manage backlog”.
+        </p>
+
+        <div class="concept-stack">
+          <div class="concept">
+            <div class="concept-top">
+              <div>
+                <h3>Concept A: Quick Start + Task Drawer</h3>
+                <p>Best if the product promise is speed. The first screen becomes a launcher, not a long management page.</p>
+              </div>
+              <div class="badge">Recommended</div>
+            </div>
+            <ul>
+              <li>Top card becomes one compact composer with a single text field and one main CTA.</li>
+              <li>Saved tasks move into a collapsible drawer or bottom sheet called <strong>Task Library</strong>.</li>
+              <li>User sees recent / pinned / unfinished tasks first, not an endless stack.</li>
+              <li>Task management actions live inside the drawer, not in the main home scroll.</li>
+            </ul>
+            <div class="layout-demo">
+              <div class="lane">
+                <h4>Home lane</h4>
+                <div class="quick-card">
+                  <div style="font-size:13px; color: var(--muted);">What are you doing right now?</div>
+                  <input class="inline-input" value="Ship App Store screenshots" />
+                  <button class="btn">Start 5-Minute Contract</button>
+                </div>
+                <div class="quick-card">
+                  <div class="list-row" style="justify-content: space-between;">
+                    <strong>Recent tasks</strong>
+                    <span class="mini-chip">Open Library</span>
+                  </div>
+                  <div class="lane-card">Write product update</div>
+                  <div class="lane-card">Fix paywall copy</div>
+                  <div class="lane-card">Inbox zero</div>
+                </div>
+              </div>
+              <div class="workspace">
+                <div class="workspace-header">
+                  <h4>Task Library</h4>
+                  <div class="list-row">
+                    <span class="mini-chip">Pinned</span>
+                    <span class="mini-chip">Recent</span>
+                    <span class="mini-chip">All</span>
+                  </div>
+                </div>
+                <div class="workspace-card">Pinned: Investor follow-up <span style="float:right;color:var(--cyan)">Start</span></div>
+                <div class="workspace-card">Pinned: Product review notes <span style="float:right;color:var(--cyan)">Start</span></div>
+                <div class="workspace-card">Recent: Fix onboarding regression <span style="float:right;color:var(--cyan)">Start</span></div>
+                <div class="workspace-card">Recent: Schedule dentist <span style="float:right;color:var(--cyan)">Start</span></div>
+                <div class="workspace-card">More tasks live here without bloating home.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="concept">
+            <div class="concept-top">
+              <div>
+                <h3>Concept B: Split home into Today / Tasks / Settings tabs</h3>
+                <p>Best if you expect repeat daily use with many saved tasks and want a more native iPhone information architecture.</p>
+              </div>
+              <div class="badge">More scalable</div>
+            </div>
+            <ul>
+              <li><strong>Today</strong>: stats, quick start, resume latest tasks.</li>
+              <li><strong>Tasks</strong>: dedicated browsing and editing view.</li>
+              <li><strong>Settings</strong>: voice mode, camera, pro, account.</li>
+              <li>No advanced search required; simple segments like Pinned / Recent / All are enough.</li>
+            </ul>
+            <p>
+              This reduces vertical fatigue and preserves speed. A user with many tasks stops feeling punished for having history.
+            </p>
+          </div>
+
+          <div class="concept">
+            <div class="concept-top">
+              <div>
+                <h3>Concept C: Task stacks instead of flat list</h3>
+                <p>Best if your users tend to repeat the same few contexts across a week.</p>
+              </div>
+              <div class="badge">Behavioral fit</div>
+            </div>
+            <ul>
+              <li>Instead of full search, group tasks into tiny smart stacks: <strong>Recently used</strong>, <strong>Frequently failed</strong>, <strong>Needs finishing</strong>, <strong>Pinned</strong>.</li>
+              <li>This makes retrieval feel intelligent without asking the user for dates or complex filters.</li>
+              <li>Paying users care less about raw search power and more about getting to the next contract in under 2 seconds.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="story">
+      <h2>Story: what a real paying user of this app looks like</h2>
+      <p>
+        The purpose of this story is not marketing. It is to simulate repeated real use and surface the annoying things that only show up after the app becomes part of someone’s actual life.
+      </p>
+
+      <div class="story-block">
+        <h3>Nadia, 34, product lead, remote, overloaded, willing to pay to stop slipping</h3>
+        <p>
+          Nadia doesn’t need another planner. She already has calendars, Slack, Linear, Notes, and 40 browser tabs. What she is missing is a tool that gets her over the hump between intention and action. She pays for Done in 5 because it gives her a small, confrontational start ritual. She opens it when she feels friction, avoidance, or task-switching shame.
+        </p>
+      </div>
+
+      <div class="story-block">
+        <h3>Monday, 9:12 AM</h3>
+        <p>
+          Nadia unlocks her phone after replying to messages she didn’t want to answer. She knows exactly what she should do next: finish the launch memo. She opens Done in 5 because she wants one small contract, not a plan for the week.
+        </p>
+        <p class="quote">
+          “I don’t want to organize my work. I want to start.”
+        </p>
+      </div>
+
+      <div class="story-block">
+        <h3>What happens with the current UI</h3>
+        <p>
+          She lands on a page with stats, task composer, task list, and settings all in one scroll. It looks good. But she has 24 saved tasks now. Some are real work, some are errands, some are repeated admin tasks she keeps reusing. She has to scroll. The task list is long. Every row has Start, Edit, Delete. The screen starts to feel like a maintenance page instead of a launch pad.
+        </p>
+        <p>
+          If she wants to quickly reuse an existing task, she has to visually scan rows. If she wants to create a new one, the composer is there, but it sits above a long list that keeps reminding her of everything else she is not doing.
+        </p>
+      </div>
+
+      <div class="story-block">
+        <h3>Tuesday, 2:47 PM</h3>
+        <p>
+          Nadia is tired. The app matters most now, not when she is fresh. She reaches for it during the low-discipline part of the day. This is when little annoyances become lethal: too much scrolling, too many repeated controls, too much visual sameness between “create”, “browse”, and “settings”.
+        </p>
+        <p>
+          She does not need a calendar. She does not need to tag tasks. She does not want to manage a system. She wants the home screen to ask one sharp question: <strong>what are you committing to right now?</strong>
+        </p>
+      </div>
+
+      <div class="story-block">
+        <h3>Why she pays</h3>
+        <p>
+          Not for storage. Not for statistics alone. She pays because the app helps her cross the activation barrier several times a day. That means the premium experience should reduce hesitation, reduce scanning, and reduce the chance of drifting into list-management behavior.
+        </p>
+      </div>
+
+      <div class="story-block">
+        <h3>What annoys Nadia after 3 weeks</h3>
+        <p>
+          She notices that saved tasks don’t feel organized by actual use. The same important recurring tasks should be instantly available. Instead, the system treats everything as one flat list. Editing and deleting are visible on every row even though most of the time she only wants to start a task. The home screen becomes crowded with capabilities she uses rarely, while the one thing she uses constantly — starting fast — gets less dominant over time.
+        </p>
+      </div>
+    </section>
+
+    <section class="findings">
+      <h2>What the story reveals</h2>
+      <div class="finding-grid">
+        <div class="finding-card">
+          <h4>1. The home screen should optimize for commitment, not management</h4>
+          <ul>
+            <li>Start now should dominate.</li>
+            <li>Task maintenance should be one layer away.</li>
+            <li>The first screen should feel lighter as task count grows, not heavier.</li>
+          </ul>
+        </div>
+        <div class="finding-card">
+          <h4>2. Flat task rows are okay for 5 tasks, bad for 25</h4>
+          <ul>
+            <li>Repeated Start / Edit / Delete controls create noise.</li>
+            <li>Search is not enough if the real issue is poor structure.</li>
+            <li>Pinned / Recent / Reuse patterns are better than advanced filtering.</li>
+          </ul>
+        </div>
+        <div class="finding-card">
+          <h4>3. Premium users probably want reuse speed more than feature depth</h4>
+          <ul>
+            <li>“Let me restart yesterday’s important task instantly.”</li>
+            <li>“Show me the few things I actually contract with all the time.”</li>
+            <li>“Don’t make me manage a catalog when I’m already procrastinating.”</li>
+          </ul>
+        </div>
+        <div class="finding-card">
+          <h4>4. The best next UI move</h4>
+          <ul>
+            <li>Make home a compact quick-start surface.</li>
+            <li>Move full task browsing to a drawer, sheet, or separate tab.</li>
+            <li>Introduce Pinned / Recent / All instead of full calendar/search systems.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

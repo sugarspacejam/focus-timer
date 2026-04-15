@@ -5,174 +5,252 @@ import Speech
 
 @MainActor
 class CameraManager: NSObject, ObservableObject, CameraManaging {
-    @Published var isSessionActive = false
-    @Published var presenceState: PresenceState = .unknown
-    
-    private var captureSession: AVCaptureSession?
-    private var videoOutput: AVCaptureVideoDataOutput?
-    private var sessionQueue = DispatchQueue(label: "camera.session")
-    private var awayThresholdTimer: Timer?
+    @Published private(set) var authorizationStatus: AVAuthorizationStatus
+    @Published private(set) var isSessionActive = false
+    @Published private(set) var presenceState: PresenceState = .idle
+    @Published private(set) var secondsAway: Int = 0
+
+    private let session = AVCaptureSession()
+    private let videoOutput = AVCaptureVideoDataOutput()
+    nonisolated private let visionQueue = DispatchQueue(label: "CameraManager.vision")
+    nonisolated private let sessionQueue = DispatchQueue(label: "CameraManager.session")
+    private let speechSynthesizer = AVSpeechSynthesizer()
+    private var isConfigured = false
+    private var awayStartedAt: Date?
+    private var didTriggerAwayFailure = false
     private var awayThresholdAction: (() -> Void)?
-    private var awayUtterances: [String] = []
-    private let synthesizer = AVSpeechSynthesizer()
-    private var lastSeenTime = Date()
-    private let awayThresholdSeconds: TimeInterval = 10
+    private var awayThresholdSeconds = 6
+    private let requiredMissCount = 8
+    private let awaySpeechRepeatInterval: TimeInterval = 4
+    private var consecutiveMissCount = 0
+    private var lastAwaySpeechAt: Date?
+    private var awayUtterances = AwayVoiceMode.supportive.utterances
+    private var awayUtteranceIndex = 0
+    private var isMonitoringActive = false
     
     override init() {
+        authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
         super.init()
     }
     
     // MARK: - CameraManaging Protocol
     
-    var isSessionActive: Bool {
-        captureSession?.isRunning == true
-    }
-    
-    func ensurePermissionAndStart() async throws {
-        let status = await AVCaptureDevice.requestAccess(for: .video)
-        guard status else {
-            throw AppError.cameraPermissionDenied
+    func ensurePermissionAndStart() async {
+        authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
+        if authorizationStatus == .authorized {
+            configureIfNeeded()
+            startSession()
+            return
         }
-        
-        try await startSession()
+
+        if authorizationStatus == .notDetermined {
+            let granted = await AVCaptureDevice.requestAccess(for: .video)
+            authorizationStatus = granted ? .authorized : .denied
+            if granted {
+                configureIfNeeded()
+                startSession()
+            } else {
+                presenceState = .noPermission
+            }
+            return
+        }
+
+        presenceState = .noPermission
     }
     
     func stopSession() {
-        sessionQueue.async { [weak self] in
-            self?.captureSession?.stopRunning()
-            self?.captureSession = nil
-            self?.videoOutput = nil
-            
-            DispatchQueue.main.async {
-                self?.isSessionActive = false
-                self?.presenceState = .unknown
-            }
+        isMonitoringActive = false
+        if session.isRunning {
+            session.stopRunning()
         }
-        
-        awayThresholdTimer?.invalidate()
-        awayThresholdTimer = nil
+        if speechSynthesizer.isSpeaking {
+            speechSynthesizer.stopSpeaking(at: .immediate)
+        }
+        awayStartedAt = nil
+        secondsAway = 0
+        didTriggerAwayFailure = false
+        consecutiveMissCount = 0
+        lastAwaySpeechAt = nil
+        isSessionActive = false
+        presenceState = .idle
     }
     
     func setAwayThresholdAction(_ action: @escaping () -> Void) {
         awayThresholdAction = action
     }
+
+    func updateAwayFailureSeconds(_ seconds: Int) {
+        awayThresholdSeconds = max(seconds, 1)
+    }
     
     func updateAwayUtterances(_ utterances: [String]) {
+        if utterances.isEmpty {
+            fatalError("Away utterances are required")
+        }
         awayUtterances = utterances
     }
     
     // MARK: - Private Methods
     
-    private func startSession() async throws {
-        guard captureSession == nil else { return }
-        
-        try await withCheckedThrowingContinuation { continuation in
-            sessionQueue.async { [weak self] in
-                do {
-                    try self?.setupCaptureSession()
-                    DispatchQueue.main.async {
-                        self?.isSessionActive = true
-                        continuation.resume()
-                    }
-                } catch {
-                    continuation.resume(throwing: error)
-                }
-            }
+    private func configureIfNeeded() {
+        if isConfigured {
+            return
         }
-    }
-    
-    private func setupCaptureSession() throws {
-        let session = AVCaptureSession()
-        session.sessionPreset = .low
-        
-        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front),
-              let input = try? AVCaptureDeviceInput(device: device) else {
-            throw AppError.cameraPermissionDenied
+        guard let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front) else {
+            presenceState = .error
+            return
         }
-        
+        guard let input = try? AVCaptureDeviceInput(device: camera) else {
+            presenceState = .error
+            return
+        }
+
+        session.beginConfiguration()
         if session.canAddInput(input) {
             session.addInput(input)
-        } else {
-            throw AppError.cameraPermissionDenied
         }
-        
-        let output = AVCaptureVideoDataOutput()
-        output.setSampleBufferDelegate(self, queue: sessionQueue)
-        output.videoSettings = [
-            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA
-        ]
-        
-        if session.canAddOutput(output) {
-            session.addOutput(output)
-        } else {
-            throw AppError.cameraPermissionDenied
+        videoOutput.alwaysDiscardsLateVideoFrames = true
+        videoOutput.setSampleBufferDelegate(self, queue: visionQueue)
+        if session.canAddOutput(videoOutput) {
+            session.addOutput(videoOutput)
         }
-        
-        captureSession = session
-        videoOutput = output
-        
-        session.startRunning()
-        startAwayThresholdTimer()
-    }
-    
-    private func startAwayThresholdTimer() {
-        awayThresholdTimer?.invalidate()
-        awayThresholdTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            self?.checkAwayThreshold()
-        }
-    }
-    
-    private func checkAwayThreshold() {
-        let timeSinceLastSeen = Date().timeIntervalSince(lastSeenTime)
-        
-        if timeSinceLastSeen > awayThresholdSeconds {
-            if presenceState != .away {
-                DispatchQueue.main.async {
-                    self.presenceState = .away
-                    self.handleAwayState()
+        session.sessionPreset = .medium
+        if let connection = videoOutput.connection(with: .video) {
+            if #available(iOS 17.0, *) {
+                if connection.isVideoRotationAngleSupported(90) {
+                    connection.videoRotationAngle = 90
                 }
-            }
-        } else {
-            if presenceState != .present {
-                DispatchQueue.main.async {
-                    self.presenceState = .present
-                }
+            } else if connection.isVideoOrientationSupported {
+                connection.videoOrientation = .portrait
             }
         }
+        session.commitConfiguration()
+        isConfigured = true
     }
     
-    private func handleAwayState() {
-        speakRandomAwayUtterance()
-        awayThresholdAction?()
+    private func startSession() {
+        if session.isRunning {
+            isSessionActive = true
+            isMonitoringActive = true
+            return
+        }
+
+        isMonitoringActive = true
+        isSessionActive = true
+        didTriggerAwayFailure = false
+        awayStartedAt = nil
+        secondsAway = 0
+        consecutiveMissCount = 0
+        lastAwaySpeechAt = nil
+        presenceState = .idle
+
+        let session = self.session
+        sessionQueue.async {
+            session.startRunning()
+        }
     }
     
-    private func speakRandomAwayUtterance() {
-        guard !awayUtterances.isEmpty else { return }
-        
-        let randomUtterance = awayUtterances.randomElement() ?? ""
-        let utterance = AVSpeechUtterance(string: randomUtterance)
+    private func handleDetection(hasPerson: Bool) {
+        if isMonitoringActive == false {
+            return
+        }
+
+        if hasPerson {
+            consecutiveMissCount = 0
+            awayStartedAt = nil
+            secondsAway = 0
+            didTriggerAwayFailure = false
+            lastAwaySpeechAt = nil
+            presenceState = .present
+            return
+        }
+
+        consecutiveMissCount += 1
+        if consecutiveMissCount < requiredMissCount {
+            if presenceState == .idle {
+                presenceState = .idle
+            } else {
+                presenceState = .present
+            }
+            return
+        }
+
+        presenceState = .away
+        if awayStartedAt == nil {
+            awayStartedAt = Date()
+            speakAwayAlertIfNeeded(force: true)
+        }
+        guard let awayStartedAt else {
+            secondsAway = 0
+            return
+        }
+
+        secondsAway = Int(Date().timeIntervalSince(awayStartedAt))
+        speakAwayAlertIfNeeded(force: false)
+
+        if secondsAway >= awayThresholdSeconds && !didTriggerAwayFailure {
+            didTriggerAwayFailure = true
+            awayThresholdAction?()
+        }
+    }
+
+    private func speakAwayAlertIfNeeded(force: Bool) {
+        if isMonitoringActive == false {
+            return
+        }
+
+        let now = Date()
+        if !force {
+            if let lastAwaySpeechAt, now.timeIntervalSince(lastAwaySpeechAt) < awaySpeechRepeatInterval {
+                return
+            }
+            if speechSynthesizer.isSpeaking {
+                return
+            }
+        }
+
+        if awayUtterances.isEmpty {
+            return
+        }
+
+        let utterance = AVSpeechUtterance(string: awayUtterances[awayUtteranceIndex % awayUtterances.count])
         utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-        utterance.rate = 0.5
-        
-        synthesizer.speak(utterance)
+        utterance.rate = 0.52
+        utterance.pitchMultiplier = 1.0
+        utterance.volume = 1.0
+        awayUtteranceIndex += 1
+        lastAwaySpeechAt = now
+        speechSynthesizer.speak(utterance)
     }
 }
 
 // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
 
 extension CameraManager: AVCaptureVideoDataOutputSampleBufferDelegate {
-    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        
-        let request = VNDetectFaceRectanglesRequest { [weak self] request, error in
-            guard let observations = request.results as? [VNFaceObservation] else { return }
-            
-            DispatchQueue.main.async {
-                self?.lastSeenTime = Date()
+    nonisolated func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            Task { @MainActor in
+                self.presenceState = .error
+            }
+            return
+        }
+
+        do {
+            let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .leftMirrored, options: [:])
+            let faceRequest = VNDetectFaceRectanglesRequest()
+            let upperBodyRequest = VNDetectHumanRectanglesRequest()
+            upperBodyRequest.upperBodyOnly = true
+            try handler.perform([faceRequest, upperBodyRequest])
+
+            let hasFace = !(faceRequest.results ?? []).isEmpty
+            let hasUpperBody = !(upperBodyRequest.results ?? []).isEmpty
+            Task { @MainActor in
+                self.handleDetection(hasPerson: hasFace || hasUpperBody)
+            }
+        } catch {
+            Task { @MainActor in
+                self.presenceState = .error
             }
         }
-        
-        let handler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .leftMirrored, options: [:])
-        try? handler.perform([request])
     }
 }

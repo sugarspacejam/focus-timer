@@ -29,11 +29,11 @@ struct TaskState: Equatable {
 struct UserState: Equatable {
     var selectedVoiceMode: AwayVoiceMode
     var supportiveUtterances: [String]
-    var isProUnlocked: Bool
+    var awayFailureSeconds: Int
     
     init() {
         self.selectedVoiceMode = .supportive
         self.supportiveUtterances = AwayVoiceMode.supportive.utterances
-        self.isProUnlocked = false
+        self.awayFailureSeconds = 6
     }
 }

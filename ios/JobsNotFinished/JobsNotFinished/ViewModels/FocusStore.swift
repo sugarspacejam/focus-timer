@@ -1,5 +1,6 @@
 import Foundation
 import UserNotifications
+import UIKit
 
 @MainActor
 class FocusStore: ObservableObject {
@@ -11,12 +12,13 @@ class FocusStore: ObservableObject {
     
     // Services
     private let persistenceService: Persisting
-    private let notificationService: NotificationService
+    private let notificationService: NotificationServicing
     
     // Timer management
     private var timer: Timer?
+    private var notificationSchedulingTask: Task<Void, Never>?
     
-    init(persistenceService: Persisting = UserDefaultsPersistence(), notificationService: NotificationService = NotificationService()) {
+    init(persistenceService: Persisting = UserDefaultsPersistence(), notificationService: NotificationServicing = NotificationService()) {
         self.persistenceService = persistenceService
         self.notificationService = notificationService
         
@@ -61,26 +63,50 @@ class FocusStore: ObservableObject {
         }
         return Int((Double(stats.completedBlocks) / Double(stats.totalBlocks) * 100).rounded())
     }
+
+    var totalCompletions: Int {
+        stats.completedBlocks
+    }
+
+    var totalFailures: Int {
+        stats.failedBlocks
+    }
+
+    var visibleRemainingSeconds: Int {
+        guard let startDate = timerState.startDate,
+              timerState.activeTaskID != nil,
+              !timerState.isCompleted else {
+            return timerState.remainingSeconds
+        }
+
+        let elapsed = Date().timeIntervalSince(startDate)
+        return max(Int(Constants.Timer.durationSeconds) - Int(elapsed), 0)
+    }
     
     var progress: Double {
-        Double(timerState.remainingSeconds) / Double(Constants.Timer.durationSeconds)
+        Double(visibleRemainingSeconds) / Double(Constants.Timer.durationSeconds)
     }
     
     var formattedRemaining: String {
-        let minutes = timerState.remainingSeconds / 60
-        let seconds = timerState.remainingSeconds % 60
+        let minutes = visibleRemainingSeconds / 60
+        let seconds = visibleRemainingSeconds % 60
         return String(format: "%d:%02d", minutes, seconds)
     }
     
     var canStartContract: Bool {
-        userState.isProUnlocked || stats.todayBlocks < Constants.Limits.freeContractsPerDay
+        true
+    }
+
+    var canUseEnforcement: Bool {
+        true
     }
     
     var awayUtterances: [String] {
-        if userState.selectedVoiceMode == .supportive {
-            return userState.supportiveUtterances
-        }
-        return AwayVoiceMode.strict.utterances
+        userState.supportiveUtterances
+    }
+
+    var awayFailureSeconds: Int {
+        userState.awayFailureSeconds
     }
     
     // MARK: - Timer Management
@@ -113,18 +139,16 @@ class FocusStore: ObservableObject {
         timerState.motivationalMessageIndex += 1
         
         try persist()
-        
-        // Schedule notification
-        if let task = activeTask {
-            let completionDate = Date().addingTimeInterval(Constants.Timer.durationSeconds)
-            try await notificationService.scheduleTimerCompletion(for: task.name, at: completionDate)
-        }
+
+        scheduleNotificationIfNeeded()
         
         startHeartbeat()
     }
     
     func stopTimer(asFailure: Bool) {
         stopHeartbeat()
+        notificationSchedulingTask?.cancel()
+        notificationSchedulingTask = nil
         
         Task {
             await notificationService.cancelTimerCompletion()
@@ -162,6 +186,8 @@ class FocusStore: ObservableObject {
         }
         
         stopHeartbeat()
+        notificationSchedulingTask?.cancel()
+        notificationSchedulingTask = nil
         
         Task {
             await notificationService.cancelTimerCompletion()
@@ -180,6 +206,7 @@ class FocusStore: ObservableObject {
             stats.taskTimeSpent[task.id, default: 0] += Int(Constants.Timer.durationSeconds)
         }
         
+        timerState.remainingSeconds = 0
         timerState.isCompleted = true
         
         do {
@@ -190,13 +217,34 @@ class FocusStore: ObservableObject {
     }
     
     func restartCompletedTimer() {
-        guard let activeTaskID = timerState.activeTaskID else {
+        guard timerState.isCompleted, let activeTaskID = timerState.activeTaskID else {
             return
         }
         do {
             try startTimer(for: activeTaskID)
         } catch {
             print("Failed to restart timer: \(error)")
+        }
+    }
+
+    func returnToTasks() {
+        stopHeartbeat()
+        notificationSchedulingTask?.cancel()
+        notificationSchedulingTask = nil
+
+        Task {
+            await notificationService.cancelTimerCompletion()
+        }
+
+        timerState.activeTaskID = nil
+        timerState.startDate = nil
+        timerState.isCompleted = false
+        timerState.remainingSeconds = Int(Constants.Timer.durationSeconds)
+
+        do {
+            try persist()
+        } catch {
+            print("Failed to persist return to tasks: \(error)")
         }
     }
     
@@ -247,12 +295,12 @@ class FocusStore: ObservableObject {
     
     func prepareNotifications() async throws {
         try await notificationService.requestPermissions()
-        if isTimerActive && !timerState.isCompleted {
-            if let task = activeTask {
-                let completionDate = Date().addingTimeInterval(TimeInterval(timerState.remainingSeconds))
-                try await notificationService.scheduleTimerCompletion(for: task.name, at: completionDate)
-            }
+        guard isTimerActive, !timerState.isCompleted, let task = activeTask else {
+            return
         }
+
+        let completionDate = Date().addingTimeInterval(TimeInterval(timerState.remainingSeconds))
+        try await notificationService.scheduleTimerCompletion(for: task.name, at: completionDate)
     }
     
     func prepareForBackground() {
@@ -261,8 +309,29 @@ class FocusStore: ObservableObject {
         }
         
         syncRemainingSeconds()
+
+        let application = UIApplication.shared
+        var backgroundTaskID: UIBackgroundTaskIdentifier = .invalid
+        backgroundTaskID = application.beginBackgroundTask(withName: "ScheduleTimerCompletion") {
+            if backgroundTaskID != .invalid {
+                application.endBackgroundTask(backgroundTaskID)
+                backgroundTaskID = .invalid
+            }
+        }
         
-        Task {
+        notificationSchedulingTask?.cancel()
+        notificationSchedulingTask = Task {
+            defer {
+                if backgroundTaskID != .invalid {
+                    application.endBackgroundTask(backgroundTaskID)
+                    backgroundTaskID = .invalid
+                }
+            }
+
+            guard !Task.isCancelled else {
+                return
+            }
+
             if let task = activeTask {
                 let completionDate = Date().addingTimeInterval(TimeInterval(timerState.remainingSeconds))
                 do {
@@ -301,16 +370,7 @@ class FocusStore: ObservableObject {
     }
     
     // MARK: - Settings
-    
-    func setProUnlocked(_ unlocked: Bool) {
-        userState.isProUnlocked = unlocked
-        do {
-            try persist()
-        } catch {
-            print("Failed to persist pro status: \(error)")
-        }
-    }
-    
+
     func toggleCamera() {
         taskState.isCameraEnabled.toggle()
         do {
@@ -337,6 +397,15 @@ class FocusStore: ObservableObject {
             print("Failed to persist utterances: \(error)")
         }
     }
+
+    func updateAwayFailureSeconds(_ seconds: Int) {
+        userState.awayFailureSeconds = max(seconds, 1)
+        do {
+            try persist()
+        } catch {
+            print("Failed to persist away failure seconds: \(error)")
+        }
+    }
     
     // MARK: - Stats Management
     
@@ -350,7 +419,7 @@ class FocusStore: ObservableObject {
     }
     
     func clearAll() throws {
-        taskState.tasks.removeAll()
+        taskState = TaskState()
         stats = FocusStats()
         timerState = TimerState()
         userState = UserState()
@@ -400,26 +469,31 @@ class FocusStore: ObservableObject {
     }
     
     private func migrateDayIfNeeded() {
-        let today = Calendar.current.startOfDay(for: Date())
-        let lastOpen = Calendar.current.startOfDay(for: UserDefaults.standard.object(forKey: "lastOpen") as? Date ?? today)
-        
-        if today > lastOpen {
+        let today = FocusStats.currentStatsDay
+
+        if stats.statsDay != today {
+            stats.statsDay = today
             stats.todayBlocks = 0
-            UserDefaults.standard.set(today, forKey: "lastOpen")
+            do {
+                try persist()
+            } catch {
+                print("Failed to persist migrated stats day: \(error)")
+            }
         }
     }
-    
+
     private func persist() throws {
         let persistedState = PersistedState(
             tasks: taskState.tasks,
             stats: stats,
             activeTaskID: timerState.activeTaskID,
             timerStartDate: timerState.startDate,
+            remainingSeconds: timerState.remainingSeconds,
             timerCompleted: timerState.isCompleted,
             isCameraEnabled: taskState.isCameraEnabled,
             selectedVoiceMode: userState.selectedVoiceMode,
             supportiveUtterances: userState.supportiveUtterances,
-            isProUnlocked: userState.isProUnlocked
+            awayFailureSeconds: userState.awayFailureSeconds
         )
         
         try persistenceService.save(persistedState, forKey: Constants.Persistence.storeKey)
@@ -433,18 +507,59 @@ class FocusStore: ObservableObject {
             stats = state.stats
             timerState.activeTaskID = state.activeTaskID
             timerState.startDate = state.timerStartDate
+            timerState.remainingSeconds = state.remainingSeconds
             timerState.isCompleted = state.timerCompleted
             taskState.isCameraEnabled = state.isCameraEnabled
             userState.selectedVoiceMode = state.selectedVoiceMode
             userState.supportiveUtterances = state.supportiveUtterances
-            userState.isProUnlocked = state.isProUnlocked
-            
+            userState.awayFailureSeconds = state.awayFailureSeconds
+
             if timerState.startDate != nil && timerState.activeTaskID != nil && !timerState.isCompleted {
                 timerState.motivationalMessageIndex = Int.random(in: 0..<6)
             }
         } catch {
             print("Failed to load persisted state: \(error)")
             // Start with default state
+        }
+    }
+
+    private func scheduleNotificationIfNeeded() {
+        guard !timerState.isCompleted,
+              let task = activeTask,
+              let activeTaskID = timerState.activeTaskID,
+              let startDate = timerState.startDate else {
+            return
+        }
+
+        notificationSchedulingTask?.cancel()
+        let expectedTaskID = activeTaskID
+        let expectedStartDate = startDate
+        let taskName = task.name
+        let completionDate = Date().addingTimeInterval(TimeInterval(timerState.remainingSeconds))
+        notificationSchedulingTask = Task {
+            do {
+                await Task.yield()
+
+                guard Task.isCancelled == false else {
+                    return
+                }
+
+                let shouldSchedule = await MainActor.run {
+                    self.timerState.isCompleted == false &&
+                    self.timerState.activeTaskID == expectedTaskID &&
+                    self.timerState.startDate == expectedStartDate
+                }
+
+                guard shouldSchedule else {
+                    return
+                }
+
+                try await notificationService.scheduleTimerCompletion(for: taskName, at: completionDate)
+            } catch {
+                if Task.isCancelled == false {
+                    print("Failed to schedule notification: \(error)")
+                }
+            }
         }
     }
 }

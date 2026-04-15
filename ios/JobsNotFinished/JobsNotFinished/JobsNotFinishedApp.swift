@@ -4,7 +4,7 @@ import SwiftUI
 struct JobsNotFinishedApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomeContentView()
         }
     }
 }

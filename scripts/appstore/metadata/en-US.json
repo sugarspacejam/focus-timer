@@ -6,11 +6,11 @@
     "APP_IPHONE_67",
     "APP_IPHONE_65"
   ],
-  "promotionalText": "A strict 5-minute contract to stop drifting and finish the task.",
-  "description": "Done in 5 is a strict 5-minute contract. Start a block, stay in frame, and finish the task.\n\nFree gives you 3 contracts per day. Unlock forever for unlimited contracts and strict accountability voice.\n\nFeatures:\n- 5-minute contracts\n- Strict voice modes\n- Lifetime unlock (one-time purchase)",
+  "promotionalText": "A strict 5-minute contract timer that keeps you on the task until the block is done.",
+  "description": "Done in 5 is a strict 5-minute contract timer. Start a block, stay with the task, and finish the work.\n\nIf you enable camera accountability, the app checks that you stay in frame while the app is open during the active contract.\n\nFeatures:\n- 5-minute focus contracts\n- foreground camera accountability\n- editable away voice lines\n- completion notifications",
   "keywords": "focus,accountability,timer,productivity,deep work,contracts",
-  "supportUrl": "https://example.com/support",
-  "marketingUrl": "https://example.com",
-  "privacyPolicyUrl": "https://example.com/privacy",
+  "supportUrl": "https://github.com/sugarspacejam/focus-timer",
+  "marketingUrl": "https://github.com/sugarspacejam/focus-timer",
+  "privacyPolicyUrl": "https://github.com/sugarspacejam/focus-timer/blob/main/PRIVACY.md",
   "copyright": "© 2026 Chen Toledano"
 }
