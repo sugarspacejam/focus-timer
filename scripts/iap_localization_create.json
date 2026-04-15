@@ -1,0 +1,18 @@
+{
+  "data": {
+    "type": "inAppPurchaseLocalizations",
+    "attributes": {
+      "name": "Done in 5 Lifetime",
+      "description": "Unlock unlimited 5-minute contracts and strict accountability voice forever. One-time purchase.",
+      "locale": "en-US"
+    },
+    "relationships": {
+      "inAppPurchaseV2": {
+        "data": {
+          "type": "inAppPurchases",
+          "id": "6761195041"
+        }
+      }
+    }
+  }
+}

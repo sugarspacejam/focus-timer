@@ -44,10 +44,6 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Done in 5 uses the camera for Stay on Task. If you leave the frame too long, the block fails.</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>background-processing</string>
-	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

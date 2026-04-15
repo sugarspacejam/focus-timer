@@ -4,10 +4,11 @@ import StoreKit
 @MainActor
 class PurchaseManager: ObservableObject {
     @Published var isUnlocked = false
+    @Published var isLoading = false
     @Published var errorMessage: String?
     
-    private let productID = "com.5minutesblockstimer.pro"
-    private var updateListenerTask: Task<Void, Error>?
+    private let productID = "com.5minutesblockstimer.pro.lifetime"
+    private var updateListenerTask: Task<Void, Never>?
     
     init() {
         updateListenerTask = observeTransactionUpdates()
@@ -18,35 +19,60 @@ class PurchaseManager: ObservableObject {
     }
     
     func prepare() async {
+        errorMessage = nil
         await refreshEntitlements()
     }
     
     func purchase() async throws {
-        guard let product = try await Product.products(for: [productID]).first else {
-            throw AppError.transactionVerificationFailed
-        }
-        
-        let result = try await product.purchase()
-        
-        switch result {
-        case .success(let verification):
-            let transaction = try verify(verification)
-            await transaction.finish()
-            await refreshEntitlements()
-        case .pending:
-            // Transaction is pending - wait for it to complete
-            break
-        case .userCancelled:
-            // User cancelled the purchase
-            break
-        @unknown default:
-            break
+        isLoading = true
+        defer { isLoading = false }
+
+        errorMessage = nil
+
+        do {
+            guard let product = try await Product.products(for: [productID]).first else {
+                errorMessage = "Product not available yet. Confirm the IAP exists in App Store Connect and your device is signed into a Sandbox account."
+                throw AppError.transactionVerificationFailed
+            }
+
+            let result = try await product.purchase()
+
+            switch result {
+            case .success(let verification):
+                let transaction = try verify(verification)
+                await transaction.finish()
+                await refreshEntitlements()
+            case .pending:
+                errorMessage = "Purchase pending."
+            case .userCancelled:
+                errorMessage = nil
+            @unknown default:
+                errorMessage = "Unknown purchase state."
+            }
+        } catch {
+            if errorMessage == nil {
+                errorMessage = "Purchase failed: \(error.localizedDescription)"
+            }
+            throw error
         }
     }
     
     func restore() async throws {
-        try await AppStore.sync()
-        await refreshEntitlements()
+        isLoading = true
+        defer { isLoading = false }
+
+        errorMessage = nil
+
+        do {
+            try await AppStore.sync()
+            await refreshEntitlements()
+            if isUnlocked == false {
+                errorMessage = "No purchase found to restore for this Apple ID."
+            }
+        } catch {
+            errorMessage = "Restore failed: \(error.localizedDescription)"
+            throw error
+        }
     }
     
     private func refreshEntitlements() async {

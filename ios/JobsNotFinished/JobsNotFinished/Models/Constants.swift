@@ -6,7 +6,7 @@ enum Constants {
     }
     
     enum Limits {
-        static let freeContractsPerDay = 3
+        static let freeContractsPerDay = 5
     }
     
     enum Notifications {

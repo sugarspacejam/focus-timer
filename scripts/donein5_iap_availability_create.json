@@ -2,7 +2,8 @@
   "data": {
     "type": "inAppPurchaseAvailabilities",
     "attributes": {
-      "availableInNewTerritories": true
+      "availableInNewTerritories": true,
+      "availableInAllTerritories": true
     },
     "relationships": {
       "availableTerritories": {
@@ -13,7 +14,7 @@
           }
         ]
       },
-      "inAppPurchase": {
+      "inAppPurchaseV2": {
         "data": {
           "type": "inAppPurchases",
           "id": "6761195041"

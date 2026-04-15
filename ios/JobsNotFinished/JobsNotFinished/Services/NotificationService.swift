@@ -1,7 +1,13 @@
 import Foundation
 import UserNotifications
 
-class NotificationService: ObservableObject {
+protocol NotificationServicing {
+    func requestPermissions() async throws
+    func scheduleTimerCompletion(for taskName: String, at date: Date) async throws
+    func cancelTimerCompletion() async
+}
+
+class NotificationService: ObservableObject, NotificationServicing {
     private let center = UNUserNotificationCenter.current()
     
     func requestPermissions() async throws {

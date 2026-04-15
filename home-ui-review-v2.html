@@ -1,0 +1,881 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Done in 5 - Home UI Review (V2)</title>
+  <style>
+    :root {
+      --bg0: #05070c;
+      --bg1: #070b12;
+      --bg2: #0b1320;
+      --card: rgba(255,255,255,0.06);
+      --card2: rgba(255,255,255,0.09);
+      --line: rgba(255,255,255,0.10);
+      --text: #f4f7fb;
+      --muted: rgba(244,247,251,0.70);
+      --muted2: rgba(244,247,251,0.55);
+      --cyan: #41e6ff;
+      --cyan2: rgba(65,230,255,0.12);
+      --orange: #ff9f43;
+      --green: #2be08a;
+      --red: #ff5b6e;
+      --shadow: 0 28px 72px rgba(0,0,0,0.52);
+      --r-xl: 28px;
+      --r-lg: 22px;
+      --r-md: 16px;
+      --r-sm: 12px;
+      --max: 1400px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(65,230,255,0.10), transparent 32%),
+        radial-gradient(circle at 88% 10%, rgba(255,159,67,0.12), transparent 30%),
+        radial-gradient(circle at 70% 86%, rgba(65,230,255,0.06), transparent 35%),
+        linear-gradient(180deg, var(--bg0), var(--bg2));
+    }
+
+    .page {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 64px;
+    }
+
+    .hero {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      backdrop-filter: blur(14px);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(65,230,255,0.18);
+      background: rgba(65,230,255,0.08);
+      color: var(--cyan);
+      font-size: 12px;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, h4, p { margin: 0; }
+    h1 {
+      margin-top: 14px;
+      font-size: clamp(28px, 4.6vw, 52px);
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+    }
+
+    .hero p {
+      margin-top: 12px;
+      max-width: 980px;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 15.5px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-weight: 650;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .pill.primary {
+      background: rgba(65,230,255,0.14);
+      border-color: rgba(65,230,255,0.22);
+      color: #dffaff;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 22px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--r-xl);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      backdrop-filter: blur(14px);
+    }
+
+    .panel > p {
+      margin-top: 10px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .phone {
+      margin-top: 16px;
+      border-radius: 40px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: linear-gradient(180deg, #0a1018, #05070b);
+      padding: 18px;
+      overflow: hidden;
+      position: relative;
+      min-height: 820px;
+    }
+
+    .notch {
+      width: 44%;
+      height: 30px;
+      background: #000;
+      border-radius: 0 0 18px 18px;
+      margin: -18px auto 14px;
+    }
+
+    .screen {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .nav .title {
+      font-size: 28px;
+      font-weight: 850;
+      letter-spacing: -0.02em;
+    }
+
+    .nav .subtitle {
+      font-size: 12px;
+      color: var(--muted2);
+      margin-bottom: 2px;
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.07);
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.06);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .stat strong { display:block; font-size: 22px; }
+    .stat span { font-size: 12px; color: var(--muted2); }
+
+    .section {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.06);
+      border-radius: 24px;
+      padding: 16px;
+    }
+
+    .section h4 { font-size: 18px; }
+    .section .sub {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .composer {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .input {
+      width: 100%;
+      padding: 14px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      outline: none;
+    }
+
+    .cta {
+      width: 100%;
+      border: 0;
+      border-radius: 16px;
+      padding: 14px 14px;
+      font-weight: 800;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .cta.primary {
+      background: var(--cyan);
+      color: #001319;
+      box-shadow: 0 16px 34px rgba(65,230,255,0.18);
+    }
+
+    .cta.secondary {
+      background: rgba(255,255,255,0.10);
+      border: 1px solid var(--line);
+      color: var(--text);
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .seg {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .chip {
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.07);
+      color: var(--text);
+      padding: 7px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .chip.active {
+      border-color: rgba(65,230,255,0.25);
+      background: rgba(65,230,255,0.12);
+      color: #dffaff;
+    }
+
+    .task-mini-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .task-card {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05);
+      border-radius: 18px;
+      padding: 12px;
+    }
+
+    .task-card .name { font-weight: 750; font-size: 14px; }
+    .task-card .meta { margin-top: 6px; font-size: 12px; color: var(--muted2); }
+
+    .start-link {
+      float: right;
+      color: var(--cyan);
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .hint {
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,159,67,0.24);
+      background: rgba(255,159,67,0.08);
+      color: rgba(255,235,220,0.92);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    /* Drawer */
+    .drawer {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 78%;
+      transform: translateY(72%);
+      transition: transform 220ms ease;
+      background: rgba(10,15,22,0.92);
+      border-top: 1px solid rgba(255,255,255,0.12);
+      border-radius: 26px 26px 0 0;
+      box-shadow: 0 -24px 80px rgba(0,0,0,0.65);
+      backdrop-filter: blur(18px);
+      padding: 14px;
+    }
+
+    .drawer.open { transform: translateY(0%); }
+
+    .grab {
+      width: 58px;
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.22);
+      margin: 8px auto 12px;
+    }
+
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .drawer-title { font-size: 16px; font-weight: 850; }
+
+    .drawer-body {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      height: calc(100% - 60px);
+    }
+
+    .search {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .search input {
+      flex: 1;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      outline: none;
+    }
+
+    .list {
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.05);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .list-head {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .list-scroll {
+      overflow: auto;
+      padding: 8px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .row-item {
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .row-item .top {
+      display:flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .row-item .top strong { font-size: 14px; }
+    .row-item .top .actions { display:flex; gap: 8px; }
+
+    .act {
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.08);
+      font-size: 12px;
+      color: var(--text);
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .act.start { border-color: rgba(65,230,255,0.22); background: rgba(65,230,255,0.12); color: #dffaff; }
+
+    .row-item .bottom {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted2);
+      line-height: 1.5;
+    }
+
+    /* Design compare cards */
+    .compare {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    .compare .panel { padding: 18px; }
+
+    .mini {
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.05);
+      border-radius: 22px;
+      padding: 14px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tab {
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.06);
+      text-align: center;
+      font-weight: 750;
+      font-size: 12px;
+    }
+
+    .tab.active { border-color: rgba(65,230,255,0.22); background: rgba(65,230,255,0.12); color: #dffaff; }
+
+    .stack {
+      margin-top: 10px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .stack-card {
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+      padding: 12px;
+    }
+
+    .stack-card .hdr {
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 10px;
+    }
+
+    .stack-card .hdr strong { font-size: 13px; }
+
+    .stack-card .items {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .stack-item {
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.05);
+      font-size: 13px;
+    }
+
+    @media (max-width: 1080px) {
+      .layout, .compare { grid-template-columns: 1fr; }
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <div class="eyebrow">Home UI Review (V2)</div>
+      <h1>Recommended design: Quick Start + Task Library drawer</h1>
+      <p>
+        This is a higher-fidelity mock of the direction I recommended: keep the home screen as a <strong>launcher</strong> (commit now), and move the large task list into a <strong>Task Library</strong> drawer. You get scalability (lots of tasks) without adding calendars, dates, or heavy search.
+      </p>
+      <div class="hero-actions">
+        <div class="pill primary" id="openDrawerTop">Open Task Library</div>
+        <div class="pill" id="toggleMany">Simulate 40 tasks</div>
+        <div class="pill" id="togglePinned">Toggle pinned-heavy</div>
+      </div>
+    </section>
+
+    <div class="layout">
+      <section class="panel">
+        <h2>Prototype: Home + Drawer</h2>
+        <p>
+          Interaction: click <strong>Open Library</strong> or swipe area (not implemented) to reveal the drawer. The home surface stays compact even if you have 40 tasks.
+        </p>
+
+        <div class="phone" id="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="nav">
+              <div>
+                <div class="subtitle">App</div>
+                <div class="title">Done in 5</div>
+              </div>
+              <div style="display:flex; gap:10px;">
+                <div class="icon-btn" title="History">🗂</div>
+                <div class="icon-btn" title="Clear">🗑</div>
+              </div>
+            </div>
+
+            <div class="cards">
+              <div class="stat"><strong id="statToday">3</strong><span>Today</span></div>
+              <div class="stat"><strong>7</strong><span>Streak</span></div>
+              <div class="stat"><strong>81%</strong><span>Rate</span></div>
+              <div class="stat"><strong>1</strong><span>Failures</span></div>
+            </div>
+
+            <div class="section">
+              <div class="row">
+                <h4>Quick Start</h4>
+                <div class="seg">
+                  <div class="chip active">Contract</div>
+                  <div class="chip">Save</div>
+                </div>
+              </div>
+              <div class="sub">
+                What are you committing to <strong>right now</strong>? One action. One 5‑minute contract.
+              </div>
+              <div class="composer">
+                <input class="input" id="taskInput" placeholder="What are you working on?" value="Ship App Store screenshots" />
+                <button class="cta primary" id="startBtn">Start 5‑Minute Contract</button>
+                <button class="cta secondary" id="saveBtn">Save to Library</button>
+              </div>
+            </div>
+
+            <div class="section">
+              <div class="row">
+                <h4>Recent Tasks</h4>
+                <div class="seg">
+                  <div class="chip" id="openDrawer">Open Library</div>
+                </div>
+              </div>
+              <div class="sub">
+                Keep this list short: the last few tasks you actually used. Everything else lives in the library.
+              </div>
+              <div class="task-mini-list" id="recentList"></div>
+            </div>
+
+            <div class="hint">
+              <strong>Why this helps:</strong> when the user is tired, they don’t want to scroll through a catalog. They want to start. The catalog exists, but it’s one layer away.
+            </div>
+
+            <div class="section">
+              <h4>Settings (compact)</h4>
+              <div class="sub">
+                Keep settings minimal on Home. Full settings can live in a separate screen.
+              </div>
+            </div>
+          </div>
+
+          <div class="drawer" id="drawer">
+            <div class="grab"></div>
+            <div class="drawer-header">
+              <div class="drawer-title">Task Library</div>
+              <div style="display:flex; gap:10px;">
+                <div class="chip" id="closeDrawer">Close</div>
+              </div>
+            </div>
+
+            <div class="drawer-body">
+              <div class="search">
+                <input id="search" placeholder="Find a task… (simple text search)" />
+                <div class="chip" id="newFromDrawer">New</div>
+              </div>
+
+              <div class="list">
+                <div class="list-head">
+                  <div class="chip active" data-filter="pinned">Pinned</div>
+                  <div class="chip" data-filter="recent">Recent</div>
+                  <div class="chip" data-filter="all">All</div>
+                  <div style="margin-left:auto; font-size:12px; color: var(--muted2);" id="count">0 tasks</div>
+                </div>
+                <div class="list-scroll" id="library"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Why this solves the “many tasks” problem</h2>
+        <p>
+          Your instinct is right: a pure vertical screen becomes hostile when the user has lots of tasks. A paying user won’t tolerate a UI that punishes them for relying on it.
+        </p>
+        <p style="margin-top:12px;">
+          This design keeps the home surface stable:
+        </p>
+        <ul style="margin:10px 0 0; padding-left: 18px; color: var(--muted); line-height: 1.7;">
+          <li><strong>Home stays short</strong>: stats + quick start + 3–6 recent tasks.</li>
+          <li><strong>Task Library scales</strong>: 10 or 200 tasks doesn’t bloat home.</li>
+          <li><strong>No calendar needed</strong>: retrieval is driven by behavior (recent/pinned) instead of dates.</li>
+          <li><strong>Management is contained</strong>: edit/delete are not screaming at the user on every row all day.</li>
+        </ul>
+
+        <div class="mini" style="margin-top:16px;">
+          <h3>Micro-annoyances this avoids</h3>
+          <p style="margin-top:10px;">
+            Paying users open the app in low-energy moments. Tiny friction breaks the spell:
+          </p>
+          <ul style="margin:10px 0 0; padding-left: 18px; color: var(--muted); line-height: 1.7;">
+            <li>Scrolling past settings and stats every time just to find a task.</li>
+            <li>Repeated Start/Edit/Delete controls on every row causing visual noise.</li>
+            <li>The home screen reminding the user of everything they’re not doing.</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <div class="compare">
+      <section class="panel">
+        <h2>Alternate 1: Tabs (Today / Tasks / Settings)</h2>
+        <p>
+          Same principles, more native information architecture. Best if you expect heavy daily use and want a clean separation between launching and managing.
+        </p>
+        <div class="mini">
+          <div class="tabs">
+            <div class="tab active">Today</div>
+            <div class="tab">Tasks</div>
+            <div class="tab">Settings</div>
+          </div>
+          <div style="margin-top:12px; color: var(--muted); line-height:1.7;">
+            <strong>Today</strong> = quick start + recent + stats. <strong>Tasks</strong> = full list + pinned/recent/all. <strong>Settings</strong> = everything else.
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Alternate 2: Task Stacks (Pinned / Recent / Needs Finish)</h2>
+        <p>
+          If you want to avoid advanced search forever, stacks can feel “smart” without asking the user to tag or schedule anything.
+        </p>
+        <div class="mini">
+          <div class="stack">
+            <div class="stack-card">
+              <div class="hdr"><strong>Pinned</strong><span class="chip">Edit pins</span></div>
+              <div class="items">
+                <div class="stack-item">Launch memo <span class="start-link">Start</span></div>
+                <div class="stack-item">Investor update <span class="start-link">Start</span></div>
+              </div>
+            </div>
+            <div class="stack-card">
+              <div class="hdr"><strong>Recent</strong><span class="chip">See all</span></div>
+              <div class="items">
+                <div class="stack-item">Fix iOS build <span class="start-link">Start</span></div>
+                <div class="stack-item">Review screenshots <span class="start-link">Start</span></div>
+              </div>
+            </div>
+            <div class="stack-card">
+              <div class="hdr"><strong>Needs finishing</strong><span style="color:var(--muted2); font-size:12px;">based on failures</span></div>
+              <div class="items">
+                <div class="stack-item">Inbox cleanup <span class="start-link">Start</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const drawer = document.getElementById('drawer');
+    const openDrawer = document.getElementById('openDrawer');
+    const openDrawerTop = document.getElementById('openDrawerTop');
+    const closeDrawer = document.getElementById('closeDrawer');
+
+    const recentList = document.getElementById('recentList');
+    const library = document.getElementById('library');
+    const count = document.getElementById('count');
+    const search = document.getElementById('search');
+
+    const toggleMany = document.getElementById('toggleMany');
+    const togglePinned = document.getElementById('togglePinned');
+
+    let many = false;
+    let pinnedHeavy = false;
+
+    function makeTasks(n) {
+      const base = [
+        { name: 'Launch memo', pinned: true, note: 'High value. You reuse this repeatedly.' },
+        { name: 'Investor update', pinned: true, note: 'Recurring. Always available.' },
+        { name: 'Ship App Store screenshots', pinned: false, note: 'One-off but urgent.' },
+        { name: 'Fix iOS build', pinned: false, note: 'Short, tactical.' },
+        { name: 'Reply to customers', pinned: false, note: 'Often avoided.' },
+        { name: 'Review PRs', pinned: false, note: 'Quick commitments work well here.' },
+        { name: 'Write weekly update', pinned: false, note: 'Recurring.' },
+        { name: 'Inbox cleanup', pinned: false, note: 'Often failed. Needs finishing.' },
+      ];
+
+      const tasks = [...base];
+      if (n <= base.length) return tasks.slice(0, n);
+
+      const extras = [
+        'Schedule doctor', 'Pay invoices', 'Plan sprint', 'Call mom', 'Clean desk', 'Deep work: roadmap',
+        'Fix onboarding regression', 'QA release build', 'Write blog intro', 'Outline deck', 'Budget review',
+        'Organize photos', 'Gym admin', 'Recruiting followup', 'Refactor auth flow', 'Support triage',
+        'Bug bash', 'Update Notion', 'Close tabs', 'Review analytics', 'Design review notes',
+        'Sync w/ team', 'Prep demo', 'Record walkthrough', 'Refine positioning', 'Pricing notes'
+      ];
+
+      while (tasks.length < n) {
+        const name = extras[(tasks.length - base.length) % extras.length] + (tasks.length % 3 === 0 ? '' : '');
+        tasks.push({ name, pinned: pinnedHeavy && tasks.length % 4 === 0, note: 'Saved task in your library.' });
+      }
+      return tasks;
+    }
+
+    function open() { drawer.classList.add('open'); }
+    function close() { drawer.classList.remove('open'); }
+
+    openDrawer.addEventListener('click', open);
+    openDrawerTop.addEventListener('click', open);
+    closeDrawer.addEventListener('click', close);
+
+    function render() {
+      const tasks = makeTasks(many ? 40 : 12);
+      const pinned = tasks.filter(t => t.pinned);
+      const recent = tasks.slice(0, 8);
+
+      // recent list (home)
+      recentList.innerHTML = '';
+      recent.slice(0, 5).forEach(t => {
+        const div = document.createElement('div');
+        div.className = 'task-card';
+        div.innerHTML = `<div class="name">${t.name}<span class="start-link">Start</span></div><div class="meta">${t.note}</div>`;
+        recentList.appendChild(div);
+      });
+
+      // library list
+      const selected = document.querySelector('.list-head .chip.active')?.getAttribute('data-filter') ?? 'pinned';
+      const query = (search.value || '').trim().toLowerCase();
+      
+      let pool = tasks;
+      if (selected === 'pinned') pool = pinned.length ? pinned : tasks.slice(0, 10);
+      if (selected === 'recent') pool = tasks.slice(0, 18);
+
+      if (query) {
+        pool = pool.filter(t => t.name.toLowerCase().includes(query));
+      }
+
+      library.innerHTML = '';
+      pool.forEach((t, idx) => {
+        const item = document.createElement('div');
+        item.className = 'row-item';
+        const pinLabel = t.pinned ? 'Pinned' : '—';
+        item.innerHTML = `
+          <div class="top">
+            <strong>${t.name}</strong>
+            <div class="actions">
+              <span class="act start">Start</span>
+              <span class="act">Edit</span>
+              <span class="act">Delete</span>
+            </div>
+          </div>
+          <div class="bottom">${t.note} • ${pinLabel}</div>
+        `;
+        library.appendChild(item);
+      });
+
+      count.textContent = `${pool.length} tasks`;
+
+      // stats tweak
+      document.getElementById('statToday').textContent = many ? '9' : '3';
+    }
+
+    // filters
+    document.querySelectorAll('.list-head .chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.list-head .chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        render();
+      });
+    });
+
+    search.addEventListener('input', render);
+
+    toggleMany.addEventListener('click', () => {
+      many = !many;
+      toggleMany.classList.toggle('primary', many);
+      toggleMany.textContent = many ? 'Simulating 40 tasks' : 'Simulate 40 tasks';
+      render();
+    });
+
+    togglePinned.addEventListener('click', () => {
+      pinnedHeavy = !pinnedHeavy;
+      togglePinned.classList.toggle('primary', pinnedHeavy);
+      togglePinned.textContent = pinnedHeavy ? 'Pinned-heavy' : 'Toggle pinned-heavy';
+      render();
+    });
+
+    document.getElementById('newFromDrawer').addEventListener('click', () => {
+      close();
+      document.getElementById('taskInput').focus();
+    });
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+      open();
+      search.value = document.getElementById('taskInput').value;
+      document.querySelectorAll('.list-head .chip').forEach(c => c.classList.remove('active'));
+      document.querySelector('.list-head .chip[data-filter="all"]').classList.add('active');
+      render();
+    });
+
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      open();
+      search.value = document.getElementById('taskInput').value;
+      document.querySelectorAll('.list-head .chip').forEach(c => c.classList.remove('active'));
+      document.querySelector('.list-head .chip[data-filter="all"]').classList.add('active');
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

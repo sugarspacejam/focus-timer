@@ -1340,11 +1340,12 @@ private final class FocusStore: ObservableObject {
             stats: stats,
             activeTaskID: activeTaskID,
             timerStartDate: timerStartDate,
+            remainingSeconds: remainingSeconds,
             timerCompleted: timerCompleted,
             isCameraEnabled: isCameraEnabled,
             selectedVoiceMode: selectedVoiceMode,
             supportiveUtterances: supportiveUtterances,
-            isProUnlocked: isProUnlocked
+            awayFailureSeconds: 6
         )
         if let data = try? JSONEncoder().encode(state) {
             UserDefaults.standard.set(data, forKey: persistenceKey)
