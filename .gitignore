@@ -34,3 +34,5 @@ package-lock.json
 js/accountability-settings.js
 js/alarm-clock.js
 css/accountability.css
+
+build/
