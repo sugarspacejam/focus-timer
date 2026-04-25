@@ -25,6 +25,7 @@ struct HomeContentView: View {
     }
 
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.colorScheme) private var colorScheme
 
     @StateObject private var store = FocusStore()
     @StateObject private var cameraManager = CameraManager()
@@ -47,14 +48,54 @@ struct HomeContentView: View {
     @State private var pinnedTaskIDs: Set<UUID> = []
     @AppStorage("pinnedTaskIDs") private var pinnedTaskIDsStorage: String = "[]"
 
+    private var isLightTheme: Bool {
+        colorScheme == .light
+    }
+
+    private var screenBackground: LinearGradient {
+        if isLightTheme {
+            return LinearGradient(
+                colors: [Color(red: 0.97, green: 0.98, blue: 1.0), Color(red: 0.91, green: 0.95, blue: 0.99)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        }
+
+        return LinearGradient(
+            colors: [Color.black, Color(red: 0.05, green: 0.07, blue: 0.11)],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
+
+    private var primaryTextColor: Color {
+        isLightTheme ? .black : .white
+    }
+
+    private var secondaryTextColor: Color {
+        isLightTheme ? .black.opacity(0.65) : .white.opacity(0.65)
+    }
+
+    private var tertiaryTextColor: Color {
+        isLightTheme ? .black.opacity(0.5) : .white.opacity(0.6)
+    }
+
+    private var cardBackgroundColor: Color {
+        isLightTheme ? .white.opacity(0.85) : .white.opacity(0.07)
+    }
+
+    private var subtleFillColor: Color {
+        isLightTheme ? .black.opacity(0.05) : .white.opacity(0.08)
+    }
+
+    private var rowBackgroundColor: Color {
+        isLightTheme ? .black.opacity(0.04) : .white.opacity(0.05)
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
-                LinearGradient(
-                    colors: [Color.black, Color(red: 0.05, green: 0.07, blue: 0.11)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+                screenBackground
                 .ignoresSafeArea()
 
                 ScrollView(showsIndicators: false) {
@@ -73,6 +114,7 @@ struct HomeContentView: View {
                 SettingsScreen(settingsContent: settingsContent)
             }
         }
+        .preferredColorScheme(store.preferredColorScheme)
         .sheet(isPresented: $isLibraryPresented) {
             TaskLibrarySheet(
                 tasks: store.taskState.tasks.filter { !$0.isFinished },
@@ -250,13 +292,13 @@ struct HomeContentView: View {
     private var header: some View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Done in 5")
+                Text("Promise")
                     .font(.system(size: 34, weight: .black))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(primaryTextColor)
 
-                Text("One contract. Five minutes. No excuses.")
+                Text("For people who actually finish things.")
                     .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.65))
+                    .foregroundStyle(secondaryTextColor)
             }
 
             Spacer()
@@ -267,9 +309,9 @@ struct HomeContentView: View {
                 } label: {
                     Image(systemName: "questionmark.circle")
                         .font(.title3)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(primaryTextColor)
                         .padding(12)
-                        .background(Color.white.opacity(0.08))
+                        .background(subtleFillColor)
                         .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
 
@@ -279,9 +321,9 @@ struct HomeContentView: View {
                 } label: {
                     Image(systemName: "tray.full")
                         .font(.title3)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(primaryTextColor)
                         .padding(12)
-                        .background(Color.white.opacity(0.08))
+                        .background(subtleFillColor)
                         .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
 
@@ -290,9 +332,9 @@ struct HomeContentView: View {
                 } label: {
                     Image(systemName: "gearshape")
                         .font(.title3)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(primaryTextColor)
                         .padding(12)
-                        .background(Color.white.opacity(0.08))
+                        .background(subtleFillColor)
                         .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
             }
@@ -359,7 +401,7 @@ struct HomeContentView: View {
             HStack {
                 Text("Quick Start")
                     .font(.title3.weight(.bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(primaryTextColor)
 
                 Spacer()
 
@@ -367,22 +409,22 @@ struct HomeContentView: View {
                     isLibraryPresented = true
                 }
                 .font(.caption.weight(.semibold))
-                .foregroundStyle(.white.opacity(0.7))
+                .foregroundStyle(secondaryTextColor)
             }
 
-            Text("What are you committing to right now?")
+            Text("Make one promise. Keep it for 5 minutes.")
                 .font(.caption)
-                .foregroundStyle(.white.opacity(0.65))
+                .foregroundStyle(secondaryTextColor)
 
             TextField("What are you working on?", text: $quickStartText)
                 .focused($focusedField, equals: .quickStart)
                 .textInputAutocapitalization(.sentences)
                 .padding()
-                .background(Color.white.opacity(0.08))
+                .background(subtleFillColor)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
-                .foregroundStyle(.white)
+                .foregroundStyle(primaryTextColor)
 
-            Button("Start 5-Minute Contract") {
+            Button("Make 5-Minute Promise") {
                 focusedField = nil
                 let trimmed = quickStartText.trimmingCharacters(in: .whitespacesAndNewlines)
                 if trimmed.count >= Constants.UI.minimumTaskNameLength {
@@ -419,7 +461,7 @@ struct HomeContentView: View {
             }
         }
         .padding(20)
-        .background(Color.white.opacity(0.07))
+        .background(cardBackgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: 24))
     }
 
@@ -428,7 +470,7 @@ struct HomeContentView: View {
             HStack {
                 Text("Recent")
                     .font(.headline)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(primaryTextColor)
 
                 Spacer()
 
@@ -436,18 +478,18 @@ struct HomeContentView: View {
                     isLibraryPresented = true
                 }
                 .font(.caption.weight(.semibold))
-                .foregroundStyle(.white.opacity(0.7))
+                .foregroundStyle(secondaryTextColor)
             }
 
             Text("Keep this list short. Everything else lives in the library.")
                 .font(.caption)
-                .foregroundStyle(.white.opacity(0.65))
+                .foregroundStyle(secondaryTextColor)
 
             let tasks = recentTasksList
             if tasks.isEmpty {
                 Text("No tasks yet. Add one above.")
                     .font(.caption)
-                    .foregroundStyle(.white.opacity(0.65))
+                    .foregroundStyle(secondaryTextColor)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.vertical, 18)
             } else {
@@ -460,12 +502,12 @@ struct HomeContentView: View {
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(task.name)
                                         .font(.headline)
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(primaryTextColor)
                                         .lineLimit(1)
 
                                     Text(pinnedTaskIDs.contains(task.id) ? "Pinned" : "Tap to start")
                                         .font(.caption)
-                                        .foregroundStyle(.white.opacity(0.6))
+                                        .foregroundStyle(tertiaryTextColor)
                                 }
 
                                 Spacer()
@@ -475,7 +517,7 @@ struct HomeContentView: View {
                                     .foregroundStyle(.cyan)
                             }
                             .padding(14)
-                            .background(Color.white.opacity(0.05))
+                            .background(rowBackgroundColor)
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                         }
                         .buttonStyle(.plain)
@@ -484,7 +526,7 @@ struct HomeContentView: View {
             }
         }
         .padding(20)
-        .background(Color.white.opacity(0.07))
+        .background(cardBackgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: 24))
     }
 
@@ -492,25 +534,47 @@ struct HomeContentView: View {
         VStack(alignment: .leading, spacing: 18) {
             Text("App Settings")
                 .font(.title3.weight(.bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(primaryTextColor)
+
+            VStack(alignment: .leading, spacing: 10) {
+                Text("Appearance")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(primaryTextColor)
+
+                Picker("Appearance", selection: Binding(
+                    get: { store.themeMode },
+                    set: { store.setThemeMode($0) }
+                )) {
+                    ForEach(AppThemeMode.allCases) { mode in
+                        Text(mode.title).tag(mode)
+                    }
+                }
+                .pickerStyle(.segmented)
+
+                Text("Choose Dark, Light, or follow the system setting.")
+                    .font(.caption)
+                    .foregroundStyle(secondaryTextColor)
+            }
 
             VStack(alignment: .leading, spacing: 10) {
                 HStack(alignment: .top, spacing: 12) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Camera Accountability")
                             .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.white)
+                            .foregroundStyle(primaryTextColor)
 
                         Text("Keeps camera checking on while the app is open. The timer still runs in background, but camera enforcement is foreground-only.")
                             .font(.caption)
-                            .foregroundStyle(.white.opacity(0.65))
+                            .foregroundStyle(secondaryTextColor)
                     }
 
                     Spacer()
 
                     Toggle("", isOn: Binding(
                         get: { store.taskState.isCameraEnabled },
-                        set: { _ in store.toggleCamera() }
+                        set: { isEnabled in
+                            store.setCameraEnabled(isEnabled)
+                        }
                     ))
                     .labelsHidden()
                     .tint(.cyan)
@@ -520,11 +584,11 @@ struct HomeContentView: View {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Away Timeout")
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(primaryTextColor)
 
-                Text("Fail the block after this many seconds away from the camera.")
+                Text("Fail the promise after this many seconds away from the camera.")
                     .font(.caption)
-                    .foregroundStyle(.white.opacity(0.65))
+                    .foregroundStyle(secondaryTextColor)
 
                 HStack(spacing: 12) {
                     TextField("6", text: $awayFailureSecondsText)
@@ -533,47 +597,47 @@ struct HomeContentView: View {
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                         .padding(12)
-                        .background(Color.white.opacity(0.08))
+                        .background(subtleFillColor)
                         .clipShape(RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(primaryTextColor)
 
                     Text("seconds")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(.white.opacity(0.65))
+                        .foregroundStyle(secondaryTextColor)
                 }
             }
 
             VStack(alignment: .leading, spacing: 10) {
                 Text("Away Voice")
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(primaryTextColor)
 
                 Text("Edit the accountability lines spoken when you leave frame.")
                     .font(.caption)
-                    .foregroundStyle(.white.opacity(0.65))
+                    .foregroundStyle(secondaryTextColor)
             }
 
             VStack(alignment: .leading, spacing: 10) {
                 Text("Away Voice Lines")
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(primaryTextColor)
 
                 Text("One line per row. These are the messages spoken when camera accountability sees you away.")
                     .font(.caption)
-                    .foregroundStyle(.white.opacity(0.65))
+                    .foregroundStyle(secondaryTextColor)
 
                 TextEditor(text: $supportiveUtterancesText)
                     .focused($focusedField, equals: .awayVoiceLines)
                     .scrollContentBackground(.hidden)
                     .frame(minHeight: 120)
                     .padding(12)
-                    .background(Color.white.opacity(0.08))
+                    .background(subtleFillColor)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(primaryTextColor)
             }
         }
         .padding(20)
-        .background(Color.white.opacity(0.07))
+        .background(cardBackgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: 24))
         .contentShape(Rectangle())
         .onTapGesture {
@@ -619,11 +683,11 @@ struct HomeContentView: View {
         VStack(spacing: 18) {
             Text(store.activeTaskName)
                 .font(.title2.weight(.bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(primaryTextColor)
 
             ZStack {
                 Circle()
-                    .stroke(Color.white.opacity(0.12), lineWidth: 14)
+                    .stroke((isLightTheme ? Color.black : Color.white).opacity(0.12), lineWidth: 14)
                     .frame(width: 220, height: 220)
 
                 Circle()
@@ -638,23 +702,23 @@ struct HomeContentView: View {
                 VStack(spacing: 4) {
                     Text(store.formattedRemaining)
                         .font(.system(size: 48, weight: .bold, design: .rounded))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(primaryTextColor)
 
                     Text("remaining")
                         .font(.caption)
-                        .foregroundStyle(.white.opacity(0.65))
+                        .foregroundStyle(secondaryTextColor)
                 }
             }
 
             if store.timerState.isCompleted {
-                Text("Contract complete")
+                Text("Promise kept")
                     .font(.headline)
                     .foregroundStyle(.green)
 
-                Text("Start another contract or go back to your task list.")
+                Text("Make another promise or go back to your task list.")
                     .font(.subheadline)
                     .multilineTextAlignment(.center)
-                    .foregroundStyle(.white.opacity(0.72))
+                    .foregroundStyle(secondaryTextColor)
 
                 HStack(spacing: 16) {
                     Button("Return to Task List") {
@@ -662,14 +726,14 @@ struct HomeContentView: View {
                     }
                     .buttonStyle(SecondaryButtonStyle())
 
-                    Button("Start Another 5-Minute Contract") {
+                    Button("Make Another 5-Minute Promise") {
                         store.restartCompletedTimer()
                     }
                     .buttonStyle(PrimaryButtonStyle())
                 }
             } else {
                 HStack(spacing: 16) {
-                    Button("Quit Contract") {
+                    Button("Break Promise") {
                         isQuitConfirmationPresented = true
                     }
                     .buttonStyle(SecondaryButtonStyle())
@@ -677,16 +741,16 @@ struct HomeContentView: View {
             }
         }
         .padding(20)
-        .background(Color.white.opacity(0.07))
+        .background(cardBackgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: 24))
-        .alert("Quit this contract?", isPresented: $isQuitConfirmationPresented) {
+        .alert("Break this promise?", isPresented: $isQuitConfirmationPresented) {
             Button("Keep Going", role: .cancel) {}
-            Button("Yes, Fail It", role: .destructive) {
+            Button("Yes, Break It", role: .destructive) {
                 store.stopTimer(asFailure: true)
                 cameraManager.stopSession()
             }
         } message: {
-            Text("Quitting early counts as a failure and resets your streak.")
+            Text("Breaking the promise counts as a failure and resets your streak.")
         }
     }
 
@@ -695,7 +759,7 @@ struct HomeContentView: View {
             HStack {
                 Text("Camera Accountability")
                     .font(.headline)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(primaryTextColor)
 
                 Spacer()
 
@@ -708,7 +772,7 @@ struct HomeContentView: View {
 
             Text("Camera accountability works while the app is open. The timer continues in background even if camera stops.")
                 .font(.caption)
-                .foregroundStyle(.white.opacity(0.65))
+                .foregroundStyle(secondaryTextColor)
 
             if cameraManager.authorizationStatus == .denied || cameraManager.authorizationStatus == .restricted {
                 Text("Camera access is blocked. Enable it in Settings.")
@@ -722,7 +786,7 @@ struct HomeContentView: View {
 
                     Text(cameraStatusText)
                         .font(.caption)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(primaryTextColor)
 
                     Spacer()
 
@@ -735,16 +799,16 @@ struct HomeContentView: View {
             }
         }
         .padding(20)
-        .background(Color.white.opacity(0.07))
+        .background(cardBackgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: 24))
     }
 
     private var cameraStatusText: String {
         switch cameraManager.presenceState {
         case .idle:
-            return "Stay on Task ready"
+            return "Promise ready"
         case .present:
-            return "Present — contract live"
+            return "Present — promise live"
         case .away:
             return "Away — get back now"
         case .noPermission:
@@ -789,11 +853,14 @@ struct HomeContentView: View {
 
 private struct SettingsScreen<SettingsContent: View>: View {
     let settingsContent: SettingsContent
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         ZStack {
             LinearGradient(
-                colors: [Color.black, Color(red: 0.05, green: 0.07, blue: 0.11)],
+                colors: colorScheme == .light
+                    ? [Color(red: 0.97, green: 0.98, blue: 1.0), Color(red: 0.91, green: 0.95, blue: 0.99)]
+                    : [Color.black, Color(red: 0.05, green: 0.07, blue: 0.11)],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -817,6 +884,7 @@ private struct TaskLibrarySheet: View {
     @Binding var pinnedTaskIDs: Set<UUID>
     @Binding var filter: TaskLibraryFilter
     @Binding var searchText: String
+    @Environment(\.colorScheme) private var colorScheme
 
     let onStart: (UUID) -> Void
     let onEdit: (FocusTask) -> Void
@@ -827,7 +895,9 @@ private struct TaskLibrarySheet: View {
         NavigationStack {
             ZStack {
                 LinearGradient(
-                    colors: [Color.black, Color(red: 0.05, green: 0.07, blue: 0.11)],
+                    colors: colorScheme == .light
+                        ? [Color(red: 0.97, green: 0.98, blue: 1.0), Color(red: 0.91, green: 0.95, blue: 0.99)]
+                        : [Color.black, Color(red: 0.05, green: 0.07, blue: 0.11)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
@@ -837,21 +907,21 @@ private struct TaskLibrarySheet: View {
                     HStack {
                         Text("Task Library")
                             .font(.headline)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(colorScheme == .light ? Color.black : Color.white)
 
                         Spacer()
 
                         Text("\(filteredTasks.count) tasks")
                             .font(.caption)
-                            .foregroundStyle(.white.opacity(0.6))
+                            .foregroundStyle(colorScheme == .light ? Color.black.opacity(0.6) : Color.white.opacity(0.6))
                     }
 
                     TextField("Find a task…", text: $searchText)
                         .textInputAutocapitalization(.sentences)
                         .padding(12)
-                        .background(Color.white.opacity(0.08))
+                        .background(colorScheme == .light ? Color.black.opacity(0.05) : Color.white.opacity(0.08))
                         .clipShape(RoundedRectangle(cornerRadius: 14))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(colorScheme == .light ? Color.black : Color.white)
 
                     HStack(spacing: 10) {
                         ForEach(TaskLibraryFilter.allCases) { option in
@@ -859,10 +929,10 @@ private struct TaskLibrarySheet: View {
                                 filter = option
                             }
                             .font(.caption.weight(.semibold))
-                            .foregroundStyle(filter == option ? Color.black : Color.white)
+                            .foregroundStyle(filter == option ? Color.black : (colorScheme == .light ? Color.black : Color.white))
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
-                            .background(filter == option ? Color.cyan : Color.white.opacity(0.08))
+                            .background(filter == option ? Color.cyan : (colorScheme == .light ? Color.black.opacity(0.05) : Color.white.opacity(0.08)))
                             .clipShape(Capsule())
                         }
                     }
@@ -915,6 +985,7 @@ private struct LibraryTaskRow: View {
     let onEdit: () -> Void
     let onDelete: () -> Void
     let onTogglePin: () -> Void
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -922,12 +993,12 @@ private struct LibraryTaskRow: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(task.name)
                         .font(.headline)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(colorScheme == .light ? Color.black : Color.white)
                         .lineLimit(1)
 
                     Text(isPinned ? "Pinned" : "")
                         .font(.caption)
-                        .foregroundStyle(.white.opacity(0.6))
+                        .foregroundStyle(colorScheme == .light ? Color.black.opacity(0.6) : Color.white.opacity(0.6))
                 }
 
                 Spacer()
@@ -944,7 +1015,7 @@ private struct LibraryTaskRow: View {
                     onTogglePin()
                 }
                 .font(.caption.weight(.semibold))
-                .foregroundStyle(.white.opacity(0.8))
+                .foregroundStyle(colorScheme == .light ? Color.black.opacity(0.8) : Color.white.opacity(0.8))
 
                 Spacer()
 
@@ -952,7 +1023,7 @@ private struct LibraryTaskRow: View {
                     onEdit()
                 }
                 .font(.caption.weight(.semibold))
-                .foregroundStyle(.white.opacity(0.8))
+                .foregroundStyle(colorScheme == .light ? Color.black.opacity(0.8) : Color.white.opacity(0.8))
 
                 Button("Delete") {
                     onDelete()
@@ -962,7 +1033,7 @@ private struct LibraryTaskRow: View {
             }
         }
         .padding(14)
-        .background(Color.white.opacity(0.06))
+        .background(colorScheme == .light ? Color.white.opacity(0.85) : Color.white.opacity(0.06))
         .clipShape(RoundedRectangle(cornerRadius: 18))
     }
 }

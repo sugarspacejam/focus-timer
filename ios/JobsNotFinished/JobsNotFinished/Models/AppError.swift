@@ -7,7 +7,6 @@ enum AppError: LocalizedError {
     case notificationPermissionDenied
     case taskNameTooShort
     case taskAlreadyExists
-    case contractLimitReached
     
     var errorDescription: String? {
         switch self {
@@ -23,8 +22,6 @@ enum AppError: LocalizedError {
             return "Task name must be at least \(Constants.UI.minimumTaskNameLength) characters"
         case .taskAlreadyExists:
             return "A task with this name already exists"
-        case .contractLimitReached:
-            return "You've reached your daily limit of \(Constants.Limits.freeContractsPerDay) contracts. Upgrade to Pro for unlimited contracts."
         }
     }
 }

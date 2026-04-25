@@ -11,8 +11,9 @@ struct PersistedState: Codable {
     var selectedVoiceMode: AwayVoiceMode
     var supportiveUtterances: [String]
     var awayFailureSeconds: Int
+    var themeMode: AppThemeMode
 
-    init(tasks: [FocusTask], stats: FocusStats, activeTaskID: UUID?, timerStartDate: Date?, remainingSeconds: Int, timerCompleted: Bool, isCameraEnabled: Bool, selectedVoiceMode: AwayVoiceMode, supportiveUtterances: [String], awayFailureSeconds: Int) {
+    init(tasks: [FocusTask], stats: FocusStats, activeTaskID: UUID?, timerStartDate: Date?, remainingSeconds: Int, timerCompleted: Bool, isCameraEnabled: Bool, selectedVoiceMode: AwayVoiceMode, supportiveUtterances: [String], awayFailureSeconds: Int, themeMode: AppThemeMode) {
         self.tasks = tasks
         self.stats = stats
         self.activeTaskID = activeTaskID
@@ -23,6 +24,7 @@ struct PersistedState: Codable {
         self.selectedVoiceMode = selectedVoiceMode
         self.supportiveUtterances = supportiveUtterances
         self.awayFailureSeconds = awayFailureSeconds
+        self.themeMode = themeMode
     }
 
     init(from decoder: Decoder) throws {
@@ -37,5 +39,6 @@ struct PersistedState: Codable {
         selectedVoiceMode = try container.decodeIfPresent(AwayVoiceMode.self, forKey: .selectedVoiceMode) ?? .supportive
         supportiveUtterances = try container.decodeIfPresent([String].self, forKey: .supportiveUtterances) ?? AwayVoiceMode.supportive.utterances
         awayFailureSeconds = try container.decodeIfPresent(Int.self, forKey: .awayFailureSeconds) ?? 6
+        themeMode = try container.decodeIfPresent(AppThemeMode.self, forKey: .themeMode) ?? .system
     }
 }

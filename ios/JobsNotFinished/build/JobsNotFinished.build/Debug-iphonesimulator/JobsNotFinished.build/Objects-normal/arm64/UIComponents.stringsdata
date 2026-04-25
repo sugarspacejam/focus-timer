@@ -1,0 +1,40 @@
+{
+  "source": "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Views/UIComponents.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Task name",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 39
+        }
+      },
+      {
+        "comment": "",
+        "key": "Start",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 52
+        }
+      },
+      {
+        "comment": "",
+        "key": "Edit",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 58
+        }
+      },
+      {
+        "comment": "",
+        "key": "Delete",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 65
+        }
+      }
+    ]
+  },
+  "version": 1
+}

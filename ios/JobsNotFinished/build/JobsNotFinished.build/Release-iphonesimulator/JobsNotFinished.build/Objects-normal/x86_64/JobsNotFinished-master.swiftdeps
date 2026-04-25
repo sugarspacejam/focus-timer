@@ -1,0 +1,26 @@
+version: "Apple Swift version 6.0.2 (swiftlang-6.0.2.1.2 clang-1600.0.26.4)"
+options: "90ce8546ee8a143d59bfe74afc58a2ca5a0aa0c1dac1ae44d8bcc42578774e58"
+build_start_time: [1776957255, 447574000]
+build_end_time: [1776957281, 538870000]
+inputs:
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/JobsNotFinishedApp.swift": [1776707633, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/LocalWebServer.swift": [1773966752, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Models/AppError.swift": [1776735415, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Models/Constants.swift": [1776735415, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Models/FocusStats.swift": [1776179820, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Models/FocusTask.swift": [1775407972, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Models/PersistedState.swift": [1776954979, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Models/TimerState.swift": [1776954979, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Models/VoiceMode.swift": [1776707610, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Services/CameraManaging.swift": [1776182582, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Services/NotificationService.swift": [1776039762, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Services/PersistenceService.swift": [1775407988, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/ViewModels/CameraManager.swift": [1776182590, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/ViewModels/FocusStore.swift": [1776954982, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Views/HomeContentView.swift": [1776955150, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Views/OnboardingView.swift": [1776955128, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Views/TimerModalView.swift": [1776955097, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Views/UIComponents.swift": [1776955097, 0]
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/WebView.swift": [1773966752, 0]
+  ? "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/DerivedSources/GeneratedAssetSymbols.swift"
+  : [1776957255, 0]

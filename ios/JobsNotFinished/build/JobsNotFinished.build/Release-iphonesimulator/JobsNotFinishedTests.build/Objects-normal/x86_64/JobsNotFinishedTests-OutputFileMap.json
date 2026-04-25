@@ -1,0 +1,15 @@
+{
+  "" : {
+    "const-values" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinishedTests.build/Objects-normal/x86_64/JobsNotFinishedTests-master.swiftconstvalues",
+    "dependencies" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinishedTests.build/Objects-normal/x86_64/JobsNotFinishedTests-master.d",
+    "diagnostics" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinishedTests.build/Objects-normal/x86_64/JobsNotFinishedTests-master.dia",
+    "emit-module-dependencies" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinishedTests.build/Objects-normal/x86_64/JobsNotFinishedTests-master-emit-module.d",
+    "emit-module-diagnostics" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinishedTests.build/Objects-normal/x86_64/JobsNotFinishedTests-master-emit-module.dia",
+    "swift-dependencies" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinishedTests.build/Objects-normal/x86_64/JobsNotFinishedTests-master.swiftdeps"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinishedTests/FocusStoreTests.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinishedTests.build/Objects-normal/x86_64/FocusStoreTests.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinishedTests.build/Objects-normal/x86_64/FocusStoreTests.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinishedTests.build/Objects-normal/x86_64/FocusStoreTests.o"
+  }
+}

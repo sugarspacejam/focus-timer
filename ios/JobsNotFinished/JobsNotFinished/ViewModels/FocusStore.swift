@@ -1,6 +1,7 @@
 import Foundation
 import UserNotifications
 import UIKit
+import SwiftUI
 
 @MainActor
 class FocusStore: ObservableObject {
@@ -92,10 +93,6 @@ class FocusStore: ObservableObject {
         let seconds = visibleRemainingSeconds % 60
         return String(format: "%d:%02d", minutes, seconds)
     }
-    
-    var canStartContract: Bool {
-        true
-    }
 
     var canUseEnforcement: Bool {
         true
@@ -107,6 +104,21 @@ class FocusStore: ObservableObject {
 
     var awayFailureSeconds: Int {
         userState.awayFailureSeconds
+    }
+
+    var themeMode: AppThemeMode {
+        userState.themeMode
+    }
+
+    var preferredColorScheme: ColorScheme? {
+        switch userState.themeMode {
+        case .system:
+            return nil
+        case .light:
+            return .light
+        case .dark:
+            return .dark
+        }
     }
     
     // MARK: - Timer Management
@@ -379,6 +391,15 @@ class FocusStore: ObservableObject {
             print("Failed to persist camera setting: \(error)")
         }
     }
+
+     func setCameraEnabled(_ isEnabled: Bool) {
+         taskState.isCameraEnabled = isEnabled
+         do {
+             try persist()
+         } catch {
+             print("Failed to persist camera setting: \(error)")
+         }
+     }
     
     func setVoiceMode(_ mode: AwayVoiceMode) {
         userState.selectedVoiceMode = mode
@@ -404,6 +425,15 @@ class FocusStore: ObservableObject {
             try persist()
         } catch {
             print("Failed to persist away failure seconds: \(error)")
+        }
+    }
+
+    func setThemeMode(_ mode: AppThemeMode) {
+        userState.themeMode = mode
+        do {
+            try persist()
+        } catch {
+            print("Failed to persist theme mode: \(error)")
         }
     }
     
@@ -493,7 +523,8 @@ class FocusStore: ObservableObject {
             isCameraEnabled: taskState.isCameraEnabled,
             selectedVoiceMode: userState.selectedVoiceMode,
             supportiveUtterances: userState.supportiveUtterances,
-            awayFailureSeconds: userState.awayFailureSeconds
+            awayFailureSeconds: userState.awayFailureSeconds,
+            themeMode: userState.themeMode
         )
         
         try persistenceService.save(persistedState, forKey: Constants.Persistence.storeKey)
@@ -513,6 +544,7 @@ class FocusStore: ObservableObject {
             userState.selectedVoiceMode = state.selectedVoiceMode
             userState.supportiveUtterances = state.supportiveUtterances
             userState.awayFailureSeconds = state.awayFailureSeconds
+            userState.themeMode = state.themeMode
 
             if timerState.startDate != nil && timerState.activeTaskID != nil && !timerState.isCompleted {
                 timerState.motivationalMessageIndex = Int.random(in: 0..<6)

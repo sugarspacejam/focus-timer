@@ -5,10 +5,6 @@ enum Constants {
         static let durationSeconds: TimeInterval = 300 // 5 minutes
     }
     
-    enum Limits {
-        static let freeContractsPerDay = 5
-    }
-    
     enum Notifications {
         static let timerCompleteIdentifier = "focus.timer.complete"
     }

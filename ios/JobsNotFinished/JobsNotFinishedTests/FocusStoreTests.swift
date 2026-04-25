@@ -1,5 +1,5 @@
 import XCTest
-@testable import JobsNotFinished
+@testable import Promise
 
 @MainActor
 final class FocusStoreTests: XCTestCase {
@@ -178,8 +178,7 @@ final class FocusStoreTests: XCTestCase {
         XCTAssertFalse(store.timerState.isCompleted)
     }
 
-    func testContractAndEnforcementAreAlwaysAvailableInPaidUpfrontAppPath() {
-        XCTAssertTrue(store.canStartContract)
+    func testEnforcementIsAlwaysAvailableInPromiseAppPath() {
         XCTAssertTrue(store.canUseEnforcement)
     }
 

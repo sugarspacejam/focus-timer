@@ -1,0 +1,496 @@
+{
+  "source": "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Views/HomeContentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Done",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 173
+        }
+      },
+      {
+        "comment": "",
+        "key": "Break this promise?",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 746
+        }
+      },
+      {
+        "comment": "",
+        "key": "Promise",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 295
+        }
+      },
+      {
+        "comment": "",
+        "key": "For people who actually finish things.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 299
+        }
+      },
+      {
+        "comment": "",
+        "key": "Make one promise. Keep it for 5 minutes.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 415
+        }
+      },
+      {
+        "comment": "",
+        "key": "What are you working on?",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 419
+        }
+      },
+      {
+        "comment": "",
+        "key": "Make 5-Minute Promise",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 427
+        }
+      },
+      {
+        "comment": "",
+        "key": "Save to Library",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 439
+        }
+      },
+      {
+        "comment": "",
+        "key": "Quick Start",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 402
+        }
+      },
+      {
+        "comment": "",
+        "key": "Task Library",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 408
+        }
+      },
+      {
+        "comment": "",
+        "key": "Keep this list short. Everything else lives in the library.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 484
+        }
+      },
+      {
+        "comment": "",
+        "key": "No tasks yet. Add one above.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 490
+        }
+      },
+      {
+        "comment": "",
+        "key": "Recent",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 471
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open Library",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 477
+        }
+      },
+      {
+        "comment": "",
+        "key": "Start",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 515
+        }
+      },
+      {
+        "comment": "",
+        "key": "Pinned",
+        "location": {
+          "startingColumn": 76,
+          "startingLine": 508
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tap to start",
+        "location": {
+          "startingColumn": 87,
+          "startingLine": 508
+        }
+      },
+      {
+        "comment": "",
+        "key": "App Settings",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 535
+        }
+      },
+      {
+        "comment": "",
+        "key": "Appearance",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 540
+        }
+      },
+      {
+        "comment": "",
+        "key": "Choose Dark, Light, or follow the system setting.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 554
+        }
+      },
+      {
+        "comment": "",
+        "key": "Appearance",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 544
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 573
+        }
+      },
+      {
+        "comment": "",
+        "key": "Camera Accountability",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 562
+        }
+      },
+      {
+        "comment": "",
+        "key": "Keeps camera checking on while the app is open. The timer still runs in background, but camera enforcement is foreground-only.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 566
+        }
+      },
+      {
+        "comment": "",
+        "key": "Away Timeout",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 585
+        }
+      },
+      {
+        "comment": "",
+        "key": "Fail the promise after this many seconds away from the camera.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 589
+        }
+      },
+      {
+        "comment": "",
+        "key": "seconds",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 604
+        }
+      },
+      {
+        "comment": "",
+        "key": "6",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 594
+        }
+      },
+      {
+        "comment": "",
+        "key": "Away Voice",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 611
+        }
+      },
+      {
+        "comment": "",
+        "key": "Edit the accountability lines spoken when you leave frame.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 615
+        }
+      },
+      {
+        "comment": "",
+        "key": "Away Voice Lines",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 621
+        }
+      },
+      {
+        "comment": "",
+        "key": "One line per row. These are the messages spoken when camera accountability sees you away.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 625
+        }
+      },
+      {
+        "comment": "",
+        "key": "Promise kept",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 714
+        }
+      },
+      {
+        "comment": "",
+        "key": "Make another promise or go back to your task list.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 718
+        }
+      },
+      {
+        "comment": "",
+        "key": "remaining",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 707
+        }
+      },
+      {
+        "comment": "",
+        "key": "Return to Task List",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 724
+        }
+      },
+      {
+        "comment": "",
+        "key": "Make Another 5-Minute Promise",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 729
+        }
+      },
+      {
+        "comment": "",
+        "key": "Break Promise",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 736
+        }
+      },
+      {
+        "comment": "",
+        "key": "Keep Going",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 747
+        }
+      },
+      {
+        "comment": "",
+        "key": "Yes, Break It",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 748
+        }
+      },
+      {
+        "comment": "",
+        "key": "Breaking the promise counts as a failure and resets your streak.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 753
+        }
+      },
+      {
+        "comment": "",
+        "key": "Camera accountability works while the app is open. The timer continues in background even if camera stops.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 773
+        }
+      },
+      {
+        "comment": "",
+        "key": "Camera access is blocked. Enable it in Settings.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 778
+        }
+      },
+      {
+        "comment": "",
+        "key": "Camera Accountability",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 760
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 766
+        }
+      },
+      {
+        "comment": "",
+        "key": "Away %llds",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 794
+        }
+      },
+      {
+        "comment": "",
+        "key": "Settings",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 877
+        }
+      },
+      {
+        "comment": "",
+        "key": "Find a task…",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 919
+        }
+      },
+      {
+        "comment": "",
+        "key": "Task Library",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 908
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld tasks",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 914
+        }
+      },
+      {
+        "comment": "",
+        "key": "Start",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 1006
+        }
+      },
+      {
+        "comment": "",
+        "key": "Pinned",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 999
+        }
+      },
+      {
+        "comment": "",
+        "key": "",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 999
+        }
+      },
+      {
+        "comment": "",
+        "key": "Unpin",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 1014
+        }
+      },
+      {
+        "comment": "",
+        "key": "Pin",
+        "location": {
+          "startingColumn": 45,
+          "startingLine": 1014
+        }
+      },
+      {
+        "comment": "",
+        "key": "Edit",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 1022
+        }
+      },
+      {
+        "comment": "",
+        "key": "Delete",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 1028
+        }
+      },
+      {
+        "comment": "",
+        "key": "Edit Task",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 1053
+        }
+      },
+      {
+        "comment": "",
+        "key": "Task name",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 1051
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 1057
+        }
+      },
+      {
+        "comment": "",
+        "key": "Save",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 1063
+        }
+      }
+    ]
+  },
+  "version": 1
+}

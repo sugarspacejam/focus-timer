@@ -1,0 +1,110 @@
+{
+  "" : {
+    "const-values" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/JobsNotFinished-master.swiftconstvalues",
+    "dependencies" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/JobsNotFinished-master.d",
+    "diagnostics" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/JobsNotFinished-master.dia",
+    "emit-module-dependencies" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/JobsNotFinished-master-emit-module.d",
+    "emit-module-diagnostics" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/JobsNotFinished-master-emit-module.dia",
+    "swift-dependencies" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/JobsNotFinished-master.swiftdeps"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/JobsNotFinishedApp.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/JobsNotFinishedApp.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/JobsNotFinishedApp.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/JobsNotFinishedApp.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/LocalWebServer.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/LocalWebServer.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/LocalWebServer.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/LocalWebServer.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Models/AppError.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/AppError.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/AppError.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/AppError.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Models/Constants.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/Constants.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/Constants.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/Constants.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Models/FocusStats.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/FocusStats.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/FocusStats.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/FocusStats.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Models/FocusTask.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/FocusTask.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/FocusTask.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/FocusTask.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Models/PersistedState.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/PersistedState.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/PersistedState.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/PersistedState.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Models/TimerState.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/TimerState.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/TimerState.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/TimerState.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Models/VoiceMode.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/VoiceMode.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/VoiceMode.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/VoiceMode.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Services/CameraManaging.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/CameraManaging.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/CameraManaging.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/CameraManaging.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Services/NotificationService.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/NotificationService.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/NotificationService.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/NotificationService.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Services/PersistenceService.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/PersistenceService.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/PersistenceService.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/PersistenceService.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/ViewModels/CameraManager.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/CameraManager.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/CameraManager.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/CameraManager.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/ViewModels/FocusStore.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/FocusStore.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/FocusStore.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/FocusStore.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Views/HomeContentView.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/HomeContentView.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/HomeContentView.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/HomeContentView.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Views/OnboardingView.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/OnboardingView.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/OnboardingView.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/OnboardingView.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Views/TimerModalView.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/TimerModalView.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/TimerModalView.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/TimerModalView.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Views/UIComponents.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/UIComponents.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/UIComponents.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/UIComponents.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/WebView.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/WebView.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/WebView.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/WebView.o"
+  },
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "index-unit-output-path" : "/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/GeneratedAssetSymbols.bc",
+    "object" : "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/build/JobsNotFinished.build/Release-iphonesimulator/JobsNotFinished.build/Objects-normal/x86_64/GeneratedAssetSymbols.o"
+  }
+}

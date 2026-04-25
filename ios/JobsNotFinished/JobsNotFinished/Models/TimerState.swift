@@ -1,5 +1,26 @@
 import Foundation
 
+enum AppThemeMode: String, Codable, CaseIterable, Identifiable {
+    case system
+    case light
+    case dark
+
+    var id: String {
+        rawValue
+    }
+
+    var title: String {
+        switch self {
+        case .system:
+            return "System"
+        case .light:
+            return "Light"
+        case .dark:
+            return "Dark"
+        }
+    }
+}
+
 struct TimerState: Equatable {
     var activeTaskID: UUID?
     var startDate: Date?
@@ -30,10 +51,12 @@ struct UserState: Equatable {
     var selectedVoiceMode: AwayVoiceMode
     var supportiveUtterances: [String]
     var awayFailureSeconds: Int
+    var themeMode: AppThemeMode
     
     init() {
         self.selectedVoiceMode = .supportive
         self.supportiveUtterances = AwayVoiceMode.supportive.utterances
         self.awayFailureSeconds = 6
+        self.themeMode = .system
     }
 }

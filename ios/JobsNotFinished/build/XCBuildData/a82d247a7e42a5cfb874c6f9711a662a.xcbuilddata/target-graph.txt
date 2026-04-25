@@ -1,0 +1,4 @@
+Target dependency graph (2 targets)
+Target 'JobsNotFinishedTests' in project 'JobsNotFinished'
+➜ Explicit dependency on target 'JobsNotFinished' in project 'JobsNotFinished'
+Target 'JobsNotFinished' in project 'JobsNotFinished' (no dependencies)

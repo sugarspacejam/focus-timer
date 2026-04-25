@@ -1,0 +1,88 @@
+{
+  "source": "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinished/Views/OnboardingView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Got it",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 151
+        }
+      },
+      {
+        "comment": "",
+        "key": "Promise",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 31
+        }
+      },
+      {
+        "comment": "",
+        "key": "Finish the one thing you said you would.",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 35
+        }
+      },
+      {
+        "comment": "",
+        "key": "What are you working on?",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "Finish App Store screenshots",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 51
+        }
+      },
+      {
+        "comment": "",
+        "key": "Make 5-Minute Promise",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 60
+        }
+      },
+      {
+        "comment": "",
+        "key": "04:12",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 78
+        }
+      },
+      {
+        "comment": "",
+        "key": "Camera",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 85
+        }
+      },
+      {
+        "comment": "",
+        "key": "Present",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 92
+        }
+      },
+      {
+        "comment": "",
+        "key": "Keep your attention on the task until the timer ends.",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 107
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -4,19 +4,21 @@ struct StatCard: View {
     let title: String
     let value: String
 
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
         VStack(spacing: 8) {
             Text(value)
                 .font(.title2.weight(.bold))
-                .foregroundStyle(.white)
+                .foregroundStyle(colorScheme == .light ? Color.black : Color.white)
 
             Text(title)
                 .font(.caption)
-                .foregroundStyle(.white.opacity(0.65))
+                .foregroundStyle(colorScheme == .light ? Color.black.opacity(0.65) : Color.white.opacity(0.65))
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background(Color.white.opacity(0.07))
+        .background(colorScheme == .light ? Color.white.opacity(0.85) : Color.white.opacity(0.07))
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
@@ -29,20 +31,21 @@ struct TaskRow: View {
 
     @State private var isEditing = false
     @State private var editingName = ""
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         HStack(spacing: 12) {
             if isEditing {
                 TextField("Task name", text: $editingName)
                     .textFieldStyle(.plain)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(colorScheme == .light ? Color.black : Color.white)
                     .onSubmit {
                         onRename(editingName)
                         isEditing = false
                     }
             } else {
                 Text(task.name)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(colorScheme == .light ? Color.black : Color.white)
 
                 Spacer()
 
@@ -67,7 +70,7 @@ struct TaskRow: View {
             }
         }
         .padding()
-        .background(Color.white.opacity(0.05))
+        .background(colorScheme == .light ? Color.white.opacity(0.85) : Color.white.opacity(0.05))
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
@@ -87,13 +90,15 @@ struct PrimaryButtonStyle: ButtonStyle {
 }
 
 struct SecondaryButtonStyle: ButtonStyle {
+    @Environment(\.colorScheme) private var colorScheme
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .foregroundStyle(.white)
+            .foregroundStyle(colorScheme == .light ? Color.black : Color.white)
             .font(.headline)
             .padding()
             .frame(maxWidth: .infinity)
-            .background(Color.white.opacity(0.1))
+            .background(colorScheme == .light ? Color.black.opacity(0.08) : Color.white.opacity(0.1))
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)

@@ -4,11 +4,15 @@ struct TimerModalView<ActiveTimerContent: View, CameraContent: View>: View {
     let activeTimerSection: ActiveTimerContent
     let cameraSection: CameraContent
 
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
         NavigationStack {
             ZStack {
                 LinearGradient(
-                    colors: [Color.black, Color(red: 0.05, green: 0.07, blue: 0.11)],
+                    colors: colorScheme == .light
+                        ? [Color(red: 0.97, green: 0.98, blue: 1.0), Color(red: 0.91, green: 0.95, blue: 0.99)]
+                        : [Color.black, Color(red: 0.05, green: 0.07, blue: 0.11)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )

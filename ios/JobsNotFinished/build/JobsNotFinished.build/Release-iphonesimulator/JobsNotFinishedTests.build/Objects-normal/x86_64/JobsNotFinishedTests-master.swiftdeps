@@ -1,0 +1,6 @@
+version: "Apple Swift version 6.0.2 (swiftlang-6.0.2.1.2 clang-1600.0.26.4)"
+options: "c907c50cf1a65e2ec39999f0aabcafa6cf3592a683907b91c7c700a47ff79095"
+build_start_time: [1776958031, 586942000]
+build_end_time: [1776958035, 207790000]
+inputs:
+  "/Volumes/waffleman/chentoledano/Projects-new/focus-timer/ios/JobsNotFinished/JobsNotFinishedTests/FocusStoreTests.swift": !dirty [1776775146, 0]
