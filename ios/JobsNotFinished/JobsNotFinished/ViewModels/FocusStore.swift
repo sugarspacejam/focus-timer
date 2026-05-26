@@ -93,10 +93,6 @@ class FocusStore: ObservableObject {
         let seconds = visibleRemainingSeconds % 60
         return String(format: "%d:%02d", minutes, seconds)
     }
-
-    var canUseEnforcement: Bool {
-        true
-    }
     
     var awayUtterances: [String] {
         userState.supportiveUtterances
@@ -149,6 +145,8 @@ class FocusStore: ObservableObject {
         timerState.remainingSeconds = Int(Constants.Timer.durationSeconds)
         timerState.isCompleted = false
         timerState.motivationalMessageIndex += 1
+        userState.dailyContractsStarted += 1
+        userState.lastContractDate = Date()
         
         try persist()
 
@@ -303,6 +301,14 @@ class FocusStore: ObservableObject {
         try persist()
     }
     
+    func resetAllData() {
+        timerState = TimerState()
+        taskState = TaskState()
+        userState = UserState()
+        stats = FocusStats()
+        try? persist()
+    }
+    
     // MARK: - Background Support
     
     func prepareNotifications() async throws {
@@ -382,24 +388,6 @@ class FocusStore: ObservableObject {
     }
     
     // MARK: - Settings
-
-    func toggleCamera() {
-        taskState.isCameraEnabled.toggle()
-        do {
-            try persist()
-        } catch {
-            print("Failed to persist camera setting: \(error)")
-        }
-    }
-
-     func setCameraEnabled(_ isEnabled: Bool) {
-         taskState.isCameraEnabled = isEnabled
-         do {
-             try persist()
-         } catch {
-             print("Failed to persist camera setting: \(error)")
-         }
-     }
     
     func setVoiceMode(_ mode: AwayVoiceMode) {
         userState.selectedVoiceMode = mode
@@ -464,6 +452,7 @@ class FocusStore: ObservableObject {
     // MARK: - Private Methods
     
     private func startHeartbeat() {
+        stopHeartbeat()
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             Task { @MainActor in
                 self?.updateTimer()
@@ -504,6 +493,7 @@ class FocusStore: ObservableObject {
         if stats.statsDay != today {
             stats.statsDay = today
             stats.todayBlocks = 0
+            userState.dailyContractsStarted = 0
             do {
                 try persist()
             } catch {
@@ -520,11 +510,12 @@ class FocusStore: ObservableObject {
             timerStartDate: timerState.startDate,
             remainingSeconds: timerState.remainingSeconds,
             timerCompleted: timerState.isCompleted,
-            isCameraEnabled: taskState.isCameraEnabled,
             selectedVoiceMode: userState.selectedVoiceMode,
             supportiveUtterances: userState.supportiveUtterances,
             awayFailureSeconds: userState.awayFailureSeconds,
-            themeMode: userState.themeMode
+            themeMode: userState.themeMode,
+            dailyContractsStarted: userState.dailyContractsStarted,
+            lastContractDate: userState.lastContractDate
         )
         
         try persistenceService.save(persistedState, forKey: Constants.Persistence.storeKey)
@@ -540,11 +531,12 @@ class FocusStore: ObservableObject {
             timerState.startDate = state.timerStartDate
             timerState.remainingSeconds = state.remainingSeconds
             timerState.isCompleted = state.timerCompleted
-            taskState.isCameraEnabled = state.isCameraEnabled
             userState.selectedVoiceMode = state.selectedVoiceMode
             userState.supportiveUtterances = state.supportiveUtterances
             userState.awayFailureSeconds = state.awayFailureSeconds
             userState.themeMode = state.themeMode
+            userState.dailyContractsStarted = state.dailyContractsStarted
+            userState.lastContractDate = state.lastContractDate
 
             if timerState.startDate != nil && timerState.activeTaskID != nil && !timerState.isCompleted {
                 timerState.motivationalMessageIndex = Int.random(in: 0..<6)

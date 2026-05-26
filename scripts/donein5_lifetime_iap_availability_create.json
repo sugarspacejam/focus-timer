@@ -1,0 +1,1 @@
+{"data":{"type":"inAppPurchaseAvailabilities","attributes":{"availableInNewTerritories":true},"relationships":{"availableTerritories":{"data":[{"type":"territories","id":"USA"}]}}}}

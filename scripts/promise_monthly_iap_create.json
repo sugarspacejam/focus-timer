@@ -1,0 +1,25 @@
+{
+  "data": {
+    "type": "inAppPurchases",
+    "attributes": {
+      "name": "Promise Pro Monthly",
+      "productId": "com.5minutesblockstimer.pro.monthly",
+      "inAppPurchaseType": "AUTO_RENEWABLE_SUBSCRIPTION",
+      "reviewNote": "Monthly Promise Pro subscription for camera accountability and premium features."
+    },
+    "relationships": {
+      "app": {
+        "data": {
+          "type": "apps",
+          "id": "6761027000"
+        }
+      },
+      "subscriptionGroup": {
+        "data": {
+          "type": "subscriptionGroups",
+          "id": "22053731"
+        }
+      }
+    }
+  }
+}

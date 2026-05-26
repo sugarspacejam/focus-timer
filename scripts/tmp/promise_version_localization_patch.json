@@ -1,0 +1,14 @@
+{
+  "data": {
+    "type": "appStoreVersionLocalizations",
+    "id": "df9363f9-be2d-4583-a8ae-e11dc8669da0",
+    "attributes": {
+      "description": "Promise is camera accountability for focus you cannot fake.\n\nMake one clear promise, start a focused session, and stay present until it is complete.\n\nIf you enable camera accountability, the app monitors compliance while it is active in foreground. Missing the contract records a broken promise.\n\nFeatures:\n- Promise seal status and streak momentum\n- Camera accountability during active contracts\n- Custom voice lines and strict reminders\n- Ledger history of kept and broken promises",
+      "keywords": "promise,accountability,camera focus,focus,commitment,discipline",
+      "promotionalText": "Make a promise, stay on camera, and prove you kept your word.",
+      "supportUrl": "https://github.com/sugarspacejam/focus-timer",
+      "marketingUrl": "https://github.com/sugarspacejam/focus-timer",
+      "whatsNew": "Promise branding update, improved accountability copy, and latest release fixes."
+    }
+  }
+}

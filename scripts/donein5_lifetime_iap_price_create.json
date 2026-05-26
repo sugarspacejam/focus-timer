@@ -1,0 +1,1 @@
+{"data":{"type":"inAppPurchasePrices","attributes":{"startDate":null,"endDate":null},"relationships":{"inAppPurchasePricePoint":{"data":{"type":"inAppPurchasePricePoints","id":"eyJzIjoiNjc2Mzg5NjEwMiIsInQiOiJVU0EiLCJwIjoiMTAwMzYifQ"}},"territory":{"data":{"type":"territories","id":"USA"}}}}}

@@ -1,0 +1,20 @@
+{
+  "data": {
+    "type": "subscriptionPrices",
+    "attributes": {},
+    "relationships": {
+      "subscription": {
+        "data": {
+          "type": "subscriptions",
+          "id": "6763896045"
+        }
+      },
+      "subscriptionPricePoint": {
+        "data": {
+          "type": "subscriptionPricePoints",
+          "id": "eyJzIjoiNjc2Mzg5NjA0NSIsInQiOiJVU0EiLCJwIjoiMTAxNzcifQ"
+        }
+      }
+    }
+  }
+}

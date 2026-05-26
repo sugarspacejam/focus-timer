@@ -1,0 +1,28 @@
+- User wants app renamed from Promise to original/unique naming; chosen target now is Done in 5.
+- Key iOS target files: ios/JobsNotFinished/JobsNotFinished/Info.plist, ios/JobsNotFinished/JobsNotFinished.xcodeproj/project.pbxproj, ios/JobsNotFinished/JobsNotFinished/JobsNotFinishedApp.swift.
+- Key UI branding files with Promise strings: ios/JobsNotFinished/JobsNotFinished/Views/HomeContentView.swift, ios/JobsNotFinished/JobsNotFinished/Views/OnboardingView.swift, ios/JobsNotFinished/JobsNotFinished/Views/ProPaywall.swift.
+- Monetization authority path: ios/JobsNotFinished/JobsNotFinished/ViewModels/PurchaseManager.swift.
+- StoreKit product IDs currently used: com.5minutesblockstimer.pro.monthly and com.5minutesblockstimer.pro.annual.
+- Paywall path: ios/JobsNotFinished/JobsNotFinished/Views/ProPaywall.swift loads StoreKit products and purchases selected subscription product.
+- Entitlement gating path: PurchaseManager.isPro checked in HomeContentView for Pro features and task-creation gate.
+- Scripts proving subscription setup: scripts/promise_subscription_annual_create.json, scripts/promise_monthly_iap_create.json, scripts/promise_subscription_probe.json.
+- Repository also has pricing/submission payloads for subscriptions under scripts/promise_*_subscription_*.json.
+- Applied rename edits to Done in 5 in Info.plist, project.pbxproj, JobsNotFinishedApp.swift, OnboardingView.swift, ProPaywall.swift, HomeContentView.swift.
+- Verified no remaining Promise brand strings in app-facing text patterns (`Promise Pro`, `Text("Promise")`, PRODUCT_NAME/productName Promise).
+- Next verification boundary: xcodebuild for scheme JobsNotFinished after branding rename.
+- Verification done: xcodebuild -project ios/JobsNotFinished/JobsNotFinished.xcodeproj -scheme JobsNotFinished -sdk iphonesimulator -configuration Debug build CODE_SIGNING_ALLOWED=NO succeeded.
+- Live monetization in app code is subscription-only via PurchaseManager monthly/annual IDs; no lifetime/non-consumable ID is referenced in iOS source.
+- Script residue exists for one-time lifetime IAP payloads: scripts/iap_create.json and scripts/donein5_iap_create.json, but they are not used by current app code path.
+- Base app pricing payload exists as free schedule artifact: scripts/tmp/promise_free_app_price_schedule_create.json.
+- Persisted memory created: branding switched to Done in 5 and monetization audited as subscription-only in code.
+- User asked if hard subscription gate already exists; verified gate is partial: non-Pro can keep one active task and start it repeatedly.
+- Evidence: `canCreateTask` allows non-Pro when unfinished task count is 0, and `runStartAction` taskID path starts timers without Pro gate.
+- Implemented hard gate in `HomeContentView`: both `runStartAction` and `saveTaskToLibrary` now require `purchaseManager.isPro` before any start/save path.
+- Deleted obsolete soft-gating residue: removed `canCreateTask` and `shouldGateNewTask` paths.
+- Verification done after hard gate: xcodebuild succeeded for JobsNotFinished scheme (simulator Debug, code signing disabled).
+- Built for physical device destination id `00008120-000C31880E84201E` with xcodebuild Debug and build succeeded.
+- Installed app to connected iPhone via `xcrun devicectl device install app` using `Debug-iphoneos/Done in 5.app`.
+- Launched app on connected iPhone via `xcrun devicectl device process launch` for bundle id `com.5minutesblockstimer`.
+- User wants original concept tone: extreme drill-sergeant style with profanity and aggressive accountability voice lines (mentioning ElevenLabs-style voices).
+- Updated App Store metadata to Done in 5 branding via API patches: app info name/subtitle, promotional text, whats new.
+- Bumped build number to 5, archived and uploaded to App Store Connect (Delivery UUID: 246226d8-8adb-45ea-ace0-18d0c169bb88).

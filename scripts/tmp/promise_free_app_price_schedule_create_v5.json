@@ -1,0 +1,41 @@
+{
+  "data": {
+    "type": "appPriceSchedules",
+    "relationships": {
+      "app": {
+        "data": {
+          "type": "apps",
+          "id": "6761027000"
+        }
+      },
+      "baseTerritory": {
+        "data": {
+          "type": "territories",
+          "id": "USA"
+        }
+      },
+      "manualPrices": {
+        "data": [
+          {
+            "type": "appPrices",
+            "id": "${free-price}"
+          }
+        ]
+      }
+    }
+  },
+  "included": [
+    {
+      "type": "appPrices",
+      "id": "${free-price}",
+      "relationships": {
+        "appPricePoint": {
+          "data": {
+            "type": "appPricePoints",
+            "id": "eyJzIjoiNjc2MTAyNzAwMCIsInQiOiJVU0EiLCJwIjoiMTAwMDAifQ"
+          }
+        }
+      }
+    }
+  ]
+}

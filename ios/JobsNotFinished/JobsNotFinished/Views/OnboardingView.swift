@@ -28,7 +28,7 @@ struct OnboardingView: View {
                             .frame(width: 48, height: 5)
                             .padding(.top, 8)
 
-                        Text("Promise")
+                        Text("Done in 5")
                             .font(.system(size: 36, weight: .black))
                             .foregroundStyle(isLightTheme ? Color.black : Color.white)
 
@@ -40,7 +40,7 @@ struct OnboardingView: View {
 
                     OnboardingPreviewCard(
                         title: "1. Name the task",
-                        subtitle: "Write exactly what you’re about to do, then make the promise.",
+                        subtitle: "Write exactly what you’re about to do, then start the block.",
                         accent: .cyan,
                         content: {
                             VStack(alignment: .leading, spacing: 10) {
@@ -57,7 +57,7 @@ struct OnboardingView: View {
                                     .background(isLightTheme ? Color.black.opacity(0.05) : Color.white.opacity(0.08))
                                     .clipShape(RoundedRectangle(cornerRadius: 14))
 
-                                Text("Make 5-Minute Promise")
+                                Text("Start 5-Minute Block")
                                     .font(.subheadline.weight(.bold))
                                     .foregroundStyle(.black)
                                     .frame(maxWidth: .infinity)
@@ -69,8 +69,8 @@ struct OnboardingView: View {
                     )
 
                     OnboardingPreviewCard(
-                        title: "2. Stay in it",
-                        subtitle: "The promise runs for five minutes. If camera accountability is on, stay in frame while the app is open.",
+                        title: "2. Stay present",
+                        subtitle: "The block runs for five minutes. Camera accountability checks presence status while open.",
                         accent: .orange,
                         content: {
                             VStack(spacing: 14) {
@@ -96,40 +96,34 @@ struct OnboardingView: View {
                                     }
                                 }
 
-                                RoundedRectangle(cornerRadius: 18)
-                                    .fill(isLightTheme ? Color.black.opacity(0.04) : Color.white.opacity(0.06))
-                                    .frame(height: 150)
-                                    .overlay {
-                                        VStack(spacing: 10) {
-                                            Image(systemName: "person.crop.rectangle")
-                                                .font(.system(size: 38))
-                                                .foregroundStyle(isLightTheme ? Color.black.opacity(0.8) : Color.white.opacity(0.8))
-                                            Text("Keep your attention on the task until the timer ends.")
-                                                .font(.caption)
-                                                .foregroundStyle(isLightTheme ? Color.black.opacity(0.7) : Color.white.opacity(0.7))
-                                                .multilineTextAlignment(.center)
-                                                .padding(.horizontal, 20)
-                                        }
-                                    }
+                                HStack(spacing: 10) {
+                                    Image(systemName: "camera.badge.ellipsis")
+                                        .font(.headline)
+                                        .foregroundStyle(.orange)
+                                    Text("Presence status only — no live camera preview is shown.")
+                                        .font(.caption)
+                                        .foregroundStyle(isLightTheme ? Color.black.opacity(0.72) : Color.white.opacity(0.72))
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 10)
+                                .background(isLightTheme ? Color.black.opacity(0.05) : Color.white.opacity(0.08))
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
                             }
                         }
                     )
 
                     OnboardingPreviewCard(
-                        title: "3. Finish or fail",
-                        subtitle: "You do not need a warning every time. This is the rule: breaking the promise early counts as a failure and resets your streak.",
+                        title: "3. Results update",
+                        subtitle: "When a block ends, your home stats update immediately.",
                         accent: .red,
                         content: {
-                            VStack(spacing: 12) {
-                                HStack(spacing: 12) {
-                                    OutcomeChip(label: "Kept", color: .green)
-                                    OutcomeChip(label: "Broken = Failure", color: .red)
-                                }
-
-                                HStack(spacing: 12) {
+                            VStack(spacing: 10) {
+                                HStack(spacing: 10) {
+                                    MetricPill(title: "Today", value: "4")
+                                    MetricPill(title: "Completed", value: "3")
                                     MetricPill(title: "Streak", value: "7")
                                     MetricPill(title: "Failures", value: "1")
-                                    MetricPill(title: "Today", value: "4")
                                 }
                             }
                         }
@@ -139,12 +133,12 @@ struct OnboardingView: View {
                         OnboardingRow(
                             icon: "questionmark.circle",
                             title: "Need a reminder later?",
-                            detail: "Open this guide anytime from the question mark on the home screen."
+                            detail: "Open this guide anytime from Settings."
                         )
                         OnboardingRow(
                             icon: "iphone",
                             title: "No account required",
-                            detail: "Your tasks, streak, and recent promises stay on this device."
+                            detail: "Your tasks, streak, and recent blocks stay on this device."
                         )
                     }
 
@@ -229,23 +223,6 @@ private struct OnboardingRow: View {
         .padding(16)
         .background(colorScheme == .light ? Color.white.opacity(0.85) : Color.white.opacity(0.05))
         .clipShape(RoundedRectangle(cornerRadius: 14))
-    }
-}
-
-private struct OutcomeChip: View {
-    let label: String
-    let color: Color
-
-    @Environment(\.colorScheme) private var colorScheme
-
-    var body: some View {
-        Text(label)
-            .font(.caption.weight(.bold))
-            .foregroundStyle(colorScheme == .light ? Color.black : Color.white)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(color.opacity(0.24))
-            .clipShape(Capsule())
     }
 }
 

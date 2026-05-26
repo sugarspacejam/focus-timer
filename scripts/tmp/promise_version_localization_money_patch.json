@@ -1,0 +1,14 @@
+{
+  "data": {
+    "type": "appStoreVersionLocalizations",
+    "id": "df9363f9-be2d-4583-a8ae-e11dc8669da0",
+    "attributes": {
+      "description": "Promise helps you turn resistance into one focused 5-minute block.\n\nPick one task, start the block, and finish clean. Camera accountability can keep the session real while the app is active in the foreground.\n\nDownload free and start with a focused block. Promise Pro unlocks unlimited blocks, full history, custom voice lines, and stronger accountability tools.\n\nFeatures:\n- 5-minute focus blocks\n- Camera accountability during active sessions\n- Build-style progress from completed blocks\n- Custom voice lines and strict reminders\n- Full history with Promise Pro",
+      "keywords": "promise,focus,accountability,camera focus,5 minute timer,follow through",
+      "promotionalText": "Start one 5-minute block, stay on camera, and finish what you started.",
+      "supportUrl": "https://github.com/sugarspacejam/focus-timer",
+      "marketingUrl": "https://github.com/sugarspacejam/focus-timer",
+      "whatsNew": "Promise is now free to download, with Promise Pro for unlimited blocks and stronger accountability tools."
+    }
+  }
+}

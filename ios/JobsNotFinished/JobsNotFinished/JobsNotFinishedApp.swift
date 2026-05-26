@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct PromiseApp: App {
+struct DoneIn5App: App {
     var body: some Scene {
         WindowGroup {
             HomeContentView()

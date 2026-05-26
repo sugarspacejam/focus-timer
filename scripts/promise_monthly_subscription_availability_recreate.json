@@ -1,0 +1,24 @@
+{
+  "data": {
+    "type": "subscriptionAvailabilities",
+    "attributes": {
+      "availableInNewTerritories": false
+    },
+    "relationships": {
+      "availableTerritories": {
+        "data": [
+          {
+            "type": "territories",
+            "id": "USA"
+          }
+        ]
+      },
+      "subscription": {
+        "data": {
+          "type": "subscriptions",
+          "id": "6763896102"
+        }
+      }
+    }
+  }
+}

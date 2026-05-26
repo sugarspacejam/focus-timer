@@ -1,0 +1,24 @@
+{
+  "data": {
+    "type": "subscriptionIntroductoryOffers",
+    "attributes": {
+      "duration": "ONE_WEEK",
+      "numberOfPeriods": 1,
+      "offerMode": "FREE_TRIAL"
+    },
+    "relationships": {
+      "subscription": {
+        "data": {
+          "type": "subscriptions",
+          "id": "6763896045"
+        }
+      },
+      "territory": {
+        "data": {
+          "type": "territories",
+          "id": "USA"
+        }
+      }
+    }
+  }
+}

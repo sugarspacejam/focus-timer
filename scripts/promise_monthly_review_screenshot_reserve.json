@@ -1,0 +1,17 @@
+{
+  "data": {
+    "type": "subscriptionAppStoreReviewScreenshots",
+    "attributes": {
+      "fileName": "promise-review-1290x2796.png",
+      "fileSize": 2864024
+    },
+    "relationships": {
+      "subscription": {
+        "data": {
+          "type": "subscriptions",
+          "id": "6763896102"
+        }
+      }
+    }
+  }
+}

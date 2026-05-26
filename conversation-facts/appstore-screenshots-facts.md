@@ -1,0 +1,1 @@
+Continuing Promise upload after Settings Pro fix; need bump CURRENT_PROJECT_VERSION from 3 to next build, archive/export/upload; project ios/JobsNotFinished/JobsNotFinished.xcodeproj; scheme JobsNotFinished; bundle com.5minutesblockstimer; team 53F782K26M; verified simulator build succeeded after fix.

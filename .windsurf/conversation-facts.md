@@ -1,0 +1,2 @@
+- User wants no more behavior changes now; overview Focus Timer post-timer, promise, ledger, paywall, and timer modal event flow with code links after loading relevant code.
+- 2026-05-14 screenshot: timer camera row says "Camera accountability required" because CameraManager.startSession sets presenceState=.idle until Vision detects person; HomeContentView.cameraIndicatorDetailText maps idle to that detail.

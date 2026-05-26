@@ -1,0 +1,13 @@
+{
+  "data": {
+    "type": "reviewSubmissions",
+    "relationships": {
+      "app": {
+        "data": {
+          "type": "apps",
+          "id": "6761027000"
+        }
+      }
+    }
+  }
+}

@@ -17,7 +17,7 @@ enum AwayVoiceMode: String, Codable, CaseIterable, Identifiable {
     var description: String {
         switch self {
         case .supportive:
-            return "Clear reminders that pull you back into the promise."
+            return "Clear reminders that pull you back into the block."
         }
     }
 
@@ -27,8 +27,8 @@ enum AwayVoiceMode: String, Codable, CaseIterable, Identifiable {
             return [
                 "Get back to your task.",
                 "You're away. Get back in frame.",
-                "Stay with this promise.",
-                "Promise only works if you stay with the task."
+                "Stay with this block.",
+                "Block only works if you stay with the task."
             ]
         }
     }

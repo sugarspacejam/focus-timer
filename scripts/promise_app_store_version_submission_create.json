@@ -1,0 +1,13 @@
+{
+  "data": {
+    "type": "appStoreVersionSubmissions",
+    "relationships": {
+      "appStoreVersion": {
+        "data": {
+          "type": "appStoreVersions",
+          "id": "8bcaf41e-f1b9-42b1-96b0-3efa7c557647"
+        }
+      }
+    }
+  }
+}

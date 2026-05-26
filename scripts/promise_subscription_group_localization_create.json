@@ -1,0 +1,17 @@
+{
+  "data": {
+    "type": "subscriptionGroupLocalizations",
+    "attributes": {
+      "locale": "en-US",
+      "name": "Promise Pro"
+    },
+    "relationships": {
+      "subscriptionGroup": {
+        "data": {
+          "type": "subscriptionGroups",
+          "id": "22053731"
+        }
+      }
+    }
+  }
+}

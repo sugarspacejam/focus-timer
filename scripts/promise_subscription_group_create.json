@@ -1,0 +1,16 @@
+{
+  "data": {
+    "type": "subscriptionGroups",
+    "attributes": {
+      "referenceName": "Promise Pro"
+    },
+    "relationships": {
+      "app": {
+        "data": {
+          "type": "apps",
+          "id": "6761027000"
+        }
+      }
+    }
+  }
+}

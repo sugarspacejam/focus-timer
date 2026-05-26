@@ -39,11 +39,9 @@ struct TimerState: Equatable {
 
 struct TaskState: Equatable {
     var tasks: [FocusTask]
-    var isCameraEnabled: Bool
     
     init() {
         self.tasks = []
-        self.isCameraEnabled = false
     }
 }
 
@@ -52,11 +50,15 @@ struct UserState: Equatable {
     var supportiveUtterances: [String]
     var awayFailureSeconds: Int
     var themeMode: AppThemeMode
+    var dailyContractsStarted: Int
+    var lastContractDate: Date?
     
     init() {
         self.selectedVoiceMode = .supportive
         self.supportiveUtterances = AwayVoiceMode.supportive.utterances
         self.awayFailureSeconds = 6
         self.themeMode = .system
+        self.dailyContractsStarted = 0
+        self.lastContractDate = nil
     }
 }

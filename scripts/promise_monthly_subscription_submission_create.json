@@ -1,0 +1,13 @@
+{
+  "data": {
+    "type": "subscriptionSubmissions",
+    "relationships": {
+      "subscription": {
+        "data": {
+          "type": "subscriptions",
+          "id": "6763896102"
+        }
+      }
+    }
+  }
+}

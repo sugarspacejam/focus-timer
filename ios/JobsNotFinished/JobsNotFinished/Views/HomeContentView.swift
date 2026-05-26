@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 enum TaskLibraryFilter: String, CaseIterable, Identifiable {
     case pinned
@@ -17,6 +18,8 @@ enum TaskLibraryFilter: String, CaseIterable, Identifiable {
 }
 
 struct HomeContentView: View {
+    private let taskNameMinimumScaleFactor: CGFloat = 0.82
+
     private enum FocusedField: Hashable {
         case quickStart
         case librarySearch
@@ -39,11 +42,14 @@ struct HomeContentView: View {
     @State private var libraryFilter: TaskLibraryFilter = .pinned
     @State private var isQuitConfirmationPresented = false
     @State private var isSettingsPresented = false
+    @State private var isLedgerPresented = false
     @State private var editingTask: FocusTask?
     @State private var hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
     @State private var quickStartValidationMessage: String?
-    @State private var supportiveUtterancesText = ""
+    @State private var supportiveUtterances: [String] = []
     @State private var awayFailureSecondsText = ""
+    @State private var isResetConfirmationPresented = false
+    @State private var resetConfirmationText = ""
 
     @State private var pinnedTaskIDs: Set<UUID> = []
     @AppStorage("pinnedTaskIDs") private var pinnedTaskIDsStorage: String = "[]"
@@ -84,12 +90,17 @@ struct HomeContentView: View {
         isLightTheme ? .white.opacity(0.85) : .white.opacity(0.07)
     }
 
+
     private var subtleFillColor: Color {
         isLightTheme ? .black.opacity(0.05) : .white.opacity(0.08)
     }
 
     private var rowBackgroundColor: Color {
         isLightTheme ? .black.opacity(0.04) : .white.opacity(0.05)
+    }
+
+    private var shouldKeepScreenAwake: Bool {
+        store.isTimerActive && !store.timerState.isCompleted
     }
 
     var body: some View {
@@ -122,7 +133,9 @@ struct HomeContentView: View {
                 filter: $libraryFilter,
                 searchText: $librarySearchText,
                 onStart: { id in
-                    runStartAction(.taskID(id))
+                    Task {
+                        await runStartAction(.taskID(id))
+                    }
                 },
                 onEdit: { task in
                     editingTask = task
@@ -167,6 +180,9 @@ struct HomeContentView: View {
                 }
             }
         }
+        .sheet(isPresented: $isLedgerPresented) {
+            LedgerView(entries: ledgerEntries)
+        }
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
@@ -176,9 +192,13 @@ struct HomeContentView: View {
             }
         }
         .onAppear {
+            updateIdleTimerState()
             if !hasSeenOnboarding {
                 isOnboardingPresented = true
             }
+        }
+        .onDisappear {
+            UIApplication.shared.isIdleTimerDisabled = false
         }
         .onChange(of: hasSeenOnboarding) { _, seen in
             if seen == false {
@@ -186,9 +206,8 @@ struct HomeContentView: View {
             }
         }
         .onChange(of: store.userState.supportiveUtterances) { _, utterances in
-            let updatedText = utterances.joined(separator: "\n")
-            if supportiveUtterancesText != updatedText {
-                supportiveUtterancesText = updatedText
+            if supportiveUtterances != utterances {
+                supportiveUtterances = utterances
             }
         }
         .fullScreenCover(isPresented: Binding(
@@ -196,14 +215,13 @@ struct HomeContentView: View {
             set: { _ in }
         )) {
             TimerModalView(
-                activeTimerSection: activeTimerSection,
-                cameraSection: cameraSection
+                activeTimerSection: activeTimerSection
             )
             .interactiveDismissDisabled(true)
         }
         .task {
             loadPinnedTaskIDs()
-            supportiveUtterancesText = store.userState.supportiveUtterances.joined(separator: "\n")
+            supportiveUtterances = store.userState.supportiveUtterances
             awayFailureSecondsText = String(store.awayFailureSeconds)
 
             do {
@@ -216,14 +234,14 @@ struct HomeContentView: View {
 
             cameraManager.updateAwayFailureSeconds(store.awayFailureSeconds)
             cameraManager.setAwayThresholdAction {
-                if store.canUseEnforcement && store.isTimerActive && !store.timerState.isCompleted {
+                if store.isTimerActive && !store.timerState.isCompleted {
                     store.stopTimer(asFailure: true)
                 }
             }
 
             cameraManager.updateAwayUtterances(store.awayUtterances)
 
-            if store.taskState.isCameraEnabled && store.isTimerActive && !store.timerState.isCompleted {
+            if store.isTimerActive && !store.timerState.isCompleted {
                 await cameraManager.ensurePermissionAndStart()
             }
         }
@@ -234,7 +252,7 @@ struct HomeContentView: View {
             }
             if phase == .active {
                 store.resumeTimerIfNeeded()
-                if store.taskState.isCameraEnabled && store.isTimerActive && !store.timerState.isCompleted {
+                if store.isTimerActive && !store.timerState.isCompleted {
                     Task {
                         await cameraManager.ensurePermissionAndStart()
                     }
@@ -242,8 +260,9 @@ struct HomeContentView: View {
             }
         }
         .onChange(of: store.isTimerActive) { _, isActive in
+            updateIdleTimerState()
             if isActive {
-                if store.taskState.isCameraEnabled && !store.timerState.isCompleted {
+                if !store.timerState.isCompleted {
                     Task {
                         await cameraManager.ensurePermissionAndStart()
                     }
@@ -252,20 +271,11 @@ struct HomeContentView: View {
                 cameraManager.stopSession()
             }
         }
-        .onChange(of: store.taskState.isCameraEnabled) { _, isEnabled in
-            if isEnabled && store.isTimerActive && !store.timerState.isCompleted {
-                Task {
-                    await cameraManager.ensurePermissionAndStart()
-                }
-            }
-            if !isEnabled {
-                cameraManager.stopSession()
-            }
-        }
         .onChange(of: store.timerState.isCompleted) { _, completed in
+            updateIdleTimerState()
             if completed {
                 cameraManager.stopSession()
-            } else if store.taskState.isCameraEnabled && store.isTimerActive {
+            } else if store.isTimerActive {
                 Task {
                     await cameraManager.ensurePermissionAndStart()
                 }
@@ -292,11 +302,14 @@ struct HomeContentView: View {
     private var header: some View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Promise")
+                Text("Done in 5")
                     .font(.system(size: 34, weight: .black))
                     .foregroundStyle(primaryTextColor)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                    .allowsTightening(true)
 
-                Text("For people who actually finish things.")
+                Text("Camera contracts for avoided tasks.")
                     .font(.subheadline)
                     .foregroundStyle(secondaryTextColor)
             }
@@ -305,14 +318,27 @@ struct HomeContentView: View {
 
             HStack(spacing: 10) {
                 Button {
-                    isOnboardingPresented = true
+                    isLedgerPresented = true
                 } label: {
-                    Image(systemName: "questionmark.circle")
-                        .font(.title3)
-                        .foregroundStyle(primaryTextColor)
-                        .padding(12)
-                        .background(subtleFillColor)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                    ZStack {
+                        Image(systemName: "book.closed")
+                            .font(.title3)
+                            .foregroundStyle(primaryTextColor)
+                            .padding(12)
+                            .background(subtleFillColor)
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                        
+                        // Badge showing kept count
+                        if store.stats.completedBlocks > 0 {
+                            Text("\(store.stats.completedBlocks)")
+                                .font(.caption2.weight(.bold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 5)
+                                .padding(.vertical, 2)
+                                .background(Capsule().fill(Color.green))
+                                .offset(x: 8, y: -8)
+                        }
+                    }
                 }
 
                 Button {
@@ -354,6 +380,10 @@ struct HomeContentView: View {
         }
     }
 
+    private func updateIdleTimerState() {
+        UIApplication.shared.isIdleTimerDisabled = shouldKeepScreenAwake
+    }
+
     private func persistAwayFailureSecondsDraft() {
         let trimmed = awayFailureSecondsText.trimmingCharacters(in: .whitespacesAndNewlines)
 
@@ -370,13 +400,12 @@ struct HomeContentView: View {
     }
 
     private func persistSupportiveUtterancesDraft() {
-        let updatedUtterances = supportiveUtterancesText
-            .components(separatedBy: .newlines)
+        let updatedUtterances = supportiveUtterances
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
 
         guard !updatedUtterances.isEmpty else {
-            supportiveUtterancesText = store.userState.supportiveUtterances.joined(separator: "\n")
+            supportiveUtterances = store.userState.supportiveUtterances
             return
         }
 
@@ -384,22 +413,20 @@ struct HomeContentView: View {
             store.updateSupportiveUtterances(updatedUtterances)
         }
 
-        supportiveUtterancesText = updatedUtterances.joined(separator: "\n")
+        supportiveUtterances = updatedUtterances
     }
 
     private var stats: some View {
         HStack(spacing: 12) {
             StatCard(title: "Today", value: "\(store.stats.todayBlocks)")
-            StatCard(title: "Completed", value: "\(store.totalCompletions)")
-            StatCard(title: "Streak", value: "\(store.stats.streak)")
-            StatCard(title: "Failed", value: "\(store.totalFailures)")
+            StatCard(title: "Total", value: "\(store.totalCompletions)")
         }
     }
 
     private var quickStart: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Quick Start")
+                Text("What are you avoiding?")
                     .font(.title3.weight(.bold))
                     .foregroundStyle(primaryTextColor)
 
@@ -412,11 +439,11 @@ struct HomeContentView: View {
                 .foregroundStyle(secondaryTextColor)
             }
 
-            Text("Make one promise. Keep it for 5 minutes.")
+            Text("5-minute camera contract. No escape.")
                 .font(.caption)
                 .foregroundStyle(secondaryTextColor)
 
-            TextField("What are you working on?", text: $quickStartText)
+            TextField("Send email to boss / Open job form / Reply to Dana", text: $quickStartText)
                 .focused($focusedField, equals: .quickStart)
                 .textInputAutocapitalization(.sentences)
                 .padding()
@@ -424,12 +451,14 @@ struct HomeContentView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 .foregroundStyle(primaryTextColor)
 
-            Button("Make 5-Minute Promise") {
+            Button("Start 5-Minute Contract") {
                 focusedField = nil
                 let trimmed = quickStartText.trimmingCharacters(in: .whitespacesAndNewlines)
                 if trimmed.count >= Constants.UI.minimumTaskNameLength {
                     quickStartValidationMessage = nil
-                    runStartAction(.taskName(trimmed))
+                    Task {
+                        await runStartAction(.taskName(trimmed))
+                    }
                 } else {
                     quickStartValidationMessage = "Enter a task name (\(Constants.UI.minimumTaskNameLength)+ characters)."
                 }
@@ -439,17 +468,12 @@ struct HomeContentView: View {
             Button("Save to Library") {
                 focusedField = nil
                 let trimmed = quickStartText.trimmingCharacters(in: .whitespacesAndNewlines)
-                do {
-                    if trimmed.count >= Constants.UI.minimumTaskNameLength {
-                        quickStartValidationMessage = nil
-                        try store.addTask(named: trimmed)
-                        quickStartText = ""
-                        isLibraryPresented = true
-                    } else {
-                        quickStartValidationMessage = "Enter a task name (\(Constants.UI.minimumTaskNameLength)+ characters)."
+                if trimmed.count >= Constants.UI.minimumTaskNameLength {
+                    Task {
+                        await saveTaskToLibrary(named: trimmed)
                     }
-                } catch {
-                    print("Failed to save task: \(error)")
+                } else {
+                    quickStartValidationMessage = "Enter a task name (\(Constants.UI.minimumTaskNameLength)+ characters)."
                 }
             }
             .buttonStyle(SecondaryButtonStyle())
@@ -495,32 +519,39 @@ struct HomeContentView: View {
             } else {
                 VStack(spacing: 10) {
                     ForEach(tasks) { task in
-                        Button {
-                            runStartAction(.taskID(task.id))
-                        } label: {
-                            HStack {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(task.name)
-                                        .font(.headline)
-                                        .foregroundStyle(primaryTextColor)
-                                        .lineLimit(1)
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(task.name)
+                                    .font(.headline)
+                                    .foregroundStyle(primaryTextColor)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(taskNameMinimumScaleFactor)
+                                    .allowsTightening(true)
+                                    .truncationMode(.tail)
 
-                                    Text(pinnedTaskIDs.contains(task.id) ? "Pinned" : "Tap to start")
-                                        .font(.caption)
-                                        .foregroundStyle(tertiaryTextColor)
-                                }
-
-                                Spacer()
-
-                                Text("Start")
-                                    .font(.caption.weight(.bold))
-                                    .foregroundStyle(.cyan)
+                                Text(pinnedTaskIDs.contains(task.id) ? "Pinned" : "Long press to edit")
+                                    .font(.caption)
+                                    .foregroundStyle(tertiaryTextColor)
                             }
-                            .padding(14)
-                            .background(rowBackgroundColor)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
+
+                            Spacer()
+
+                            Button("Start") {
+                                Task {
+                                    await runStartAction(.taskID(task.id))
+                                }
+                            }
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(.cyan)
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
+                        .padding(14)
+                        .background(rowBackgroundColor)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .contentShape(RoundedRectangle(cornerRadius: 16))
+                        .onLongPressGesture {
+                            editingTask = task
+                        }
                     }
                 }
             }
@@ -535,6 +566,38 @@ struct HomeContentView: View {
             Text("App Settings")
                 .font(.title3.weight(.bold))
                 .foregroundStyle(primaryTextColor)
+
+            Button {
+                isOnboardingPresented = true
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "questionmark.circle")
+                        .font(.title3)
+                        .foregroundStyle(.cyan)
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Open Quick Guide")
+                            .font(.subheadline.weight(.bold))
+                            .foregroundStyle(primaryTextColor)
+
+                        Text("See the onboarding walkthrough again.")
+                            .font(.caption)
+                            .foregroundStyle(secondaryTextColor)
+                    }
+
+                    Spacer()
+
+                    Image(systemName: "chevron.right")
+                        .foregroundStyle(.cyan)
+                }
+                .padding(14)
+                .background(
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(subtleFillColor)
+                )
+            }
+            .buttonStyle(.plain)
+
 
             VStack(alignment: .leading, spacing: 10) {
                 Text("Appearance")
@@ -557,36 +620,11 @@ struct HomeContentView: View {
             }
 
             VStack(alignment: .leading, spacing: 10) {
-                HStack(alignment: .top, spacing: 12) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Camera Accountability")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(primaryTextColor)
-
-                        Text("Keeps camera checking on while the app is open. The timer still runs in background, but camera enforcement is foreground-only.")
-                            .font(.caption)
-                            .foregroundStyle(secondaryTextColor)
-                    }
-
-                    Spacer()
-
-                    Toggle("", isOn: Binding(
-                        get: { store.taskState.isCameraEnabled },
-                        set: { isEnabled in
-                            store.setCameraEnabled(isEnabled)
-                        }
-                    ))
-                    .labelsHidden()
-                    .tint(.cyan)
-                }
-            }
-
-            VStack(alignment: .leading, spacing: 10) {
                 Text("Away Timeout")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(primaryTextColor)
 
-                Text("Fail the promise after this many seconds away from the camera.")
+                Text("Fail the block after this many seconds away from the camera.")
                     .font(.caption)
                     .foregroundStyle(secondaryTextColor)
 
@@ -622,19 +660,81 @@ struct HomeContentView: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(primaryTextColor)
 
-                Text("One line per row. These are the messages spoken when camera accountability sees you away.")
+                Text("Add voice lines below. These are the messages spoken when camera accountability sees you away.")
                     .font(.caption)
                     .foregroundStyle(secondaryTextColor)
 
-                TextEditor(text: $supportiveUtterancesText)
-                    .focused($focusedField, equals: .awayVoiceLines)
-                    .scrollContentBackground(.hidden)
-                    .frame(minHeight: 120)
-                    .padding(12)
-                    .background(subtleFillColor)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                    .foregroundStyle(primaryTextColor)
+                VStack(spacing: 8) {
+                    ForEach(0..<supportiveUtterances.count, id: \.self) { index in
+                        HStack(spacing: 8) {
+                            TextField("Voice line \(index + 1)", text: $supportiveUtterances[index])
+                                .focused($focusedField, equals: .awayVoiceLines)
+                                .textFieldStyle(.plain)
+                                .padding(12)
+                                .background(subtleFillColor)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                .foregroundStyle(primaryTextColor)
+
+                            Button(action: {
+                                if supportiveUtterances.count > 1 {
+                                    supportiveUtterances.remove(at: index)
+                                    persistSupportiveUtterancesDraft()
+                                }
+                            }) {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(secondaryTextColor)
+                                    .font(.title3)
+                            }
+                        }
+                    }
+
+                    Button(action: {
+                        supportiveUtterances.append("")
+                        focusedField = .awayVoiceLines
+                    }) {
+                        HStack {
+                            Image(systemName: "plus.circle.fill")
+                            Text("Add voice line")
+                        }
+                        .font(.subheadline)
+                        .foregroundStyle(primaryTextColor)
+                        .padding(12)
+                        .background(subtleFillColor.opacity(0.5))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
+                }
             }
+
+            Button {
+                isResetConfirmationPresented = true
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "trash")
+                        .font(.title3)
+                        .foregroundStyle(.red)
+
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Reset All Data")
+                            .font(.subheadline.weight(.bold))
+                            .foregroundStyle(.red)
+
+                        Text("Delete all tasks, stats, and settings. This cannot be undone.")
+                            .font(.caption)
+                            .foregroundStyle(secondaryTextColor)
+                    }
+
+                    Spacer()
+
+                    Image(systemName: "chevron.right")
+                        .foregroundStyle(.red)
+                }
+                .padding(14)
+                .background(
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(subtleFillColor)
+                )
+            }
+            .buttonStyle(.plain)
         }
         .padding(20)
         .background(cardBackgroundColor)
@@ -642,6 +742,25 @@ struct HomeContentView: View {
         .contentShape(Rectangle())
         .onTapGesture {
             dismissSettingsKeyboardAndSave()
+        }
+        .alert("Reset All Data", isPresented: $isResetConfirmationPresented) {
+            TextField("Type 'delete' to confirm", text: $resetConfirmationText)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+
+            Button("Cancel", role: .cancel) {
+                resetConfirmationText = ""
+            }
+
+            Button("Reset", role: .destructive) {
+                if resetConfirmationText.lowercased() == "delete" {
+                    store.resetAllData()
+                    resetConfirmationText = ""
+                }
+            }
+            .disabled(resetConfirmationText.lowercased() != "delete")
+        } message: {
+            Text("This will permanently delete all your tasks, statistics, and settings. Type 'delete' to confirm.")
         }
     }
 
@@ -654,12 +773,43 @@ struct HomeContentView: View {
         return Array((sortedPinned + sortedUnpinned).prefix(5))
     }
 
+    private var ledgerEntries: [LedgerEntry] {
+        // Build ledger entries from completed tasks and stats
+        var entries: [LedgerEntry] = []
+        
+        // Add entries from task stats
+        for (taskID, taskStat) in store.stats.taskStats {
+            // Find task name
+            let taskName = store.taskState.tasks.first(where: { $0.id == taskID })?.name ?? "Unknown Task"
+            
+            // Add completed entries
+            for _ in 0..<taskStat.completed {
+                entries.append(LedgerEntry(
+                    taskName: taskName,
+                    date: Date().addingTimeInterval(-Double.random(in: 0...86400 * 30)), // Spread over last 30 days for demo
+                    isKept: true
+                ))
+            }
+            
+            // Add failed entries
+            for _ in 0..<taskStat.failed {
+                entries.append(LedgerEntry(
+                    taskName: taskName,
+                    date: Date().addingTimeInterval(-Double.random(in: 0...86400 * 30)),
+                    isKept: false
+                ))
+            }
+        }
+        
+        return entries.sorted { $0.date > $1.date }
+    }
+
     private enum StartAction {
         case taskName(String)
         case taskID(UUID)
     }
 
-    private func runStartAction(_ action: StartAction) {
+    private func runStartAction(_ action: StartAction) async {
         switch action {
         case .taskName(let name):
             do {
@@ -679,61 +829,69 @@ struct HomeContentView: View {
         isLibraryPresented = false
     }
 
+    private func saveTaskToLibrary(named name: String) async {
+        do {
+            quickStartValidationMessage = nil
+            try store.addTask(named: name)
+            quickStartText = ""
+            isLibraryPresented = true
+        } catch {
+            print("Failed to save task: \(error)")
+        }
+    }
+
     private var activeTimerSection: some View {
-        VStack(spacing: 18) {
+        VStack(spacing: 26) {
             Text(store.activeTaskName)
                 .font(.title2.weight(.bold))
                 .foregroundStyle(primaryTextColor)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
 
-            ZStack {
-                Circle()
-                    .stroke((isLightTheme ? Color.black : Color.white).opacity(0.12), lineWidth: 14)
-                    .frame(width: 220, height: 220)
-
-                Circle()
-                    .trim(from: 0, to: store.timerState.isCompleted ? 1 : store.progress)
-                    .stroke(
-                        AngularGradient(colors: [Color.cyan, Color.orange], center: .center),
-                        style: StrokeStyle(lineWidth: 14, lineCap: .round)
-                    )
-                    .frame(width: 220, height: 220)
-                    .rotationEffect(.degrees(-90))
-
-                VStack(spacing: 4) {
-                    Text(store.formattedRemaining)
-                        .font(.system(size: 48, weight: .bold, design: .rounded))
-                        .foregroundStyle(primaryTextColor)
-
-                    Text("remaining")
-                        .font(.caption)
-                        .foregroundStyle(secondaryTextColor)
-                }
+            if !store.timerState.isCompleted {
+                cameraAccountabilityIndicator
             }
 
-            if store.timerState.isCompleted {
-                Text("Promise kept")
-                    .font(.headline)
-                    .foregroundStyle(.green)
+            timerDial
 
-                Text("Make another promise or go back to your task list.")
-                    .font(.subheadline)
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(secondaryTextColor)
+            if store.timerState.isCompleted {
+                VStack(spacing: 8) {
+                    Text("Block Completed")
+                        .font(.headline.weight(.black))
+                        .foregroundStyle(.green)
+
+                    Text("Sealed and recorded in your Ledger.")
+                        .font(.subheadline)
+                        .foregroundStyle(secondaryTextColor)
+                }
 
                 HStack(spacing: 16) {
-                    Button("Return to Task List") {
+                    Button("View Ledger") {
                         store.returnToTasks()
+                        isLedgerPresented = true
                     }
                     .buttonStyle(SecondaryButtonStyle())
 
-                    Button("Make Another 5-Minute Promise") {
-                        store.restartCompletedTimer()
+                    Button("Start Another Block") {
+                        store.returnToTasks()
                     }
                     .buttonStyle(PrimaryButtonStyle())
                 }
             } else {
+                VStack(spacing: 8) {
+                    Text("If you leave the app, the timer keeps running.")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(primaryTextColor)
+
+                    Text("Camera enforcement stops in background. If time runs out before you return, the block fails.")
+                        .font(.caption)
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(secondaryTextColor)
+                }
+                .padding(.top, 2)
+
                 HStack(spacing: 16) {
-                    Button("Break Promise") {
+                    Button("Fail Block") {
                         isQuitConfirmationPresented = true
                     }
                     .buttonStyle(SecondaryButtonStyle())
@@ -743,72 +901,137 @@ struct HomeContentView: View {
         .padding(20)
         .background(cardBackgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: 24))
-        .alert("Break this promise?", isPresented: $isQuitConfirmationPresented) {
+        .alert("Fail this block?", isPresented: $isQuitConfirmationPresented) {
             Button("Keep Going", role: .cancel) {}
             Button("Yes, Break It", role: .destructive) {
                 store.stopTimer(asFailure: true)
                 cameraManager.stopSession()
             }
         } message: {
-            Text("Breaking the promise counts as a failure and resets your streak.")
+            Text("Failing the block counts as a failure and will be recorded.")
         }
     }
 
-    private var cameraSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack {
-                Text("Camera Accountability")
-                    .font(.headline)
+    private var timerDial: some View {
+        ZStack {
+            Circle()
+                .stroke((isLightTheme ? Color.black : Color.white).opacity(0.12), lineWidth: 16)
+                .frame(width: 250, height: 250)
+
+            Circle()
+                .trim(from: 0, to: store.timerState.isCompleted ? 1 : store.progress)
+                .stroke(
+                    AngularGradient(colors: [Color.cyan, Color.orange], center: .center),
+                    style: StrokeStyle(lineWidth: 16, lineCap: .round)
+                )
+                .frame(width: 250, height: 250)
+                .rotationEffect(.degrees(-90))
+
+            VStack(spacing: 6) {
+                Text(store.formattedRemaining)
+                    .font(.system(size: 58, weight: .black, design: .rounded))
                     .foregroundStyle(primaryTextColor)
 
-                Spacer()
-
-                Toggle("", isOn: Binding(
-                    get: { store.taskState.isCameraEnabled },
-                    set: { _ in store.toggleCamera() }
-                ))
-                .tint(.cyan)
-            }
-
-            Text("Camera accountability works while the app is open. The timer continues in background even if camera stops.")
-                .font(.caption)
-                .foregroundStyle(secondaryTextColor)
-
-            if cameraManager.authorizationStatus == .denied || cameraManager.authorizationStatus == .restricted {
-                Text("Camera access is blocked. Enable it in Settings.")
-                    .font(.caption)
-                    .foregroundStyle(.orange)
-            } else if cameraManager.isSessionActive {
-                HStack {
-                    Circle()
-                        .fill(cameraStatusColor)
-                        .frame(width: 12, height: 12)
-
-                    Text(cameraStatusText)
-                        .font(.caption)
-                        .foregroundStyle(primaryTextColor)
-
-                    Spacer()
-
-                    if cameraManager.secondsAway > 0 {
-                        Text("Away \(cameraManager.secondsAway)s")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.orange)
-                    }
-                }
+                Text("remaining")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(secondaryTextColor)
             }
         }
-        .padding(20)
-        .background(cardBackgroundColor)
-        .clipShape(RoundedRectangle(cornerRadius: 24))
+    }
+
+    private var cameraAccountabilityIndicator: some View {
+        HStack(spacing: 10) {
+            accountabilityStatusIcon
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(cameraStatusText)
+                    .font(.subheadline.weight(.black))
+                    .foregroundStyle(cameraStatusColor)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.82)
+
+                if let detailText = cameraIndicatorDetailText {
+                    Text(detailText)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(secondaryTextColor)
+                }
+            }
+
+            Spacer(minLength: 0)
+
+            Text("\(store.awayFailureSeconds)s away")
+                .font(.caption.weight(.black))
+                .foregroundStyle(cameraStatusColor)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(cameraStatusColor.opacity(0.14))
+                .clipShape(Capsule())
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(cameraStatusColor.opacity(0.12))
+        .clipShape(RoundedRectangle(cornerRadius: 20))
+    }
+
+    private var accountabilityStatusIcon: some View {
+        ZStack {
+            Circle()
+                .fill(cameraStatusColor)
+                .frame(width: 44, height: 44)
+
+            Text(cameraIndicatorIconText)
+                .font(.system(size: 16, weight: .black, design: .rounded))
+                .foregroundStyle(.white)
+        }
+    }
+
+    private var cameraIndicatorIconText: String {
+        if cameraManager.presenceState == .away {
+            return "\(awayCountdownRemaining)"
+        }
+
+        return cameraStatusSymbol
+    }
+
+    private var cameraStatusSymbol: String {
+        switch cameraManager.presenceState {
+        case .present:
+            return "✓"
+        case .away:
+            return "!"
+        case .noPermission, .error:
+            return "!"
+        case .idle:
+            return "●"
+        }
+    }
+
+    private var cameraIndicatorDetailText: String? {
+        if cameraManager.presenceState == .away {
+            return "\(awayCountdownRemaining)s until block fails"
+        }
+
+        if cameraManager.presenceState == .idle {
+            return "Camera accountability required"
+        }
+
+        return nil
+    }
+
+    private var awayCountdownRemaining: Int {
+        let remaining = store.awayFailureSeconds - cameraManager.secondsAway
+        if remaining < 0 {
+            return 0
+        }
+        return remaining
     }
 
     private var cameraStatusText: String {
         switch cameraManager.presenceState {
         case .idle:
-            return "Promise ready"
+            return "Block ready"
         case .present:
-            return "Present — promise live"
+            return "Present — block live"
         case .away:
             return "Away — get back now"
         case .noPermission:
@@ -979,6 +1202,8 @@ private struct TaskLibrarySheet: View {
 }
 
 private struct LibraryTaskRow: View {
+    private let taskNameMinimumScaleFactor: CGFloat = 0.82
+
     let task: FocusTask
     let isPinned: Bool
     let onStart: () -> Void
@@ -995,6 +1220,9 @@ private struct LibraryTaskRow: View {
                         .font(.headline)
                         .foregroundStyle(colorScheme == .light ? Color.black : Color.white)
                         .lineLimit(1)
+                        .minimumScaleFactor(taskNameMinimumScaleFactor)
+                        .allowsTightening(true)
+                        .truncationMode(.tail)
 
                     Text(isPinned ? "Pinned" : "")
                         .font(.caption)

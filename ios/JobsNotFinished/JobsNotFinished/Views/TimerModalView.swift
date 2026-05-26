@@ -1,8 +1,7 @@
 import SwiftUI
 
-struct TimerModalView<ActiveTimerContent: View, CameraContent: View>: View {
+struct TimerModalView<ActiveTimerContent: View>: View {
     let activeTimerSection: ActiveTimerContent
-    let cameraSection: CameraContent
 
     @Environment(\.colorScheme) private var colorScheme
 
@@ -18,13 +17,12 @@ struct TimerModalView<ActiveTimerContent: View, CameraContent: View>: View {
                 )
                 .ignoresSafeArea()
 
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 20) {
-                        activeTimerSection
-                        cameraSection
-                    }
-                    .padding(20)
+                VStack {
+                    Spacer(minLength: 0)
+                    activeTimerSection
+                    Spacer(minLength: 0)
                 }
+                .padding(20)
                 .scrollBounceBehavior(.basedOnSize)
             }
             .navigationBarHidden(true)

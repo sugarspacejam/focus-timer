@@ -170,6 +170,33 @@ def resolve_version_id!(app_id, version_string)
   match.fetch('id')
 end
 
+def resolve_editable_app_info_id!(app_id)
+  data = get_json!("/v1/apps/#{app_id}/appInfos")
+  infos = data.fetch('data')
+  match = infos.find do |info|
+    attrs = info.fetch('attributes')
+    attrs.fetch('state') == 'PREPARE_FOR_SUBMISSION' && attrs.fetch('appStoreState') == 'PREPARE_FOR_SUBMISSION'
+  end
+
+  if match.nil?
+    fail!("Could not find editable appInfo for app #{app_id}")
+  end
+
+  match.fetch('id')
+end
+
+def resolve_app_info_localization_id!(app_info_id, locale)
+  data = get_json!("/v1/appInfos/#{app_info_id}/appInfoLocalizations")
+  locs = data.fetch('data')
+  match = locs.find { |l| l.fetch('attributes').fetch('locale') == locale }
+
+  if match.nil?
+    fail!("Could not find appInfoLocalization #{locale} for appInfo #{app_info_id}")
+  end
+
+  match.fetch('id')
+end
+
 def resolve_localization_id!(version_id, locale)
   data = get_json!("/v1/appStoreVersions/#{version_id}/appStoreVersionLocalizations")
   locs = data.fetch('data')
@@ -204,6 +231,21 @@ def patch_localization!(localization_id, metadata)
     }
   }
   puts patch_json!("/v1/appStoreVersionLocalizations/#{localization_id}", payload)
+end
+
+def patch_app_info_localization!(app_info_localization_id, metadata)
+  payload = {
+    data: {
+      type: 'appInfoLocalizations',
+      id: app_info_localization_id,
+      attributes: {
+        name: metadata.fetch('appInfoName'),
+        subtitle: metadata.fetch('appInfoSubtitle')
+      }
+    }
+  }
+
+  puts patch_json!("/v1/appInfoLocalizations/#{app_info_localization_id}", payload)
 end
 
 def list_screenshot_sets(localization_id)
@@ -466,6 +508,11 @@ end
 app_id = resolve_app_id!
 version_id = resolve_version_id!(app_id, version_string)
 localization_id = resolve_localization_id!(version_id, locale)
+app_info_id = resolve_editable_app_info_id!(app_id)
+app_info_localization_id = resolve_app_info_localization_id!(app_info_id, locale)
+
+patch_app_info_localization!(app_info_localization_id, metadata)
+puts JSON.pretty_generate(event: 'app_info_localization_patched', appInfoLocalizationId: app_info_localization_id)
 
 patch_localization!(localization_id, metadata)
 puts JSON.pretty_generate(event: 'localization_patched', localizationId: localization_id)

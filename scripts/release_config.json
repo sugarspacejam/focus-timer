@@ -1,0 +1,28 @@
+{
+  "app": {
+    "bundleId": "com.5minutesblockstimer",
+    "versionString": "1.0.1",
+    "locale": "en-US"
+  },
+  "branding": {
+    "name": "Done in 5",
+    "subtitle": "Camera contracts"
+  },
+  "pricing": {
+    "appPrice": "0.99"
+  },
+  "storefront": {
+    "promotionalText": "Camera contracts for avoided tasks. Brutal accountability. 100% offline.",
+    "description": "Done in 5 is for that one task you keep putting off — a strict 5-minute camera contract that forces you to finally start.\n\nPoint your phone at your face, type the thing you're avoiding, and don't leave until it's started.\n\nAll camera logic is offline. Nothing leaves your iPhone.\n\nFEATURES:\n- Unlimited 5-minute camera contracts\n- Custom away voice accountability\n- Stricter accountability modes\n- Progress tracking and streaks\n- Task library for recurring blockers\n- 100% offline privacy\n\nDone in 5 is a tiny tool you only use for those moments when you're staring at the task and can't start. It's brutal. It works.",
+    "keywords": "procrastination,avoidance,ADHD focus,body doubling,accountability camera,focus timer",
+    "supportUrl": "https://github.com/sugarspacejam/focus-timer",
+    "marketingUrl": "https://github.com/sugarspacejam/focus-timer",
+    "privacyPolicyUrl": "https://github.com/sugarspacejam/focus-timer/blob/main/PRIVACY.md",
+    "copyright": "© 2026 Chen Toledano"
+  },
+  "steps": [
+    "update_app_info",
+    "update_localization",
+    "submit_for_review"
+  ]
+}

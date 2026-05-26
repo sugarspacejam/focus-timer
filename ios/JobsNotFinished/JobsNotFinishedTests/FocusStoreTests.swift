@@ -329,17 +329,6 @@ final class FocusStoreTests: XCTestCase {
         XCTAssertEqual(store.formattedRemaining, "0:00")
     }
 
-    func testToggleCameraPersistsSettingAcrossReload() {
-        XCTAssertFalse(store.taskState.isCameraEnabled)
-
-        store.toggleCamera()
-
-        XCTAssertTrue(store.taskState.isCameraEnabled)
-
-        let reloadedStore = FocusStore(persistenceService: persistence, notificationService: notifications)
-        XCTAssertTrue(reloadedStore.taskState.isCameraEnabled)
-    }
-
     func testSupportiveUtterancesPersistAcrossReload() {
         let customUtterances = ["One", "Two", "Three"]
 
@@ -367,10 +356,10 @@ final class FocusStoreTests: XCTestCase {
             timerStartDate: nil,
             remainingSeconds: Int(Constants.Timer.durationSeconds),
             timerCompleted: false,
-            isCameraEnabled: false,
             selectedVoiceMode: try JSONDecoder().decode(AwayVoiceMode.self, from: Data("\"strict\"".utf8)),
             supportiveUtterances: ["Custom" ],
-            awayFailureSeconds: 6
+            awayFailureSeconds: 6,
+            themeMode: .system
         )
 
         try persistence.save(legacyState, forKey: Constants.Persistence.storeKey)
@@ -396,10 +385,10 @@ final class FocusStoreTests: XCTestCase {
             timerStartDate: nil,
             remainingSeconds: Int(Constants.Timer.durationSeconds),
             timerCompleted: false,
-            isCameraEnabled: false,
             selectedVoiceMode: .supportive,
             supportiveUtterances: AwayVoiceMode.supportive.utterances,
-            awayFailureSeconds: 6
+            awayFailureSeconds: 6,
+            themeMode: .system
         )
 
         try persistence.save(persistedState, forKey: Constants.Persistence.storeKey)
@@ -415,7 +404,6 @@ final class FocusStoreTests: XCTestCase {
 
     func testClearAllResetsTasksStatsAndTimerState() throws {
         _ = try store.startTimerForTaskNamed("Wipe me")
-        store.toggleCamera()
         store.completeTimer()
 
         try store.clearAll()
@@ -431,7 +419,6 @@ final class FocusStoreTests: XCTestCase {
         XCTAssertNil(store.timerState.activeTaskID)
         XCTAssertNil(store.timerState.startDate)
         XCTAssertFalse(store.timerState.isCompleted)
-        XCTAssertFalse(store.taskState.isCameraEnabled)
         XCTAssertEqual(store.userState, UserState())
     }
 }

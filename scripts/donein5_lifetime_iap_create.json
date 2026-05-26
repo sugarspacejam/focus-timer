@@ -1,0 +1,1 @@
+{"data":{"type":"inAppPurchases","attributes":{"name":"Done in 5 Lifetime","productId":"com.5minutesblockstimer.lifetime","inAppPurchaseType":"NON_CONSUMABLE","reviewNote":"One-time unlock for full app access including block start/save, camera accountability, custom voice lines, and history."},"relationships":{"app":{"data":{"type":"apps","id":"6761027000"}}}}}
