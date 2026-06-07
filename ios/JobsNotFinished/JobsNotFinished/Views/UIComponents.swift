@@ -3,8 +3,10 @@ import SwiftUI
 struct StatCard: View {
     let title: String
     let value: String
+    let explanation: String?
 
     @Environment(\.colorScheme) private var colorScheme
+    @State private var showingExplanation = false
 
     var body: some View {
         VStack(spacing: 8) {
@@ -20,6 +22,16 @@ struct StatCard: View {
         .padding(.vertical, 12)
         .background(colorScheme == .light ? Color.white.opacity(0.85) : Color.white.opacity(0.07))
         .clipShape(RoundedRectangle(cornerRadius: 12))
+        .onTapGesture {
+            if let explanation = explanation {
+                showingExplanation = true
+            }
+        }
+        .alert(title, isPresented: $showingExplanation) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(explanation ?? "")
+        }
     }
 }
 
@@ -36,7 +48,7 @@ struct TaskRow: View {
     var body: some View {
         HStack(spacing: 12) {
             if isEditing {
-                TextField("Task name", text: $editingName)
+                TextField("Block name", text: $editingName)
                     .textFieldStyle(.plain)
                     .foregroundStyle(colorScheme == .light ? Color.black : Color.white)
                     .onSubmit {

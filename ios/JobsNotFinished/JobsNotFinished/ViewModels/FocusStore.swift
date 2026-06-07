@@ -97,6 +97,32 @@ class FocusStore: ObservableObject {
     var awayUtterances: [String] {
         userState.supportiveUtterances
     }
+    
+    var ledgerEntries: [LedgerEntry] {
+        var entries: [LedgerEntry] = []
+        
+        for (taskID, taskStat) in stats.taskStats {
+            let taskName = taskState.tasks.first(where: { $0.id == taskID })?.name ?? "Unknown Task"
+            
+            for _ in 0..<taskStat.completed {
+                entries.append(LedgerEntry(
+                    taskName: taskName,
+                    date: Date(),
+                    isKept: true
+                ))
+            }
+            
+            for _ in 0..<taskStat.failed {
+                entries.append(LedgerEntry(
+                    taskName: taskName,
+                    date: Date(),
+                    isKept: false
+                ))
+            }
+        }
+        
+        return entries.sorted { $0.date > $1.date }
+    }
 
     var awayFailureSeconds: Int {
         userState.awayFailureSeconds
@@ -142,6 +168,7 @@ class FocusStore: ObservableObject {
         
         timerState.activeTaskID = taskID
         timerState.startDate = Date()
+        timerState.blockStartedAt = Date()
         timerState.remainingSeconds = Int(Constants.Timer.durationSeconds)
         timerState.isCompleted = false
         timerState.motivationalMessageIndex += 1
@@ -173,6 +200,12 @@ class FocusStore: ObservableObject {
             stats.totalBlocks += 1
             stats.failedBlocks += 1
             stats.streak = 0
+            stats.totalFailedBlocks += 1
+            
+            // Flame system: failed block ends momentum streak, no Fire Power
+            stats.currentMomentumStreak = 0
+            stats.lastBlockEndTime = nil
+            stats.gracePeriodEndTime = nil
             
             var taskStat = stats.taskStats[activeTaskID] ?? TaskStat(completed: 0, failed: 0)
             taskStat.failed += 1
@@ -181,6 +214,7 @@ class FocusStore: ObservableObject {
         
         timerState.activeTaskID = nil
         timerState.startDate = nil
+        timerState.blockStartedAt = nil
         timerState.isCompleted = false
         
         do {
@@ -207,6 +241,37 @@ class FocusStore: ObservableObject {
         stats.totalBlocks += 1
         stats.completedBlocks += 1
         stats.streak += 1
+        stats.totalKeptBlocks += 1
+        
+        // Flame system: calculate Fire Power based on momentum streak
+        let now = Date()
+        let blockStartedAt = timerState.blockStartedAt ?? now
+        
+        // Check if momentum is still active (started within grace period and same day)
+        let isMomentumActive: Bool
+        if let graceEnd = stats.gracePeriodEndTime,
+           let lastCompleted = stats.lastKeptBlockCompletedAt {
+            let sameDay = Calendar.current.isDate(lastCompleted, inSameDayAs: now)
+            let startedInWindow = blockStartedAt <= graceEnd
+            isMomentumActive = sameDay && startedInWindow
+        } else {
+            isMomentumActive = false
+        }
+        
+        if isMomentumActive {
+            stats.currentMomentumStreak += 1
+        } else {
+            stats.currentMomentumStreak = 1
+        }
+        
+        let firePowerGained = stats.currentMomentumStreak
+        stats.totalFirePower += firePowerGained
+        stats.todayFirePowerEarned += firePowerGained
+        stats.bestMomentum = max(stats.bestMomentum, stats.currentMomentumStreak)
+        
+        stats.lastBlockEndTime = now
+        stats.lastKeptBlockCompletedAt = now
+        stats.gracePeriodEndTime = now.addingTimeInterval(FocusStats.gracePeriodSeconds)
         
         var taskStat = stats.taskStats[activeTaskID] ?? TaskStat(completed: 0, failed: 0)
         taskStat.completed += 1
@@ -248,6 +313,7 @@ class FocusStore: ObservableObject {
 
         timerState.activeTaskID = nil
         timerState.startDate = nil
+        timerState.blockStartedAt = nil
         timerState.isCompleted = false
         timerState.remainingSeconds = Int(Constants.Timer.durationSeconds)
 
@@ -416,6 +482,15 @@ class FocusStore: ObservableObject {
         }
     }
 
+    func updateCountdownSpeakingEnabled(_ enabled: Bool) {
+        userState.countdownSpeakingEnabled = enabled
+        do {
+            try persist()
+        } catch {
+            print("Failed to persist countdown speaking enabled: \(error)")
+        }
+    }
+
     func setThemeMode(_ mode: AppThemeMode) {
         userState.themeMode = mode
         do {
@@ -494,6 +569,13 @@ class FocusStore: ObservableObject {
             stats.statsDay = today
             stats.todayBlocks = 0
             userState.dailyContractsStarted = 0
+            
+            // Flame system: reset momentum streak daily, keep total Fire Power
+            stats.currentMomentumStreak = 0
+            stats.lastBlockEndTime = nil
+            stats.gracePeriodEndTime = nil
+            stats.todayFirePowerEarned = 0
+            
             do {
                 try persist()
             } catch {
@@ -519,6 +601,147 @@ class FocusStore: ObservableObject {
         )
         
         try persistenceService.save(persistedState, forKey: Constants.Persistence.storeKey)
+    }
+    
+    // MARK: - Flame System
+    
+    var isGracePeriodActive: Bool {
+        guard let graceEnd = stats.gracePeriodEndTime else {
+            return false
+        }
+        return Date() <= graceEnd
+    }
+    
+    var gracePeriodRemainingSeconds: TimeInterval {
+        guard let graceEnd = stats.gracePeriodEndTime else {
+            return 0
+        }
+        return max(graceEnd.timeIntervalSinceNow, 0)
+    }
+    
+    var nextFirePower: Int {
+        stats.currentMomentumStreak + 1
+    }
+    
+    var flameColor: Color {
+        let power = stats.totalFirePower
+        if power >= 25000 {
+            return Color(red: 0.97, green: 0.96, blue: 0.91) // Eternal Flame core
+        } else if power >= 10000 {
+            return Color(red: 1.0, green: 0.84, blue: 0.42) // Supernova outer
+        } else if power >= 5000 {
+            return Color(red: 0.35, green: 0.42, blue: 1.0) // Cosmic outer
+        } else if power >= 2000 {
+            return Color(red: 0.3, green: 1.0, blue: 0.72) // Aurora outer
+        } else if power >= 1000 {
+            return Color(red: 0.0, green: 0.85, blue: 1.0) // Plasma outer
+        } else if power >= 500 {
+            return Color(red: 1.0, green: 0.7, blue: 0.0) // Solar outer
+        } else if power >= 250 {
+            return Color(red: 0.97, green: 0.96, blue: 0.91) // White Flame
+        } else if power >= 100 {
+            return Color(red: 0.61, green: 0.36, blue: 1.0) // Violet Flame
+        } else if power >= 50 {
+            return Color(red: 0.24, green: 0.65, blue: 1.0) // Blue Flame
+        } else if power >= 25 {
+            return Color(red: 1.0, green: 0.76, blue: 0.2) // Gold Flame
+        } else if power >= 10 {
+            return Color(red: 1.0, green: 0.48, blue: 0.1) // Orange Flame
+        } else if power >= 1 {
+            return Color(red: 0.9, green: 0.22, blue: 0.21) // Red Flame
+        } else {
+            return Color(red: 0.6, green: 0.29, blue: 0.1) // Ember
+        }
+    }
+    
+    var flameSecondaryColor: Color {
+        let power = stats.totalFirePower
+        if power >= 25000 {
+            return Color(red: 1.0, green: 0.84, blue: 0.0) // Eternal secondary
+        } else if power >= 10000 {
+            return Color(red: 1.0, green: 0.3, blue: 0.43) // Supernova secondary
+        } else if power >= 5000 {
+            return Color(red: 0.76, green: 0.24, blue: 1.0) // Cosmic secondary
+        } else if power >= 2000 {
+            return Color(red: 0.54, green: 0.36, blue: 1.0) // Aurora secondary
+        } else if power >= 1000 {
+            return Color(red: 0.42, green: 0.36, blue: 1.0) // Plasma glow
+        } else if power >= 500 {
+            return Color(red: 1.0, green: 0.42, blue: 0.0) // Solar glow
+        } else {
+            return .clear
+        }
+    }
+    
+    var flameGlowColor: Color {
+        let power = stats.totalFirePower
+        if power >= 25000 {
+            return Color(red: 1.0, green: 1.0, blue: 1.0) // Eternal glow
+        } else if power >= 10000 {
+            return Color(red: 1.0, green: 0.54, blue: 0.0) // Supernova glow
+        } else if power >= 5000 {
+            return Color(red: 0.11, green: 0.11, blue: 0.35) // Cosmic glow
+        } else if power >= 2000 {
+            return Color(red: 0.0, green: 0.76, blue: 1.0) // Aurora glow
+        } else if power >= 1000 {
+            return Color(red: 0.42, green: 0.36, blue: 1.0) // Plasma glow
+        } else if power >= 500 {
+            return Color(red: 1.0, green: 0.42, blue: 0.0) // Solar glow
+        } else {
+            return flameColor.opacity(0.4)
+        }
+    }
+    
+    var flameTier: String {
+        let power = stats.totalFirePower
+        if power >= 25000 {
+            return "Eternal Flame"
+        } else if power >= 10000 {
+            return "Supernova Flame"
+        } else if power >= 5000 {
+            return "Cosmic Flame"
+        } else if power >= 2000 {
+            return "Aurora Flame"
+        } else if power >= 1000 {
+            return "Plasma Flame"
+        } else if power >= 500 {
+            return "Solar Flame"
+        } else if power >= 250 {
+            return "White Flame"
+        } else if power >= 100 {
+            return "Violet Flame"
+        } else if power >= 50 {
+            return "Blue Flame"
+        } else if power >= 25 {
+            return "Gold Flame"
+        } else if power >= 10 {
+            return "Orange Flame"
+        } else if power >= 1 {
+            return "Red Flame"
+        } else {
+            return "Ember"
+        }
+    }
+    
+    var prestigeRingCount: Int {
+        min(stats.totalFirePower / 1000, 5)
+    }
+    
+    var flameSizeMultiplier: CGFloat {
+        let power = stats.totalFirePower
+        if power >= 10000 {
+            return 1.3
+        } else if power >= 5000 {
+            return 1.2
+        } else if power >= 2000 {
+            return 1.15
+        } else if power >= 1000 {
+            return 1.1
+        } else if power >= 500 {
+            return 1.05
+        } else {
+            return 1.0
+        }
     }
     
     private func loadPersistedState() {

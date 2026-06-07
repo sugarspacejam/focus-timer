@@ -1,17 +1,18 @@
 {
   "versionString": "1.0.1",
   "locale": "en-US",
-  "appInfoName": "Promise – Focus You Can’t Fake",
+  "appInfoName": "Done in 5",
   "appInfoSubtitle": "5-minute follow-through",
   "screenshotDisplayTypes": [
     "APP_IPHONE_67",
     "APP_IPHONE_65"
   ],
   "promotionalText": "Start one 5-minute block, stay on camera, and finish what you started.",
-  "description": "Promise helps you turn resistance into one focused 5-minute block.\n\nPick one task, start the block, and finish clean. Camera accountability can keep the session real while the app is active in the foreground.\n\nDownload free and start with a focused block. Promise Pro unlocks unlimited blocks, full history, custom voice lines, and stronger accountability tools.\n\nFeatures:\n- 5-minute focus blocks\n- Camera accountability during active sessions\n- Build-style progress from completed blocks\n- Custom voice lines and strict reminders\n- Full history with Promise Pro",
-  "keywords": "promise,focus,accountability,camera focus,5 minute timer,follow through",
+  "description": "Done in 5 helps you turn resistance into one focused 5-minute block.\n\nPick one task, start the block, and finish clean. Camera accountability can keep the session real while the app is active in the foreground.\n\nDownload free and start with a focused block. Done in 5 Pro unlocks unlimited blocks, full history, custom voice lines, and stronger accountability tools.\n\nFeatures:\n- 5-minute focus blocks\n- Camera accountability during active sessions\n- Build progress from completed blocks\n- Custom voice lines and strict reminders\n- Full history with Done in 5 Pro",
+  "keywords": "focus,accountability,camera focus,5 minute timer,follow through,productivity",
   "supportUrl": "https://github.com/sugarspacejam/focus-timer",
   "marketingUrl": "https://github.com/sugarspacejam/focus-timer",
   "privacyPolicyUrl": "https://github.com/sugarspacejam/focus-timer/blob/main/PRIVACY.md",
-  "copyright": "© 2026 Chen Toledano"
+  "copyright": "© 2026 Chen Toledano",
+  "buildId": "7c1f7a9c-6805-4531-ba85-fecf5c1c0e66"
 }

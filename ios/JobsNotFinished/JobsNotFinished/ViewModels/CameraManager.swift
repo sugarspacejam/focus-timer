@@ -27,6 +27,8 @@ class CameraManager: NSObject, ObservableObject, CameraManaging {
     private var awayUtterances = AwayVoiceMode.supportive.utterances
     private var awayUtteranceIndex = 0
     private var isMonitoringActive = false
+    private var countdownSpeakingEnabled = true
+    private var lastSpokenCountdown = -1
     
     override init() {
         authorizationStatus = AVCaptureDevice.authorizationStatus(for: .video)
@@ -88,6 +90,10 @@ class CameraManager: NSObject, ObservableObject, CameraManaging {
             fatalError("Away utterances are required")
         }
         awayUtterances = utterances
+    }
+    
+    func updateCountdownSpeakingEnabled(_ enabled: Bool) {
+        countdownSpeakingEnabled = enabled
     }
     
     // MARK: - Private Methods
@@ -161,6 +167,7 @@ class CameraManager: NSObject, ObservableObject, CameraManaging {
             secondsAway = 0
             didTriggerAwayFailure = false
             lastAwaySpeechAt = nil
+            lastSpokenCountdown = -1
             presenceState = .present
             return
         }
@@ -185,7 +192,13 @@ class CameraManager: NSObject, ObservableObject, CameraManaging {
             return
         }
 
+        let previousSecondsAway = secondsAway
         secondsAway = Int(Date().timeIntervalSince(awayStartedAt))
+        
+        if countdownSpeakingEnabled && secondsAway != previousSecondsAway && secondsAway > 0 && secondsAway > (awayThresholdSeconds - 5) && secondsAway <= awayThresholdSeconds {
+            speakCountdown(secondsAway)
+        }
+        
         speakAwayAlertIfNeeded(force: false)
 
         if secondsAway >= awayThresholdSeconds && !didTriggerAwayFailure {
@@ -208,8 +221,12 @@ class CameraManager: NSObject, ObservableObject, CameraManaging {
                 return
             }
         }
-
+        
         if awayUtterances.isEmpty {
+            return
+        }
+        
+        if secondsAway >= (awayThresholdSeconds - 5) {
             return
         }
 
@@ -220,6 +237,24 @@ class CameraManager: NSObject, ObservableObject, CameraManaging {
         utterance.volume = 1.0
         awayUtteranceIndex += 1
         lastAwaySpeechAt = now
+        speechSynthesizer.speak(utterance)
+    }
+    
+    private func speakCountdown(_ seconds: Int) {
+        if seconds == lastSpokenCountdown {
+            return
+        }
+        
+        if speechSynthesizer.isSpeaking {
+            return
+        }
+        
+        let utterance = AVSpeechUtterance(string: String(seconds))
+        utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
+        utterance.rate = 0.5
+        utterance.pitchMultiplier = 1.0
+        utterance.volume = 1.0
+        lastSpokenCountdown = seconds
         speechSynthesizer.speak(utterance)
     }
 }

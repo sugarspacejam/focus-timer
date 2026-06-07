@@ -1,0 +1,17 @@
+{
+  "data": {
+    "type": "appScreenshots",
+    "attributes": {
+      "fileName": "Screenshot 2026-05-27 at 10.40.49.png",
+      "fileSize": 1110659
+    },
+    "relationships": {
+      "appScreenshotSet": {
+        "data": {
+          "type": "appScreenshotSets",
+          "id": "47a354cf-c9d1-463d-9357-6e8baa2291f4"
+        }
+      }
+    }
+  }
+}

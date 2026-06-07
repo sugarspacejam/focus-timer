@@ -179,13 +179,15 @@ def resolve_editable_app_info_id!(app_id)
   end
 
   if match.nil?
-    fail!("Could not find editable appInfo for app #{app_id}")
+    return nil
   end
 
   match.fetch('id')
 end
 
 def resolve_app_info_localization_id!(app_info_id, locale)
+  return nil if app_info_id.nil?
+
   data = get_json!("/v1/appInfos/#{app_info_id}/appInfoLocalizations")
   locs = data.fetch('data')
   match = locs.find { |l| l.fetch('attributes').fetch('locale') == locale }
@@ -225,8 +227,7 @@ def patch_localization!(localization_id, metadata)
         description: metadata["description"],
         keywords: metadata["keywords"],
         supportUrl: metadata["supportUrl"],
-        marketingUrl: metadata["marketingUrl"],
-        privacyPolicyUrl: metadata["privacyPolicyUrl"]
+        marketingUrl: metadata["marketingUrl"]
       }
     }
   }
@@ -352,7 +353,7 @@ def generate_screenshots!(source_paths, target_display_type)
 
   source_paths.map do |source_path|
     base = File.basename(source_path, File.extname(source_path))
-    out_path = File.join(out_dir, "#{base}_#{width}x#{height}.jpg")
+    out_path = File.join(out_dir, "#{base}_#{width}x#{height}.png")
     sips_resample!(source_path, out_path, width, height)
 
     out_w, out_h = image_size(out_path)
@@ -495,6 +496,57 @@ def patch_app_version!(version_id, metadata)
   puts patch_json!("/v1/appStoreVersions/#{version_id}", payload)
 end
 
+def submit_app_for_review!(app_id, version_id)
+  payload = {
+    data: {
+      type: "reviewSubmissions",
+      relationships: {
+        app: {
+          data: {
+            type: "apps",
+            id: app_id
+          }
+        }
+      }
+    }
+  }
+  response = post_json!("/v1/reviewSubmissions", payload)
+  submission_id = response.fetch('data').fetch('id')
+  
+  item_payload = {
+    data: {
+      type: "reviewSubmissionItems",
+      attributes: {},
+      relationships: {
+        reviewSubmission: {
+          data: {
+            type: "reviewSubmissions",
+            id: submission_id
+          }
+        },
+        appStoreVersion: {
+          data: {
+            type: "appStoreVersions",
+            id: version_id
+          }
+        }
+      }
+    }
+  }
+  post_json!("/v1/reviewSubmissionItems", item_payload)
+  
+  submit_payload = {
+    data: {
+      type: "reviewSubmissions",
+      id: submission_id,
+      attributes: {
+        submitted: true
+      }
+    }
+  }
+  patch_json!("/v1/reviewSubmissions/#{submission_id}", submit_payload)
+end
+
 metadata_file = load_metadata!
 metadata = metadata_file
 version_string = metadata_file.fetch('versionString')
@@ -511,8 +563,12 @@ localization_id = resolve_localization_id!(version_id, locale)
 app_info_id = resolve_editable_app_info_id!(app_id)
 app_info_localization_id = resolve_app_info_localization_id!(app_info_id, locale)
 
-patch_app_info_localization!(app_info_localization_id, metadata)
-puts JSON.pretty_generate(event: 'app_info_localization_patched', appInfoLocalizationId: app_info_localization_id)
+if app_info_localization_id
+  patch_app_info_localization!(app_info_localization_id, metadata)
+  puts JSON.pretty_generate(event: 'app_info_localization_patched', appInfoLocalizationId: app_info_localization_id)
+else
+  puts JSON.pretty_generate(event: 'app_info_localization_skipped', reason: 'editable_app_info_unavailable')
+end
 
 patch_localization!(localization_id, metadata)
 puts JSON.pretty_generate(event: 'localization_patched', localizationId: localization_id)
@@ -532,3 +588,10 @@ if metadata_file.key?('buildId')
   attach_build!(version_id, metadata_file.fetch('buildId'), metadata)
   puts JSON.pretty_generate(event: 'build_attached', versionId: version_id, buildId: metadata_file.fetch('buildId'))
 end
+
+puts JSON.pretty_generate(event: 'waiting_for_screenshots')
+sleep(60)
+
+app_id = resolve_app_id!
+submit_app_for_review!(app_id, version_id)
+puts JSON.pretty_generate(event: 'review_submitted', appId: app_id, versionId: version_id)

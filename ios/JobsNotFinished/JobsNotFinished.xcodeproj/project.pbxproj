@@ -15,6 +15,10 @@
 		C10000000000000000000001 /* HomeContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10000000000000000000002 /* HomeContentView.swift */; };
 		C10000000000000000000003 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10000000000000000000004 /* OnboardingView.swift */; };
 		C10000000000000000000005 /* TimerModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10000000000000000000006 /* TimerModalView.swift */; };
+		C10000000000000000000007 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10000000000000000000008 /* MainTabView.swift */; };
+		C10000000000000000000009 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1000000000000000000000A /* SettingsView.swift */; };
+		C1000000000000000000000B /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1000000000000000000000C /* LibraryView.swift */; };
+		C1000000000000000000000D /* TimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1000000000000000000000E /* TimerView.swift */; };
 		B10000000000000000000001 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000002 /* Constants.swift */; };
 		B10000000000000000000003 /* VoiceMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000004 /* VoiceMode.swift */; };
 		B10000000000000000000005 /* FocusTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10000000000000000000006 /* FocusTask.swift */; };
@@ -49,6 +53,10 @@
 		C10000000000000000000002 /* HomeContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/HomeContentView.swift; sourceTree = "<group>"; };
 		C10000000000000000000004 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/OnboardingView.swift; sourceTree = "<group>"; };
 		C10000000000000000000006 /* TimerModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/TimerModalView.swift; sourceTree = "<group>"; };
+		C10000000000000000000008 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/MainTabView.swift; sourceTree = "<group>"; };
+		C1000000000000000000000A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/SettingsView.swift; sourceTree = "<group>"; };
+		C1000000000000000000000C /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/LibraryView.swift; sourceTree = "<group>"; };
+		C1000000000000000000000E /* TimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/TimerView.swift; sourceTree = "<group>"; };
 		A10000000000000000000006 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		A10000000000000000000008 /* LocalWebServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalWebServer.swift; sourceTree = "<group>"; };
 		A1000000000000000000000A /* WebAssets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = WebAssets; sourceTree = "<group>"; };
@@ -110,6 +118,10 @@
 				C10000000000000000000002 /* HomeContentView.swift */,
 				C10000000000000000000004 /* OnboardingView.swift */,
 				C10000000000000000000006 /* TimerModalView.swift */,
+				C10000000000000000000008 /* MainTabView.swift */,
+				C1000000000000000000000A /* SettingsView.swift */,
+				C1000000000000000000000C /* LibraryView.swift */,
+				C1000000000000000000000E /* TimerView.swift */,
 				A10000000000000000000006 /* WebView.swift */,
 				A10000000000000000000008 /* LocalWebServer.swift */,
 				B10000000000000000000002 /* Constants.swift */,
@@ -277,6 +289,10 @@
 				C10000000000000000000001 /* HomeContentView.swift in Sources */,
 				C10000000000000000000003 /* OnboardingView.swift in Sources */,
 				C10000000000000000000005 /* TimerModalView.swift in Sources */,
+				C10000000000000000000007 /* MainTabView.swift in Sources */,
+				C10000000000000000000009 /* SettingsView.swift in Sources */,
+				C1000000000000000000000B /* LibraryView.swift in Sources */,
+				C1000000000000000000000D /* TimerView.swift in Sources */,
 				A10000000000000000000005 /* WebView.swift in Sources */,
 				A10000000000000000000007 /* LocalWebServer.swift in Sources */,
 				B10000000000000000000001 /* Constants.swift in Sources */,
@@ -323,7 +339,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 53F782K26M;
 				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -348,7 +364,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 53F782K26M;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = JobsNotFinished/Info.plist;
@@ -445,7 +461,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 53F782K26M;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = JobsNotFinishedTests/Info.plist;
@@ -471,7 +487,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 53F782K26M;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = JobsNotFinishedTests/Info.plist;

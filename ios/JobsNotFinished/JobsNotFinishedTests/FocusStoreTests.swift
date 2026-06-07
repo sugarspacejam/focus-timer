@@ -421,4 +421,276 @@ final class FocusStoreTests: XCTestCase {
         XCTAssertFalse(store.timerState.isCompleted)
         XCTAssertEqual(store.userState, UserState())
     }
+
+    // MARK: - Flame System Tests
+
+    func testFirstBlockGrantsOneFirePower() throws {
+        try store.startTimerForTaskNamed("First block")
+        store.completeTimer()
+
+        XCTAssertEqual(store.stats.totalFirePower, 1)
+        XCTAssertEqual(store.stats.currentMomentumStreak, 1)
+        XCTAssertEqual(store.stats.totalKeptBlocks, 1)
+        XCTAssertEqual(store.stats.todayFirePowerEarned, 1)
+    }
+
+    func testConsecutiveBlocksIncreaseMomentumAndFirePower() throws {
+        try store.startTimerForTaskNamed("Block 1")
+        store.completeTimer()
+        XCTAssertEqual(store.stats.totalFirePower, 1)
+        XCTAssertEqual(store.stats.currentMomentumStreak, 1)
+
+        try store.startTimerForTaskNamed("Block 2")
+        store.completeTimer()
+        XCTAssertEqual(store.stats.totalFirePower, 3)
+        XCTAssertEqual(store.stats.currentMomentumStreak, 2)
+
+        try store.startTimerForTaskNamed("Block 3")
+        store.completeTimer()
+        XCTAssertEqual(store.stats.totalFirePower, 6)
+        XCTAssertEqual(store.stats.currentMomentumStreak, 3)
+    }
+
+    func testFailedBlockDoesNotReduceFirePower() throws {
+        try store.startTimerForTaskNamed("Keep this")
+        store.completeTimer()
+        let initialFirePower = store.stats.totalFirePower
+
+        try store.startTimerForTaskNamed("Fail this")
+        store.stopTimer(asFailure: true)
+
+        XCTAssertEqual(store.stats.totalFirePower, initialFirePower)
+        XCTAssertEqual(store.stats.currentMomentumStreak, 0)
+        XCTAssertEqual(store.stats.totalFailedBlocks, 1)
+    }
+
+    func testFailedBlockResetsMomentum() throws {
+        try store.startTimerForTaskNamed("Block 1")
+        store.completeTimer()
+        try store.startTimerForTaskNamed("Block 2")
+        store.completeTimer()
+        XCTAssertEqual(store.stats.currentMomentumStreak, 2)
+
+        try store.startTimerForTaskNamed("Fail")
+        store.stopTimer(asFailure: true)
+
+        XCTAssertEqual(store.stats.currentMomentumStreak, 0)
+        XCTAssertNil(store.stats.gracePeriodEndTime)
+    }
+
+    func testGracePeriodSetAfterCompletion() throws {
+        try store.startTimerForTaskNamed("Grace test")
+        store.completeTimer()
+
+        XCTAssertNotNil(store.stats.gracePeriodEndTime)
+        XCTAssertNotNil(store.stats.lastKeptBlockCompletedAt)
+    }
+
+    func testBestMomentumTracksHighestStreak() throws {
+        try store.startTimerForTaskNamed("Block 1")
+        store.completeTimer()
+        try store.startTimerForTaskNamed("Block 2")
+        store.completeTimer()
+        try store.startTimerForTaskNamed("Block 3")
+        store.completeTimer()
+
+        XCTAssertEqual(store.stats.bestMomentum, 3)
+
+        try store.startTimerForTaskNamed("Fail")
+        store.stopTimer(asFailure: true)
+
+        XCTAssertEqual(store.stats.bestMomentum, 3)
+    }
+
+    func testFlameTierCalculation() throws {
+        XCTAssertEqual(store.flameTier, "Ember")
+
+        store.stats.totalFirePower = 1
+        XCTAssertEqual(store.flameTier, "Red Flame")
+
+        store.stats.totalFirePower = 10
+        XCTAssertEqual(store.flameTier, "Orange Flame")
+
+        store.stats.totalFirePower = 25
+        XCTAssertEqual(store.flameTier, "Gold Flame")
+
+        store.stats.totalFirePower = 50
+        XCTAssertEqual(store.flameTier, "Blue Flame")
+
+        store.stats.totalFirePower = 100
+        XCTAssertEqual(store.flameTier, "Violet Flame")
+
+        store.stats.totalFirePower = 250
+        XCTAssertEqual(store.flameTier, "White Flame")
+
+        store.stats.totalFirePower = 500
+        XCTAssertEqual(store.flameTier, "Solar Flame")
+
+        store.stats.totalFirePower = 1000
+        XCTAssertEqual(store.flameTier, "Plasma Flame")
+
+        store.stats.totalFirePower = 2000
+        XCTAssertEqual(store.flameTier, "Aurora Flame")
+
+        store.stats.totalFirePower = 5000
+        XCTAssertEqual(store.flameTier, "Cosmic Flame")
+
+        store.stats.totalFirePower = 10000
+        XCTAssertEqual(store.flameTier, "Supernova Flame")
+
+        store.stats.totalFirePower = 25000
+        XCTAssertEqual(store.flameTier, "Eternal Flame")
+    }
+
+    func testFlameSizeMultiplier() throws {
+        store.stats.totalFirePower = 0
+        XCTAssertEqual(store.flameSizeMultiplier, 1.0)
+
+        store.stats.totalFirePower = 100
+        XCTAssertEqual(store.flameSizeMultiplier, 1.05)
+
+        store.stats.totalFirePower = 500
+        XCTAssertEqual(store.flameSizeMultiplier, 1.1)
+
+        store.stats.totalFirePower = 1000
+        XCTAssertEqual(store.flameSizeMultiplier, 1.15)
+
+        store.stats.totalFirePower = 5000
+        XCTAssertEqual(store.flameSizeMultiplier, 1.2)
+
+        store.stats.totalFirePower = 10000
+        XCTAssertEqual(store.flameSizeMultiplier, 1.25)
+
+        store.stats.totalFirePower = 25000
+        XCTAssertEqual(store.flameSizeMultiplier, 1.3)
+    }
+
+    func testPrestigeRingCount() throws {
+        store.stats.totalFirePower = 0
+        XCTAssertEqual(store.prestigeRingCount, 0)
+
+        store.stats.totalFirePower = 999
+        XCTAssertEqual(store.prestigeRingCount, 0)
+
+        store.stats.totalFirePower = 1000
+        XCTAssertEqual(store.prestigeRingCount, 1)
+
+        store.stats.totalFirePower = 1999
+        XCTAssertEqual(store.prestigeRingCount, 1)
+
+        store.stats.totalFirePower = 2000
+        XCTAssertEqual(store.prestigeRingCount, 2)
+
+        store.stats.totalFirePower = 5000
+        XCTAssertEqual(store.prestigeRingCount, 5)
+
+        store.stats.totalFirePower = 10000
+        XCTAssertEqual(store.prestigeRingCount, 5)
+    }
+
+    func testNextFirePowerCalculation() throws {
+        store.stats.currentMomentumStreak = 0
+        XCTAssertEqual(store.nextFirePower, 1)
+
+        store.stats.currentMomentumStreak = 1
+        XCTAssertEqual(store.nextFirePower, 2)
+
+        store.stats.currentMomentumStreak = 5
+        XCTAssertEqual(store.nextFirePower, 6)
+    }
+
+    func testGracePeriodRemainingSeconds() throws {
+        store.stats.gracePeriodEndTime = nil
+        XCTAssertEqual(store.gracePeriodRemainingSeconds, 0)
+
+        let futureDate = Date().addingTimeInterval(300)
+        store.stats.gracePeriodEndTime = futureDate
+        XCTAssertGreaterThan(store.gracePeriodRemainingSeconds, 0)
+        XCTAssertLessThanOrEqual(store.gracePeriodRemainingSeconds, 300)
+    }
+
+    func testIsGracePeriodActive() throws {
+        XCTAssertFalse(store.isGracePeriodActive)
+
+        store.stats.gracePeriodEndTime = Date().addingTimeInterval(300)
+        store.stats.lastKeptBlockCompletedAt = Date()
+        XCTAssertTrue(store.isGracePeriodActive)
+
+        store.stats.gracePeriodEndTime = Date().addingTimeInterval(-10)
+        XCTAssertFalse(store.isGracePeriodActive)
+    }
+
+    func testMomentumResetsAtDayBoundary() throws {
+        var oldStats = FocusStats()
+        oldStats.statsDay = "2000-01-01"
+        oldStats.currentMomentumStreak = 5
+        oldStats.totalFirePower = 15
+        oldStats.todayFirePowerEarned = 15
+        oldStats.lastBlockEndTime = Date()
+        oldStats.gracePeriodEndTime = Date().addingTimeInterval(300)
+
+        let persistedState = PersistedState(
+            tasks: [],
+            stats: oldStats,
+            activeTaskID: nil,
+            timerStartDate: nil,
+            remainingSeconds: Int(Constants.Timer.durationSeconds),
+            timerCompleted: false,
+            selectedVoiceMode: .supportive,
+            supportiveUtterances: AwayVoiceMode.supportive.utterances,
+            awayFailureSeconds: 6,
+            themeMode: .system
+        )
+
+        try persistence.save(persistedState, forKey: Constants.Persistence.storeKey)
+
+        let reloadedStore = FocusStore(persistenceService: persistence, notificationService: notifications)
+
+        XCTAssertEqual(reloadedStore.stats.currentMomentumStreak, 0)
+        XCTAssertEqual(reloadedStore.stats.totalFirePower, 15)
+        XCTAssertEqual(reloadedStore.stats.todayFirePowerEarned, 0)
+        XCTAssertNil(reloadedStore.stats.lastBlockEndTime)
+        XCTAssertNil(reloadedStore.stats.gracePeriodEndTime)
+    }
+
+    func testFlameColorChangesWithTier() throws {
+        store.stats.totalFirePower = 0
+        let emberColor = store.flameColor
+
+        store.stats.totalFirePower = 1
+        let redColor = store.flameColor
+
+        store.stats.totalFirePower = 500
+        let solarColor = store.flameColor
+
+        store.stats.totalFirePower = 25000
+        let eternalColor = store.flameColor
+
+        XCTAssertNotEqual(emberColor, redColor)
+        XCTAssertNotEqual(redColor, solarColor)
+        XCTAssertNotEqual(solarColor, eternalColor)
+    }
+
+    func testBlockStartedAtIsSetOnTimerStart() throws {
+        XCTAssertNil(store.timerState.blockStartedAt)
+
+        try store.startTimerForTaskNamed("Track start time")
+
+        XCTAssertNotNil(store.timerState.blockStartedAt)
+    }
+
+    func testMomentumContinuesIfBlockStartedInGracePeriod() throws {
+        try store.startTimerForTaskNamed("Block 1")
+        store.completeTimer()
+        let graceEnd = store.stats.gracePeriodEndTime
+
+        try store.startTimerForTaskNamed("Block 2")
+        let blockStartedAt = store.timerState.blockStartedAt
+
+        store.timerState.startDate = Date().addingTimeInterval(-1000)
+        store.completeTimer()
+
+        XCTAssertEqual(store.stats.currentMomentumStreak, 2)
+        XCTAssertEqual(store.stats.totalFirePower, 3)
+    }
 }

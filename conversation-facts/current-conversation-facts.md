@@ -26,3 +26,38 @@
 - User wants original concept tone: extreme drill-sergeant style with profanity and aggressive accountability voice lines (mentioning ElevenLabs-style voices).
 - Updated App Store metadata to Done in 5 branding via API patches: app info name/subtitle, promotional text, whats new.
 - Bumped build number to 5, archived and uploaded to App Store Connect (Delivery UUID: 246226d8-8adb-45ea-ace0-18d0c169bb88).
+- Refactored app architecture to TabView with 4 tabs: Home, Blocks, Flame, Settings.
+- Extracted settings UI to SettingsView.swift and library UI to LibraryView.swift.
+- Extracted timer logic to TimerView.swift (activeTimerSection, timerDial, cameraAccountabilityIndicator).
+- Simplified HomeContentView to only QuickStart + Recent tasks.
+- Updated app entry point JobsNotFinishedApp.swift to use MainTabView.
+- Added empty states for Library, Ledger, Recent sections.
+- Clarified terminology: Task → Block throughout UI (Block Library, block name, blocks built, etc.).
+- Added away countdown speaking feature: speaks numbers when camera detects user is away (toggle in Settings, default enabled).
+- Improved stats UX: added Streak to Home and Ledger, made stats cards tappable with explanations (Today = blocks completed today, Streak = consecutive days with blocks, Total = all-time blocks).
+- Implemented flame/fire metaphor replacing city building system.
+- Flame system: Fire Power = streak number × 1 per kept block, 15-minute grace period for momentum streak, daily streak reset (Fire Power permanent).
+- Flame color tiers: Ember (0), Red (1-9), Orange (10-24), Gold (25-49), Blue (50-99), Violet (100-249), White (250-499), Solar (500+).
+- Renamed tabs: Library → Blocks, Ledger → Flame.
+- Updated Flame screen title to "Your Flame", removed Done button, improved ember visual at 0 Fire Power.
+- Stats cards: Today (blocks completed), Momentum (current streak), Total (Fire Power).
+- Build succeeded for physical device after flame system implementation.
+- Key files: Views/MainTabView.swift, Views/SettingsView.swift, Views/LibraryView.swift, Views/TimerView.swift, Views/HomeContentView.swift (simplified), ViewModels/CameraManager.swift (countdown speaking), Views/UIComponents.swift (StatCard explanations), Models/FocusStats.swift (flame system data), ViewModels/FocusStore.swift (flame logic), Views/LedgerView.swift (flame UI).
+- Done in 5 release completed 2026-05-30: archived/exported/uploaded build 7 for version 1.0.1.
+- IPA path: ios/JobsNotFinished/build/export-appstore-1.0.1-7/Done in 5.ipa; archive path: ios/JobsNotFinished/build/DoneIn5-1.0.1-7.xcarchive.
+- App Store upload Delivery UUID/build ID: 7c1f7a9c-6805-4531-ba85-fecf5c1c0e66; processing VALID and APP_STORE_ELIGIBLE.
+- Release script patched metadata/screenshots and attached build 7 to appStoreVersion 8bcaf41e-f1b9-42b1-96b0-3efa7c557647.
+- Review submission created 54bca9b4-a1bf-49fd-a6e9-7fef5b07e4b5 and submitted; App Store Connect state WAITING_FOR_REVIEW at 2026-05-30T10:10:13.811Z.
+- User asked to run Done in 5 in simulator to take fresh screenshots after App Store review submission.
+- Simulator run done on iPhone 17 Pro Max 633A8F0A-2A7B-4F4F-88ED-9984341D89C5; app launched as com.5minutesblockstimer.
+- Fresh simulator screenshots saved under screenshots/donein5-release-2026-05-30: 01-home.png and 02-flame.png are clean APP_IPHONE_67 1320x2868 captures; 03-settings.png currently duplicates Home because automated Settings tab click did not activate cleanly.
+- App Store screenshot source folder replaced with new PNG-only files: scripts/appstore/screenshots/source/01-home.png and 02-flame.png.
+- app_store_release.rb changed to skip missing editable appInfo and to generate PNG screenshots instead of JPG for App Store media upload.
+- App Store media upload rerun after review cancellation; old screenshot IDs deleted and new APP_IPHONE_67 and APP_IPHONE_65 PNG screenshots uploaded successfully.
+- Added Settings screenshot to source folder and reran upload: scripts/appstore/screenshots/source/03-settings.png included.
+- App Store media now has 3 PNG screenshots per display type: Home, Flame, Settings.
+- Fixed momentum countdown: TimerView now shows actual gracePeriodRemainingSeconds instead of hardcoded 15:00.
+- Added momentum multiplier display to active timer when grace period is active (shows streak and countdown).
+- Fixed countdown speaking: CameraManager now only counts last 5 seconds (awayThresholdSeconds - 5 to awayThresholdSeconds).
+- Stopped away voice lines during critical last 5 seconds (changed cutoff from -10 to -5).
+- Fixed flame page live countdown: LedgerView now has Timer updating every second with .id(timerTick) on countdown text.

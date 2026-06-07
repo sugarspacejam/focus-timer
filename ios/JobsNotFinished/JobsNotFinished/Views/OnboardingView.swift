@@ -70,7 +70,7 @@ struct OnboardingView: View {
 
                     OnboardingPreviewCard(
                         title: "2. Stay present",
-                        subtitle: "The block runs for five minutes. Camera accountability checks presence status while open.",
+                        subtitle: "The block runs for five minutes. Camera monitors presence status while open.",
                         accent: .orange,
                         content: {
                             VStack(spacing: 14) {
@@ -114,17 +114,56 @@ struct OnboardingView: View {
                     )
 
                     OnboardingPreviewCard(
-                        title: "3. Results update",
-                        subtitle: "When a block ends, your home stats update immediately.",
-                        accent: .red,
+                        title: "3. Build your flame",
+                        subtitle: "Complete blocks to earn Fire Power. Build momentum streaks to earn more.",
+                        accent: .orange,
                         content: {
-                            VStack(spacing: 10) {
+                            VStack(spacing: 12) {
                                 HStack(spacing: 10) {
-                                    MetricPill(title: "Today", value: "4")
-                                    MetricPill(title: "Completed", value: "3")
-                                    MetricPill(title: "Streak", value: "7")
-                                    MetricPill(title: "Failures", value: "1")
+                                    VStack(spacing: 4) {
+                                        Text("Fire Power")
+                                            .font(.caption2)
+                                            .foregroundStyle(isLightTheme ? Color.black.opacity(0.6) : Color.white.opacity(0.6))
+                                        Text("47")
+                                            .font(.title2.weight(.bold))
+                                            .foregroundStyle(isLightTheme ? Color.black : Color.white)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 10)
+                                    .background(isLightTheme ? Color.black.opacity(0.05) : Color.white.opacity(0.08))
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                                    
+                                    VStack(spacing: 4) {
+                                        Text("Momentum")
+                                            .font(.caption2)
+                                            .foregroundStyle(isLightTheme ? Color.black.opacity(0.6) : Color.white.opacity(0.6))
+                                        Text("3x")
+                                            .font(.title2.weight(.bold))
+                                            .foregroundStyle(.orange)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 10)
+                                    .background(isLightTheme ? Color.black.opacity(0.05) : Color.white.opacity(0.08))
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
                                 }
+                                
+                                VStack(alignment: .leading, spacing: 6) {
+                                    HStack(spacing: 6) {
+                                        Image(systemName: "flame.fill")
+                                            .font(.caption)
+                                            .foregroundStyle(.orange)
+                                        Text("Orange Flame")
+                                            .font(.caption.weight(.semibold))
+                                            .foregroundStyle(isLightTheme ? Color.black : Color.white)
+                                    }
+                                    Text("Next tier: Red Flame at 50 Fire Power")
+                                        .font(.caption2)
+                                        .foregroundStyle(isLightTheme ? Color.black.opacity(0.6) : Color.white.opacity(0.6))
+                                }
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .background(isLightTheme ? Color.black.opacity(0.05) : Color.white.opacity(0.08))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
                             }
                         }
                     )
@@ -138,7 +177,7 @@ struct OnboardingView: View {
                         OnboardingRow(
                             icon: "iphone",
                             title: "No account required",
-                            detail: "Your tasks, streak, and recent blocks stay on this device."
+                            detail: "Your blocks, streak, and recent sessions stay on this device."
                         )
                     }
 

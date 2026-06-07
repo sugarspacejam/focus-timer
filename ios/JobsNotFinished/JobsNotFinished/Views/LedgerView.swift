@@ -1,18 +1,5 @@
 import SwiftUI
 
-struct CityBuilding {
-    let date: Date
-    let blockCount: Int
-    let failedCount: Int
-    let isToday: Bool
-}
-
-struct CityDistrict {
-    let month: Date
-    let buildings: [CityBuilding]
-    let totalBlocks: Int
-}
-
 struct LedgerEntry: Identifiable {
     let id = UUID()
     let taskName: String
@@ -23,12 +10,12 @@ struct LedgerEntry: Identifiable {
 struct LedgerView: View {
     let entries: [LedgerEntry]
     
-    @State private var selectedEntry: LedgerEntry?
-    @State private var selectedDate: Date?
-    @State private var showingDatePicker = false
+    @EnvironmentObject var store: FocusStore
     
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
+    
+    @State private var timerTick = Date()
     
     private var isLight: Bool {
         colorScheme == .light
@@ -42,95 +29,31 @@ struct LedgerView: View {
         entries.filter { !$0.isKept }
     }
     
-    private var cityBuildings: [CityBuilding] {
-        let calendar = Calendar.current
-        var buildingDict: [String: CityBuilding] = [:]
-        
-        for entry in keptEntries {
-            let dayKey = calendar.startOfDay(for: entry.date)
-            let key = ISO8601DateFormatter().string(from: dayKey)
-            
-            if var existing = buildingDict[key] {
-                buildingDict[key] = CityBuilding(
-                    date: existing.date,
-                    blockCount: existing.blockCount + 1,
-                    failedCount: existing.failedCount,
-                    isToday: existing.isToday
-                )
-            } else {
-                let isToday = calendar.isDateInToday(entry.date)
-                buildingDict[key] = CityBuilding(
-                    date: dayKey,
-                    blockCount: 1,
-                    failedCount: 0,
-                    isToday: isToday
-                )
-            }
-        }
-        
-        for entry in failedEntries {
-            let dayKey = calendar.startOfDay(for: entry.date)
-            let key = ISO8601DateFormatter().string(from: dayKey)
-            
-            if var existing = buildingDict[key] {
-                buildingDict[key] = CityBuilding(
-                    date: existing.date,
-                    blockCount: existing.blockCount,
-                    failedCount: existing.failedCount + 1,
-                    isToday: existing.isToday
-                )
-            } else {
-                let isToday = calendar.isDateInToday(entry.date)
-                buildingDict[key] = CityBuilding(
-                    date: dayKey,
-                    blockCount: 0,
-                    failedCount: 1,
-                    isToday: isToday
-                )
-            }
-        }
-        
-        return buildingDict.values.sorted { $0.date < $1.date }
-    }
-    
-    private var totalKept: Int {
-        keptEntries.count
-    }
-    
-    private var todayKept: Int {
-        let today = Calendar.current.startOfDay(for: Date())
-        return keptEntries.filter { Calendar.current.isDate($0.date, inSameDayAs: today) }.count
-    }
-    
-    private var patternComplexity: Int {
-        min(totalKept, 12)
-    }
-    
     var body: some View {
-        NavigationStack {
-            ZStack {
-                backgroundGradient
-                    .ignoresSafeArea()
-                
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 32) {
-                        identityBadge
-                        
-                        statsGrid
-                        
-                        recentActivity
+        GeometryReader { geometry in
+            NavigationStack {
+                ZStack {
+                    backgroundGradient
+                        .ignoresSafeArea()
+                    
+                    ScrollView(showsIndicators: false) {
+                        VStack(spacing: 32) {
+                            flameBadge
+                            
+                            statsGrid
+                            
+                            recentActivity
+                        }
+                        .padding(24)
+                        .padding(.bottom, 20)
                     }
-                    .padding(24)
                 }
-            }
-            .navigationTitle("Your Progress")
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") {
-                        dismiss()
+                .navigationTitle("Your Flame")
+                .navigationBarTitleDisplayMode(.large)
+                .onAppear {
+                    Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+                        timerTick = Date()
                     }
-                    .foregroundStyle(isLight ? .black : .white)
                 }
             }
         }
@@ -148,90 +71,131 @@ struct LedgerView: View {
         )
     }
     
-    // MARK: - Identity Badge
+    // MARK: - Flame Badge
     
-    private var identityBadge: some View {
+    private var flameBadge: some View {
         VStack(spacing: 20) {
             HStack {
-                Text("Your City")
+                Text("Your Flame")
                     .font(.headline.weight(.semibold))
                     .foregroundStyle(isLight ? .black : .white)
                 
                 Spacer()
-                
-                Button(action: { showingDatePicker = true }) {
-                    Image(systemName: "calendar")
-                        .foregroundStyle(isLight ? .black.opacity(0.6) : .white.opacity(0.6))
-                }
             }
             
-            ScrollViewReader { proxy in
-                ScrollView([.horizontal], showsIndicators: false) {
-                    HStack(spacing: 12) {
-                        ForEach(Array(cityBuildings.enumerated()), id: \.offset) { index, building in
-                            VStack(spacing: 4) {
-                                let buildingHeight = CGFloat(building.blockCount) * 8 + 20
-                                let maxHeight: CGFloat = 120
-                                let clampedHeight = min(buildingHeight, maxHeight)
-                                
-                                ZStack(alignment: .bottom) {
-                                    RoundedRectangle(cornerRadius: 6)
-                                        .fill(
-                                            building.isToday 
-                                                ? (isLight ? Color.cyan : Color.cyan.opacity(0.8))
-                                                : (isLight ? Color.blue.opacity(0.6) : Color.blue.opacity(0.4))
-                                        )
-                                        .frame(width: 30, height: clampedHeight)
-                                    
-                                    if building.failedCount > 0 {
-                                        VStack(spacing: 2) {
-                                            ForEach(0..<min(building.failedCount, 3), id: \.self) { _ in
-                                                Circle()
-                                                    .fill(isLight ? Color.red.opacity(0.6) : Color.red.opacity(0.4))
-                                                    .frame(width: 6, height: 6)
-                                            }
-                                        }
-                                        .offset(y: -clampedHeight - 8)
-                                    }
-                                }
-                                
-                                Text(building.date, format: .dateTime.month().day())
-                                    .font(.caption2)
-                                    .foregroundStyle(isLight ? .black.opacity(0.5) : .white.opacity(0.5))
-                            }
-                            .id(building.date)
-                        }
+            ZStack {
+                let baseSize: CGFloat = 120
+                let scaledSize = baseSize * store.flameSizeMultiplier
+                
+                if store.stats.totalFirePower == 0 {
+                    Circle()
+                        .fill(
+                            RadialGradient(
+                                colors: [Color(red: 0.3, green: 0.1, blue: 0.05), Color(red: 0.15, green: 0.05, blue: 0.02)],
+                                center: .center,
+                                startRadius: 0,
+                                endRadius: 60
+                            )
+                        )
+                        .frame(width: scaledSize, height: scaledSize)
+                        .overlay(
+                            Circle()
+                                .stroke(Color(red: 0.5, green: 0.2, blue: 0.1).opacity(0.3), lineWidth: 4)
+                        )
+                        .shadow(color: Color(red: 0.8, green: 0.3, blue: 0.1).opacity(0.2), radius: 15, x: 0, y: 8)
+                    
+                    Image(systemName: "flame.fill")
+                        .font(.system(size: 40 * store.flameSizeMultiplier))
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [Color(red: 0.8, green: 0.3, blue: 0.1), Color(red: 0.4, green: 0.15, blue: 0.05)],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                        .opacity(0.6)
+                } else {
+                    ForEach(0..<store.prestigeRingCount, id: \.self) { ring in
+                        let ringSize = scaledSize + CGFloat(ring + 1) * 16
+                        Circle()
+                            .stroke(
+                                store.flameGlowColor.opacity(0.3 - Double(ring) * 0.05),
+                                lineWidth: 2
+                            )
+                            .frame(width: ringSize, height: ringSize)
                     }
-                    .padding(.horizontal, 20)
-                }
-                .frame(height: 160)
-                .onAppear {
-                    if let todayBuilding = cityBuildings.first(where: { $0.isToday }) {
-                        proxy.scrollTo(todayBuilding.date, anchor: .center)
-                    }
+                    
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [store.flameColor, store.flameSecondaryColor != .clear ? store.flameSecondaryColor : store.flameColor.opacity(0.6)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: scaledSize, height: scaledSize)
+                        .overlay(
+                            Circle()
+                                .stroke(store.flameColor.opacity(0.3), lineWidth: 4)
+                        )
+                        .shadow(color: store.flameGlowColor.opacity(0.4), radius: 20 * store.flameSizeMultiplier, x: 0, y: 10)
+                    
+                    Image(systemName: "flame.fill")
+                        .font(.system(size: 50 * store.flameSizeMultiplier))
+                        .foregroundStyle(.white)
                 }
             }
             
             VStack(spacing: 8) {
-                Text("\(totalKept)")
+                Text("\(store.stats.totalFirePower)")
                     .font(.system(size: 40, weight: .black))
                     .foregroundStyle(isLight ? .black : .white)
                 
-                Text("blocks built")
+                Text("Fire Power")
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(isLight ? .black.opacity(0.6) : .white.opacity(0.6))
             }
             
-            if totalKept == 0 {
-                Text("Start your first block to begin building your city")
+            Text(store.flameTier)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(store.flameColor)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(
+                    Capsule()
+                        .fill(store.flameColor.opacity(0.15))
+                )
+            
+            if store.stats.totalFirePower == 0 {
+                Text("Complete your first block to ignite your flame")
                     .font(.caption)
                     .foregroundStyle(isLight ? .black.opacity(0.5) : .white.opacity(0.5))
                     .multilineTextAlignment(.center)
+                
+                Text("Start a block to earn +1 Fire Power")
+                    .font(.caption)
+                    .foregroundStyle(store.flameColor)
+                    .multilineTextAlignment(.center)
+            } else if store.isGracePeriodActive {
+                let remaining = Int(store.gracePeriodRemainingSeconds)
+                let minutes = remaining / 60
+                let seconds = remaining % 60
+                Text("\(minutes):\(String(format: "%02d", seconds)) to keep momentum")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(store.flameColor)
+                    .id(timerTick)
+                
+                Text("Next block earns +\(store.nextFirePower) Fire Power")
+                    .font(.caption)
+                    .foregroundStyle(isLight ? .black.opacity(0.7) : .white.opacity(0.7))
+                
+                Text("Momentum x\(store.stats.currentMomentumStreak)")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(store.flameColor)
             } else {
-                Text("\(cityBuildings.count) days of building")
+                Text("Start a block to earn +1 Fire Power")
                     .font(.caption)
-                    .foregroundStyle(isLight ? .black.opacity(0.5) : .white.opacity(0.5))
-                    .multilineTextAlignment(.center)
+                    .foregroundStyle(isLight ? .black.opacity(0.7) : .white.opacity(0.7))
             }
         }
         .padding(24)
@@ -239,15 +203,7 @@ struct LedgerView: View {
             RoundedRectangle(cornerRadius: 24)
                 .fill(isLight ? Color.white.opacity(0.9) : Color.white.opacity(0.08))
         )
-        .sheet(isPresented: $showingDatePicker) {
-            DatePickerSheet(
-                selectedDate: $selectedDate,
-                cityBuildings: cityBuildings,
-                isPresented: $showingDatePicker
-            )
-        }
     }
-    
     
     // MARK: - Stats Grid
     
@@ -255,16 +211,23 @@ struct LedgerView: View {
         HStack(spacing: 12) {
             ProgressStatCard(
                 title: "Today",
-                value: "\(todayKept)",
+                value: "\(store.stats.todayBlocks)",
                 subtitle: "blocks completed",
                 color: .cyan
             )
             
             ProgressStatCard(
+                title: "Momentum",
+                value: "\(store.stats.currentMomentumStreak)",
+                subtitle: "current streak",
+                color: .orange
+            )
+            
+            ProgressStatCard(
                 title: "Total",
-                value: "\(totalKept)",
-                subtitle: "all time",
-                color: .green
+                value: "\(store.stats.totalFirePower)",
+                subtitle: "Fire Power",
+                color: store.flameColor
             )
         }
     }
@@ -277,7 +240,7 @@ struct LedgerView: View {
                 .font(.headline.weight(.bold))
                 .foregroundStyle(isLight ? .black : .white)
             
-            if keptEntries.isEmpty {
+            if keptEntries.isEmpty && failedEntries.isEmpty {
                 Text("No blocks completed yet")
                     .font(.subheadline)
                     .foregroundStyle(isLight ? .black.opacity(0.5) : .white.opacity(0.5))
@@ -285,10 +248,10 @@ struct LedgerView: View {
                     .padding(.vertical, 20)
             } else {
                 VStack(spacing: 8) {
-                    ForEach(keptEntries.prefix(5)) { entry in
+                    ForEach((keptEntries + failedEntries).prefix(5)) { entry in
                         HStack(spacing: 12) {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundStyle(.green)
+                            Image(systemName: entry.isKept ? "checkmark.circle.fill" : "xmark.circle.fill")
+                                .foregroundStyle(entry.isKept ? .green : .red)
                                 .font(.title3)
                             
                             VStack(alignment: .leading, spacing: 2) {
@@ -364,83 +327,3 @@ struct ProgressStatCard: View {
     }
 }
 
-struct DatePickerSheet: View {
-    @Binding var selectedDate: Date?
-    let cityBuildings: [CityBuilding]
-    @Binding var isPresented: Bool
-    
-    @Environment(\.colorScheme) private var colorScheme
-    
-    private var isLight: Bool {
-        colorScheme == .light
-    }
-    
-    var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                DatePicker(
-                    "Jump to date",
-                    selection: Binding(
-                        get: { selectedDate ?? Date() },
-                        set: { selectedDate = $0 }
-                    ),
-                    in: dateRange,
-                    displayedComponents: .date
-                )
-                .datePickerStyle(.graphical)
-                .padding()
-                
-                if let selected = selectedDate,
-                   let building = cityBuildings.first(where: { Calendar.current.isDate($0.date, inSameDayAs: selected) }) {
-                    VStack(spacing: 8) {
-                        Text("\(building.blockCount) blocks")
-                            .font(.title2.weight(.bold))
-                            .foregroundStyle(isLight ? .black : .white)
-                        
-                        if building.failedCount > 0 {
-                            Text("\(building.failedCount) failed")
-                                .font(.caption)
-                                .foregroundStyle(isLight ? .red.opacity(0.8) : .red.opacity(0.6))
-                        }
-                    }
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(isLight ? Color.black.opacity(0.05) : Color.white.opacity(0.08))
-                    )
-                } else if let selected = selectedDate {
-                    Text("No blocks on \(selected, format: .dateTime.month().day().year())")
-                        .font(.caption)
-                        .foregroundStyle(isLight ? .black.opacity(0.5) : .white.opacity(0.5))
-                }
-                
-                Spacer()
-                
-                Button("Jump to Today") {
-                    selectedDate = Date()
-                }
-                .buttonStyle(.borderedProminent)
-                .padding(.bottom, 20)
-            }
-            .padding()
-            .background(isLight ? Color.white : Color.black)
-            .navigationTitle("Select Date")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        isPresented = false
-                    }
-                }
-            }
-        }
-    }
-    
-    private var dateRange: ClosedRange<Date> {
-        guard let first = cityBuildings.first?.date,
-              let last = cityBuildings.last?.date else {
-            return Date()...Date()
-        }
-        return first...last
-    }
-}

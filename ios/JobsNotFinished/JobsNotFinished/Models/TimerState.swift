@@ -24,6 +24,7 @@ enum AppThemeMode: String, Codable, CaseIterable, Identifiable {
 struct TimerState: Equatable {
     var activeTaskID: UUID?
     var startDate: Date?
+    var blockStartedAt: Date?
     var remainingSeconds: Int
     var isCompleted: Bool
     var motivationalMessageIndex: Int
@@ -31,6 +32,7 @@ struct TimerState: Equatable {
     init() {
         self.activeTaskID = nil
         self.startDate = nil
+        self.blockStartedAt = nil
         self.remainingSeconds = Int(Constants.Timer.durationSeconds)
         self.isCompleted = false
         self.motivationalMessageIndex = 0
@@ -52,6 +54,7 @@ struct UserState: Equatable {
     var themeMode: AppThemeMode
     var dailyContractsStarted: Int
     var lastContractDate: Date?
+    var countdownSpeakingEnabled: Bool
     
     init() {
         self.selectedVoiceMode = .supportive
@@ -60,5 +63,6 @@ struct UserState: Equatable {
         self.themeMode = .system
         self.dailyContractsStarted = 0
         self.lastContractDate = nil
+        self.countdownSpeakingEnabled = true
     }
 }

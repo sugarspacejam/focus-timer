@@ -4,7 +4,7 @@ import SwiftUI
 struct DoneIn5App: App {
     var body: some Scene {
         WindowGroup {
-            HomeContentView()
+            MainTabView()
         }
     }
 }

@@ -14,23 +14,17 @@ struct MainTabView: View {
                 }
                 .tag(0)
             
-            LibraryTabView()
-                .tabItem {
-                    Label("Library", systemImage: "book.fill")
-                }
-                .tag(1)
-            
             LedgerTabView()
                 .tabItem {
-                    Label("Ledger", systemImage: "building.2.fill")
+                    Label("Flame", systemImage: "flame.fill")
                 }
-                .tag(2)
+                .tag(1)
             
             SettingsTabView()
                 .tabItem {
                     Label("Settings", systemImage: "gearshape.fill")
                 }
-                .tag(3)
+                .tag(2)
         }
         .environmentObject(store)
         .environmentObject(cameraManager)
