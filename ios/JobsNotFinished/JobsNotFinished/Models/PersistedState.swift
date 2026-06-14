@@ -13,8 +13,9 @@ struct PersistedState: Codable {
     var themeMode: AppThemeMode
     var dailyContractsStarted: Int
     var lastContractDate: Date?
+    var paywallPreferences: PaywallPreferences
 
-    init(tasks: [FocusTask], stats: FocusStats, activeTaskID: UUID?, timerStartDate: Date?, remainingSeconds: Int, timerCompleted: Bool, selectedVoiceMode: AwayVoiceMode, supportiveUtterances: [String], awayFailureSeconds: Int, themeMode: AppThemeMode, dailyContractsStarted: Int, lastContractDate: Date?) {
+    init(tasks: [FocusTask], stats: FocusStats, activeTaskID: UUID?, timerStartDate: Date?, remainingSeconds: Int, timerCompleted: Bool, selectedVoiceMode: AwayVoiceMode, supportiveUtterances: [String], awayFailureSeconds: Int, themeMode: AppThemeMode, dailyContractsStarted: Int, lastContractDate: Date?, paywallPreferences: PaywallPreferences = .default) {
         self.tasks = tasks
         self.stats = stats
         self.activeTaskID = activeTaskID
@@ -27,6 +28,7 @@ struct PersistedState: Codable {
         self.themeMode = themeMode
         self.dailyContractsStarted = dailyContractsStarted
         self.lastContractDate = lastContractDate
+        self.paywallPreferences = paywallPreferences
     }
 
     init(from decoder: Decoder) throws {
@@ -43,5 +45,6 @@ struct PersistedState: Codable {
         themeMode = try container.decodeIfPresent(AppThemeMode.self, forKey: .themeMode) ?? .system
         dailyContractsStarted = try container.decodeIfPresent(Int.self, forKey: .dailyContractsStarted) ?? 0
         lastContractDate = try container.decodeIfPresent(Date.self, forKey: .lastContractDate)
+        paywallPreferences = try container.decodeIfPresent(PaywallPreferences.self, forKey: .paywallPreferences) ?? .default
     }
 }

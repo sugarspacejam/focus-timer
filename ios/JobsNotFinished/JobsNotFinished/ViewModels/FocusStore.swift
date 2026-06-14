@@ -597,7 +597,8 @@ class FocusStore: ObservableObject {
             awayFailureSeconds: userState.awayFailureSeconds,
             themeMode: userState.themeMode,
             dailyContractsStarted: userState.dailyContractsStarted,
-            lastContractDate: userState.lastContractDate
+            lastContractDate: userState.lastContractDate,
+            paywallPreferences: userState.paywallPreferences
         )
         
         try persistenceService.save(persistedState, forKey: Constants.Persistence.storeKey)
@@ -760,6 +761,7 @@ class FocusStore: ObservableObject {
             userState.themeMode = state.themeMode
             userState.dailyContractsStarted = state.dailyContractsStarted
             userState.lastContractDate = state.lastContractDate
+            userState.paywallPreferences = state.paywallPreferences
 
             if timerState.startDate != nil && timerState.activeTaskID != nil && !timerState.isCompleted {
                 timerState.motivationalMessageIndex = Int.random(in: 0..<6)

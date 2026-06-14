@@ -3,6 +3,8 @@
 - Key UI branding files with Promise strings: ios/JobsNotFinished/JobsNotFinished/Views/HomeContentView.swift, ios/JobsNotFinished/JobsNotFinished/Views/OnboardingView.swift, ios/JobsNotFinished/JobsNotFinished/Views/ProPaywall.swift.
 - Monetization authority path: ios/JobsNotFinished/JobsNotFinished/ViewModels/PurchaseManager.swift.
 - StoreKit product IDs currently used: com.5minutesblockstimer.pro.monthly and com.5minutesblockstimer.pro.annual.
+
+- 2026-06-10 StoreKit Testing UI note: Xcode does NOT show "Manage Subscriptions" in the Product menu; StoreKit testing is configured via a .storekit configuration file and Scheme > Run options.
 - Paywall path: ios/JobsNotFinished/JobsNotFinished/Views/ProPaywall.swift loads StoreKit products and purchases selected subscription product.
 - Entitlement gating path: PurchaseManager.isPro checked in HomeContentView for Pro features and task-creation gate.
 - Scripts proving subscription setup: scripts/promise_subscription_annual_create.json, scripts/promise_monthly_iap_create.json, scripts/promise_subscription_probe.json.

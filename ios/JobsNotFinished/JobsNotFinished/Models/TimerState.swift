@@ -55,6 +55,7 @@ struct UserState: Equatable {
     var dailyContractsStarted: Int
     var lastContractDate: Date?
     var countdownSpeakingEnabled: Bool
+    var paywallPreferences: PaywallPreferences
     
     init() {
         self.selectedVoiceMode = .supportive
@@ -64,5 +65,6 @@ struct UserState: Equatable {
         self.dailyContractsStarted = 0
         self.lastContractDate = nil
         self.countdownSpeakingEnabled = true
+        self.paywallPreferences = .default
     }
 }

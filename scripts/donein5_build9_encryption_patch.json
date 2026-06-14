@@ -1,0 +1,9 @@
+{
+  "data": {
+    "type": "builds",
+    "id": "37b428ea-f7e4-4f59-a337-657debfcb448",
+    "attributes": {
+      "usesNonExemptEncryption": false
+    }
+  }
+}
