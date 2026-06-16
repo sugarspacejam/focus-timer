@@ -3,6 +3,7 @@ import SwiftUI
 struct MainTabView: View {
     @StateObject private var store = FocusStore()
     @StateObject private var cameraManager = CameraManager()
+    @StateObject private var purchaseManager = PurchaseManager.shared
     
     @State private var selectedTab = 0
     @State private var isPaywallPresented = false
@@ -29,14 +30,15 @@ struct MainTabView: View {
         }
         .environmentObject(store)
         .environmentObject(cameraManager)
-        .environmentObject(PurchaseManager.shared)
+        .environmentObject(purchaseManager)
         .sheet(isPresented: $isPaywallPresented) {
             DoneIn5PaywallView()
+                .environmentObject(purchaseManager)
         }
         .task {
-            await PurchaseManager.shared.loadProducts()
-            await PurchaseManager.shared.refreshEntitlements()
-            if !PurchaseManager.shared.isPro {
+            await purchaseManager.loadProducts()
+            await purchaseManager.refreshEntitlements()
+            if !purchaseManager.isPro {
                 isPaywallPresented = true
             }
         }
