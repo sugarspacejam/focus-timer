@@ -5,6 +5,7 @@ struct MainTabView: View {
     @StateObject private var cameraManager = CameraManager()
     
     @State private var selectedTab = 0
+    @State private var isPaywallPresented = false
     
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -28,6 +29,17 @@ struct MainTabView: View {
         }
         .environmentObject(store)
         .environmentObject(cameraManager)
+        .environmentObject(PurchaseManager.shared)
+        .sheet(isPresented: $isPaywallPresented) {
+            DoneIn5PaywallView()
+        }
+        .task {
+            await PurchaseManager.shared.loadProducts()
+            await PurchaseManager.shared.refreshEntitlements()
+            if !PurchaseManager.shared.isPro {
+                isPaywallPresented = true
+            }
+        }
     }
 }
 

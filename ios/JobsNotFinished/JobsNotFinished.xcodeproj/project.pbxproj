@@ -37,6 +37,7 @@
 		E10000000000000000000005 /* LedgerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000006 /* LedgerView.swift */; };
 		E10000000000000000000007 /* PaywallInternals.swift in Sources */ = {isa = PBXBuildFile; fileRef = E10000000000000000000008 /* PaywallInternals.swift */; };
 		D10000000000000000000001 /* FocusStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000002 /* FocusStoreTests.swift */; };
+	F10000000000000000000001 /* DoneIn5PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10000000000000000000002 /* DoneIn5PaywallView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +82,7 @@
 		E10000000000000000000004 /* PromiseSeal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/PromiseSeal.swift; sourceTree = "<group>"; };
 		E10000000000000000000006 /* LedgerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/LedgerView.swift; sourceTree = "<group>"; };
 		E10000000000000000000008 /* PaywallInternals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallInternals.swift; sourceTree = "<group>"; };
+	F10000000000000000000002 /* DoneIn5PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobsNotFinished/Views/DoneIn5PaywallView.swift; sourceTree = "<group>"; };
 		D10000000000000000000002 /* FocusStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusStoreTests.swift; sourceTree = "<group>"; };
 		D10000000000000000000003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D10000000000000000000004 /* JobsNotFinishedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JobsNotFinishedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -315,6 +317,7 @@
 				E10000000000000000000003 /* PromiseSeal.swift in Sources */,
 				E10000000000000000000005 /* LedgerView.swift in Sources */,
 				E10000000000000000000007 /* PaywallInternals.swift in Sources */,
+				F10000000000000000000001 /* DoneIn5PaywallView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

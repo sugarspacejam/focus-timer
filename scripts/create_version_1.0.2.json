@@ -1,0 +1,18 @@
+{
+  "data": {
+    "type": "appStoreVersions",
+    "attributes": {
+      "platform": "IOS",
+      "versionString": "1.0.2",
+      "releaseType": "MANUAL"
+    },
+    "relationships": {
+      "app": {
+        "data": {
+          "type": "apps",
+          "id": "6761027000"
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "versionString": "1.0.1",
+  "versionString": "1.0.2",
   "locale": "en-US",
   "appInfoName": "Done in 5",
   "appInfoSubtitle": "5-minute follow-through",
@@ -14,5 +14,5 @@
   "marketingUrl": "https://github.com/sugarspacejam/focus-timer",
   "privacyPolicyUrl": "https://github.com/sugarspacejam/focus-timer/blob/main/PRIVACY.md",
   "copyright": "© 2026 Chen Toledano",
-  "buildId": "37b428ea-f7e4-4f59-a337-657debfcb448"
+  "buildId": "2b91d986-87c4-47d0-a008-6df9285cfbf8"
 }
