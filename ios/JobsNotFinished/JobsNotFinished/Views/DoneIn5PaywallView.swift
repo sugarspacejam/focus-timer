@@ -3,7 +3,6 @@ import StoreKit
 
 struct DoneIn5PaywallView: View {
     @EnvironmentObject private var purchaseManager: PurchaseManager
-    @Environment(\.dismiss) private var dismiss
     
     @State private var isPurchasing = false
     @State private var purchaseError: String?
@@ -103,14 +102,6 @@ struct DoneIn5PaywallView: View {
                     }
                 }
             }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Close") {
-                        dismiss()
-                    }
-                    .foregroundStyle(.white)
-                }
-            }
         }
         .alert("Restore Purchases", isPresented: $showRestoreAlert) {
             Button("OK", role: .cancel) {}
@@ -123,9 +114,7 @@ struct DoneIn5PaywallView: View {
         isPurchasing = true
         let success = await purchaseManager.purchase(product)
         isPurchasing = false
-        if success {
-            dismiss()
-        }
+        guard success else { return }
     }
     
     private func restore() async {
@@ -133,7 +122,6 @@ struct DoneIn5PaywallView: View {
         if purchaseManager.isPro {
             restoreMessage = "Purchases restored successfully!"
             showRestoreAlert = true
-            dismiss()
         } else {
             restoreMessage = "No active subscriptions found."
             showRestoreAlert = true

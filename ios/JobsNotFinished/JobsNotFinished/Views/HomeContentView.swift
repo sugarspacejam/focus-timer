@@ -17,8 +17,6 @@ struct HomeContentView: View {
     @FocusState private var focusedField: FocusedField?
 
     @State private var quickStartText = ""
-    @State private var isOnboardingPresented = false
-    @State private var hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
     @State private var quickStartValidationMessage: String?
     @State private var isLibraryPresented = false
     @State private var isFlameExplanationPresented = false
@@ -93,9 +91,6 @@ struct HomeContentView: View {
             .scrollBounceBehavior(.basedOnSize)
         }
         .preferredColorScheme(store.preferredColorScheme)
-        .sheet(isPresented: $isOnboardingPresented) {
-            OnboardingView(onDismiss: { isOnboardingPresented = false })
-        }
         .sheet(isPresented: $isLibraryPresented) {
             NavigationStack {
                 LibraryView()

@@ -6,41 +6,48 @@ struct MainTabView: View {
     @StateObject private var purchaseManager = PurchaseManager.shared
     
     @State private var selectedTab = 0
-    @State private var isPaywallPresented = false
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
     
     var body: some View {
+        Group {
+            if !hasSeenOnboarding {
+                OnboardingView {
+                    hasSeenOnboarding = true
+                }
+            } else if purchaseManager.isPro {
+                appTabs
+            } else {
+                DoneIn5PaywallView()
+            }
+        }
+        .environmentObject(store)
+        .environmentObject(cameraManager)
+        .environmentObject(purchaseManager)
+        .task {
+            await purchaseManager.loadProducts()
+            await purchaseManager.refreshEntitlements()
+        }
+    }
+
+    private var appTabs: some View {
         TabView(selection: $selectedTab) {
             HomeTabView()
                 .tabItem {
                     Label("Home", systemImage: "house.fill")
                 }
                 .tag(0)
-            
+
             LedgerTabView()
                 .tabItem {
                     Label("Flame", systemImage: "flame.fill")
                 }
                 .tag(1)
-            
+
             SettingsTabView()
                 .tabItem {
                     Label("Settings", systemImage: "gearshape.fill")
                 }
                 .tag(2)
-        }
-        .environmentObject(store)
-        .environmentObject(cameraManager)
-        .environmentObject(purchaseManager)
-        .sheet(isPresented: $isPaywallPresented) {
-            DoneIn5PaywallView()
-                .environmentObject(purchaseManager)
-        }
-        .task {
-            await purchaseManager.loadProducts()
-            await purchaseManager.refreshEntitlements()
-            if !purchaseManager.isPro {
-                isPaywallPresented = true
-            }
         }
     }
 }
