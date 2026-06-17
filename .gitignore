@@ -1,6 +1,7 @@
 node_modules/
 .env
 .env.example
+.creds/
 .netlify/
 coverage/
 *.log
