@@ -1,92 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Done in 5 Privacy Policy</title>
-    <style>
-      :root {
-        color-scheme: light;
-        --bg: #0f172a;
-        --card: rgba(255, 255, 255, 0.97);
-        --text: #101828;
-        --muted: #475467;
-        --border: rgba(16, 24, 40, 0.08);
-      }
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>STAY Privacy Policy</title>
+  <style>
+    :root { --bg: #0f172a; --card: #111827; --ink: #e5e7eb; --muted: #9ca3af; --accent: #b5ff2e; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    main { max-width: 720px; margin: 0 auto; padding: 48px 20px 80px; }
+    h1 { font-size: 32px; margin: 0 0 4px; letter-spacing: 0.02em; }
+    h2 { font-size: 18px; margin: 32px 0 8px; color: var(--accent); }
+    .muted { color: var(--muted); margin: 0 0 24px; }
+    ul { padding-left: 20px; }
+    code { background: var(--card); padding: 1px 6px; border-radius: 4px; font-size: 14px; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+<main>
+  <h1>STAY Privacy Policy</h1>
+  <p class="muted">STAY by Celestify Limited · Effective 4 September 2026</p>
 
-      * { box-sizing: border-box; }
+  <h2>What STAY does</h2>
+  <p>STAY watches you through your iPhone's front camera while you work. If you leave the frame, it says a line you wrote, and keeps getting louder until you come back. That is the whole product, and this policy is short because the app keeps almost nothing.</p>
 
-      body {
-        margin: 0;
-        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
-        color: var(--text);
-      }
+  <h2>The camera</h2>
+  <ul>
+    <li>STAY uses the <strong>front camera only</strong>, only after you tap <em>Start watching</em>, and only while the app is on screen. The moment STAY goes to the background, the camera stops.</li>
+    <li>Each frame is analysed <strong>on your device</strong> with Apple's Vision framework to answer one yes/no question: is a person in frame. Nothing else is inferred.</li>
+    <li><strong>No frame is stored, displayed, recorded, or transmitted.</strong> There is no video preview, no recording, no upload, and no way for us or anyone else to see what the camera saw.</li>
+  </ul>
 
-      main {
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 32px 16px;
-      }
+  <h2>Data kept on your device</h2>
+  <p>STAY saves your settings locally so they survive relaunch. They never leave the phone:</p>
+  <ul>
+    <li>Your warning lines, patience, attitude, voice and never-give-up choices (<code>stay.settings.v1</code>).</li>
+    <li>Whether you have seen the intro screen.</li>
+    <li>A counter of free sessions used, kept in the device Keychain so it survives reinstall.</li>
+  </ul>
 
-      article {
-        width: min(860px, 100%);
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 24px;
-        padding: 40px 28px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
-      }
+  <h2>Session receipts</h2>
+  <p>When you stop watching, STAY shows a card with how long it watched, how many times you left, your longest absence and the worst line it said. These are numbers and text only — never images from the camera. They exist only on screen unless you tap <em>Share</em>, in which case you choose where the card goes.</p>
 
-      h1, h2 { margin: 0 0 16px; }
-      h1 { font-size: clamp(2rem, 4vw, 2.75rem); }
-      h2 { font-size: 1.2rem; margin-top: 28px; }
-      p, li { line-height: 1.7; }
-      ul { padding-left: 22px; }
-      .muted { color: var(--muted); }
-      a { color: #175cd3; text-decoration: none; }
-      a:hover { text-decoration: underline; }
-    </style>
-  </head>
-  <body>
-    <main>
-      <article>
-        <p class="muted">Done in 5</p>
-        <h1>Privacy Policy</h1>
+  <h2>Purchases</h2>
+  <p>STAY Pro is an auto-renewing subscription handled entirely by Apple through StoreKit. STAY checks your subscription status with Apple; it does not run its own accounts, and there is no sign-up.</p>
 
-        <p>Done in 5 is a local focus timer app.</p>
+  <h2>What STAY does not do</h2>
+  <ul>
+    <li>No network requests of its own. No analytics, no crash-reporting SDKs, no advertising, no third-party code.</li>
+    <li>No account, email, name, location, contacts, photos or microphone access.</li>
+    <li>Speech is synthesised on the device with Apple's speech engine.</li>
+  </ul>
 
-        <h2>Data Collection</h2>
-        <p>Done in 5 does not require account creation.</p>
-        <p>Done in 5 stores app state locally on your device, including:</p>
-        <ul>
-          <li>task names you create</li>
-          <li>timer state</li>
-          <li>camera accountability setting</li>
-          <li>custom away voice lines</li>
-          <li>local usage stats related to completed and failed focus contracts</li>
-        </ul>
+  <h2>Changes</h2>
+  <p>If STAY ever starts collecting anything, this page will say so first, with a new effective date at the top.</p>
 
-        <h2>Camera Use</h2>
-        <p>If you enable camera accountability, the app uses the front camera while the app is open and an active focus contract is running.</p>
-        <p>Camera processing is used only to determine whether you remain in frame during the active contract.</p>
-        <p>Camera accountability is foreground-only in the current app behavior.</p>
-
-        <h2>Notifications</h2>
-        <p>Done in 5 requests notification permission so it can notify you when a focus contract completes.</p>
-
-        <h2>Purchases</h2>
-        <p>Done in 5 is intended to be sold as a paid download. The current shipped app path does not require account-based purchases to use the app.</p>
-
-        <h2>Third Parties</h2>
-        <p>Done in 5 uses Apple system frameworks such as notifications, camera, and speech synthesis.</p>
-
-        <h2>Contact</h2>
-        <p>For support and project information, use the project repository:</p>
-        <p><a href="https://github.com/sugarspacejam/focus-timer">https://github.com/sugarspacejam/focus-timer</a></p>
-      </article>
-    </main>
-  </body>
+  <h2>Contact</h2>
+  <p>Celestify Limited · <a href="mailto:contact@celestifyltd.com">contact@celestifyltd.com</a></p>
+</main>
+</body>
 </html>
